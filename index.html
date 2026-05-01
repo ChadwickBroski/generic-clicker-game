@@ -9,25 +9,56 @@
     <div class="counter" id="counter">Loading...</div>
     <button onclick="add()" type="button" class="button">CLICK ME</button>
 
-    <!-- Settings Modal -->
+    <!-- Settings Button -->
     <button type="button" class="button" id="settings" style="top:6%; left: 90%; right:auto; padding: 7px 11px;--button-color:blue;--button-bg:azure;">Settings</button>
-    <div>
-      <div id="settingsModal" class="modal">
-        <!-- Modal content -->
-        <div class="modal-content">
-          <span class="close">&times;</span>
-          <h2>Settings</h2>
+
+    <!-- Leaderboard Button -->
+    <button onclick="showLeaderboard()" type="button" class="button" style="top:20%; left:10%; right:auto; padding: 7px 11px;--button-color:orange;--button-bg:lightyellow;">Leaderboard</button>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="settingsClose">&times;</span>
+        <h2>Settings</h2>
+        <hr class="modal-divider">
+        <h3>RESET PROGRESS</h3>
+        <div class="reset-row">
+          <p class="reset-desc">Reset button erases all of your progress. This cannot be undone.</p>
+          <button onclick="reset()" type="button" class="button reset-btn">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div id="leaderboardModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="leaderboardClose">&times;</span>
+        <h2>Leaderboard</h2>
+        <hr class="modal-divider">
+        <div class="leaderboard-list">
+          <div class="leaderboard-row">
+            <span class="leaderboard-rank">🥇 1st</span>
+            <span class="leaderboard-score" id="score1">0</span>
+          </div>
           <hr class="modal-divider">
-          <h3>RESET PROGRESS</h3>
-          <div class="reset-row">
-            <p class="reset-desc">Reset button erases all of your progress. This cannot be undone.</p>
-            <button onclick="reset()" type="button" class="button reset-btn">Reset</button>
+          <div class="leaderboard-row">
+            <span class="leaderboard-rank">🥈 2nd</span>
+            <span class="leaderboard-score" id="score2">0</span>
+          </div>
+          <hr class="modal-divider">
+          <div class="leaderboard-row">
+            <span class="leaderboard-rank">🥉 3rd</span>
+            <span class="leaderboard-score" id="score3">0</span>
           </div>
         </div>
       </div>
+    </div>
+
+    <div>
       <button onclick="save()" type="button" class="button" style="top:6%; left:8%; right:auto; padding: 7px 11px;--button-color:orange;--button-bg:lightyellow;">Save</button>
       <p class="informer">Progress saved!</p>
     </div>
+
     <p class="auto-save" style="right:auto;left:3%;">Game auto-saves every 10 seconds</p>
     <p class="auto-save" style="left: auto; right: 3%;">Made by <a href="chadwickbroski.github.io" style="color:#002CF2;">ChadwickBroski</a>.</p>
 
