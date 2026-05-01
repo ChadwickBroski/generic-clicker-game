@@ -10,19 +10,21 @@
     <button onclick="add()" type="button" class="button">CLICK ME</button>
 
     <!-- Settings Modal -->
-    <button type="button" class="button" id="settings" style="top:6%; left: 90%; right:auto; padding: 7px 11px;--button-color:blue ;--button-bg:azure ;">Settings</button>
+    <button type="button" class="button" id="settings" style="top:6%; left: 90%; right:auto; padding: 7px 11px;--button-color:blue;--button-bg:azure;">Settings</button>
     <div>
-    <div id="settingsModal" class="modal">
-      <!-- Modal content -->
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Settings</h2>
-        <h3>Reset Progress</h3>
-        <hr class="modal-divider">
-        <button onclick="reset()" type="button" class="button" style="padding: 7px 11px; --button-color:red; --button-bg:pink; position: relative; display: block; margin: 10px 0; transform: none; left: auto;">Reset</button>
-        <p style="color:red">Reset button erases all of your progress.</p>
+      <div id="settingsModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Settings</h2>
+          <hr class="modal-divider">
+          <h3>RESET PROGRESS</h3>
+          <div class="reset-row">
+            <p class="reset-desc">Reset button erases all of your progress. This cannot be undone.</p>
+            <button onclick="reset()" type="button" class="button reset-btn">Reset</button>
+          </div>
+        </div>
       </div>
-    </div>
       <button onclick="save()" type="button" class="button" style="top:6%; left:8%; right:auto; padding: 7px 11px;--button-color:orange;--button-bg:lightyellow;">Save</button>
       <p class="informer">Progress saved!</p>
     </div>
