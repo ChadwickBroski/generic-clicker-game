@@ -41,28 +41,43 @@ function add(){
   document.getElementById("counter").innerHTML = number;
 };
 
-// Get the modal
-var modal = document.getElementById("settingsModal");
+// Settings modal
+var settingsModal = document.getElementById("settingsModal");
+var settingsBtn   = document.getElementById("settings");
+var settingsClose = document.getElementById("settingsClose");
 
-// Get the button that opens the modal
-var btn = document.getElementById("settings");
+settingsBtn.onclick   = () => settingsModal.style.display = "block";
+settingsClose.onclick = () => settingsModal.style.display = "none";
 
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
+// Leaderboard modal
+var leaderboardModal = document.getElementById("leaderboardModal");
+var leaderboardClose = document.getElementById("leaderboardClose");
 
-// When the user clicks the button, open the modal 
-btn.onclick = function() {
-  modal.style.display = "block";
+function showLeaderboard() {
+  let scores = JSON.parse(localStorage.getItem("leaderboard") || "[0,0,0]");
+
+  let score1 = document.getElementById("score1").innerHTML;
+  let score2 = document.getElementById("score2").innerHTML;
+  let score3 = document.getElementById("score3").innerHTML;
+  leaderboardModal.style.display = "block";
+  document.getElementById("score1").innerHTML = localStorage.getItem("firstPlace") || score1;
+  document.getElementById("score2").innerHTML = localStorage.getItem("secondPlace") || score2;
+  document.getElementById("score3").innerHTML = localStorage.getItem("thirdPlace") || score3;
 }
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
+setTimeout(() => {
+  if (localStorage.getItem("value") > score1.innerHTML) {
+      localStorage.setItem("firstPlace", localStorage.getItem("value"));
+  } else if (localStorage.getItem("value") > score2.innerHTML) {
+      localStorage.setItem("secondPlace", localStorage.getItem("value"));
+  } else if (localStorage.getItem("value") > score3.innerHTML) {
+      localStorage.setItem("thirdPlace", localStorage.getItem("value"));
   }
+}, 1000);
+
+leaderboardClose.onclick = () => leaderboardModal.style.display = "none";
+
+// Close either modal when clicking outside
+window.onclick = function(event) {
+  if (event.target == settingsModal)    settingsModal.style.display   = "none";
+  if (event.target == leaderboardModal) leaderboardModal.style.display = "none";
 }
