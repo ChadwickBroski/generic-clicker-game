@@ -127,7 +127,7 @@ h3 {
 .close:hover  { box-shadow: 2px 2px 0 0 black; }
 .close:active { box-shadow: 0 0 0 0 black; }
 
-/* ── Divider — breaks out of the 20px padding to reach full width ── */
+/* ── Divider ── */
 .modal-divider {
   border: none;
   height: 2px;
@@ -136,7 +136,7 @@ h3 {
   width: calc(100% + 40px);
 }
 
-/* ── Reset row: description left, button right ── */
+/* ── Reset row ── */
 .reset-row {
   display: flex;
   align-items: center;
@@ -153,7 +153,6 @@ h3 {
   margin: 0;
 }
 
-/* Reset button — relative/inline so it sits in the flex row */
 .reset-btn {
   position: relative;
   top: auto;
@@ -163,4 +162,29 @@ h3 {
   padding: 9px 18px;
   --button-color: #c0392b;
   --button-bg: #fff0f0;
+}
+
+/* ── Leaderboard ── */
+.leaderboard-list {
+  margin-top: 12px;
+}
+
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 4px;
+}
+
+.leaderboard-rank {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: "Nunito", sans-serif;
+}
+
+.leaderboard-score {
+  font-size: 24px;
+  font-weight: 700;
+  font-family: "Nunito", sans-serif;
+  color: #333;
 }
