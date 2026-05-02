@@ -1,0 +1,54 @@
+name: Update Leaderboard
+
+on:
+  push:
+    paths:
+      - 'pending-score.json'
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update leaderboard if new record
+        run: |
+          python3 << 'EOF'
+          import json
+
+          with open('pending-score.json') as f:
+              new_score = json.load(f)['score']
+
+          with open('leaderboard.json') as f:
+              data = json.load(f)
+
+          scores = data['scores']
+
+          if new_score > scores[0]:
+              scores = [new_score, scores[0], scores[1]]
+          elif new_score > scores[1]:
+              scores = [scores[0], new_score, scores[1]]
+          elif new_score > scores[2]:
+              scores = [scores[0], scores[1], new_score]
+          else:
+              print("No new record. Leaderboard unchanged.")
+              exit()
+
+          data['scores'] = scores
+
+          with open('leaderboard.json', 'w') as f:
+              json.dump(data, f, indent=2)
+
+          print(f"Leaderboard updated: {scores}")
+          EOF
+
+      - name: Commit updated leaderboard
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add leaderboard.json
+          git diff --staged --quiet || git commit -m "chore: update leaderboard [skip ci]"
+          git push
