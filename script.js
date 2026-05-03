@@ -81,4 +81,3 @@ window.onclick = function(event) {
   if (event.target == settingsModal)    settingsModal.style.display   = "none";
   if (event.target == leaderboardModal) leaderboardModal.style.display = "none";
 }
-
