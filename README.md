@@ -1,7 +1,7 @@
 # Generic Clicker Game
 It is a generic clicker game. You click, and counter go up.
 
-Play this game on [asdsad](chadwickbroski.github.io/generic-clicker-game).
+Play this game on [asdsad](https://chadwickbroski.github.io/generic-clicker-game).
 
 OR
 
