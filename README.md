@@ -1,6 +1,11 @@
 # Generic Clicker Game
 It is a generic clicker game. You click, and counter go up.
 
+## Bugs or Ideas
+
+If you have any bugs or ideas, open an issue.
+- Make sure you type out the bug or idea in detail.
+
 Play this game on [chadwickbroski.github.io/generic-clicker-game](https://chadwickbroski.github.io/generic-clicker-game).
 
 OR
