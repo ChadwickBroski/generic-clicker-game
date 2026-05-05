@@ -1,83 +1,132 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, setDoc, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+// ── Paste your Firebase config from console.firebase.google.com ──
+const firebaseConfig = {
+  apiKey: "AIzaSyApp-f5tcN3v7nACEvRNV1jdI1E6iu9bT4",
+  authDomain: "generic-clicker-game.firebaseapp.com",
+  projectId: "generic-clicker-game",
+  storageBucket: "generic-clicker-game.firebasestorage.app",
+  messagingSenderId: "43436296491",
+  appId: "1:43436296491:web:8c32c9578410806ef51d6e"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+const auth = getAuth(app);
+
+// Sign in anonymously — gives every player a unique uid automatically
+await signInAnonymously(auth);
+const uid = auth.currentUser.uid;
+
+// ── Local state ──
 const informer = document.querySelector(".informer");
-let number = localStorage.getItem("value");
+let number     = parseInt(localStorage.getItem("value")) || 0;
+let playerName = localStorage.getItem("playerName") || "Anonymous";
 
-number = parseInt(number)
 document.getElementById("counter").innerHTML = number;
+document.getElementById("playerNameInput").value = playerName;
 
-function save() {
+// ── Save to both localStorage (for offline) and Firestore (for leaderboard) ──
+async function save() {
   localStorage.setItem("value", number);
-  
+
+  // Write this player's score to Firestore under their uid.
+  // setDoc overwrites, so each player only ever has one entry.
+  await setDoc(doc(db, "leaderboard", uid), {
+    name:  playerName,
+    score: number
+  });
+
+  // "Progress saved!" animation
   informer.classList.remove("fade-in-trigger", "fade-out-trigger");
   void informer.offsetWidth;
   informer.classList.add("fade-in-trigger");
-
   setTimeout(() => {
     informer.classList.remove("fade-in-trigger");
-    void informer.offsetWidth; 
+    void informer.offsetWidth;
     informer.classList.add("fade-out-trigger");
   }, 1000);
 }
 
-function reset(){
-  if (confirm("Do you want to reset your progress?(Removes all of your progress)")) {
-    console.log("User chose OK");
-    number = -1
-    add()
-  } else {
-    console.log("User chose Cancel");
-  }
-};
+function add() {
+  number++;
+  document.getElementById("counter").innerHTML = number;
+}
 
-const intervalId = setInterval(() => {
-  if (number == localStorage.getItem("value")) {
-    
-  } else {
-    save()
+function reset() {
+  if (confirm("Do you want to reset your progress? (Removes all of your progress)")) {
+    number = 0;
+    document.getElementById("counter").innerHTML = number;
+    save();
+  }
+}
+
+// ── Auto-save every 10 seconds only if score changed ──
+let lastSaved = number;
+setInterval(() => {
+  if (number !== lastSaved) {
+    save();
+    lastSaved = number;
   }
 }, 10000);
 
-function add(){
-  number = number+1;
-  document.getElementById("counter").innerHTML = number;
-};
+// ── Global leaderboard — reads top 3 from Firestore ──
+async function showLeaderboard() {
+  // Show loading state while fetching
+  document.getElementById("score1").innerHTML = "Loading...";
+  document.getElementById("score2").innerHTML = "Loading...";
+  document.getElementById("score3").innerHTML = "Loading...";
+  leaderboardModal.style.display = "block";
+
+  const q = query(
+    collection(db, "leaderboard"),
+    orderBy("score", "desc"),
+    limit(3)
+  );
+
+  const snapshot = await getDocs(q);
+  const slots = ["score1", "score2", "score3"];
+
+  snapshot.docs.forEach((docSnap, i) => {
+    const { name, score } = docSnap.data();
+    document.getElementById(slots[i]).innerHTML = `${name}: ${score}`;
+  });
+
+  // Fill any empty slots if fewer than 3 players exist yet
+  for (let i = snapshot.docs.length; i < 3; i++) {
+    document.getElementById(slots[i]).innerHTML = "—";
+  }
+}
+
+// ── Player name — saved to localStorage and Firestore ──
+document.getElementById("saveNameBtn").addEventListener("click", () => {
+  const input = document.getElementById("playerNameInput").value.trim();
+  if (input) {
+    playerName = input;
+    localStorage.setItem("playerName", playerName);
+    save(); // update Firestore with the new name right away
+  }
+});
+
+// ── Wire up all buttons ──
+document.getElementById("clickBtn").addEventListener("click", add);
+document.getElementById("saveBtn").addEventListener("click", save);
+document.getElementById("resetBtn").addEventListener("click", reset);
+document.getElementById("leaderboardBtn").addEventListener("click", showLeaderboard);
 
 // Settings modal
-var settingsModal = document.getElementById("settingsModal");
-var settingsBtn   = document.getElementById("settings");
-var settingsClose = document.getElementById("settingsClose");
-
-settingsBtn.onclick   = () => settingsModal.style.display = "block";
-settingsClose.onclick = () => settingsModal.style.display = "none";
+const settingsModal = document.getElementById("settingsModal");
+document.getElementById("settingsBtn").addEventListener("click",   () => settingsModal.style.display = "block");
+document.getElementById("settingsClose").addEventListener("click", () => settingsModal.style.display = "none");
 
 // Leaderboard modal
-var leaderboardModal = document.getElementById("leaderboardModal");
-var leaderboardClose = document.getElementById("leaderboardClose");
+const leaderboardModal = document.getElementById("leaderboardModal");
+document.getElementById("leaderboardClose").addEventListener("click", () => leaderboardModal.style.display = "none");
 
-function showLeaderboard() {
-  let scores = JSON.parse(localStorage.getItem("leaderboard") || "[0,0,0]");
-
-  let score1 = document.getElementById("score1").innerHTML;
-  let score2 = document.getElementById("score2").innerHTML;
-  let score3 = document.getElementById("score3").innerHTML;
-  leaderboardModal.style.display = "block";
-  document.getElementById("score1").innerHTML = localStorage.getItem("firstPlace") || score1;
-  document.getElementById("score2").innerHTML = localStorage.getItem("secondPlace") || score2;
-  document.getElementById("score3").innerHTML = localStorage.getItem("thirdPlace") || score3;
-}
-setTimeout(() => {
-  if (localStorage.getItem("value") > score1.innerHTML) {
-      localStorage.setItem("firstPlace", localStorage.getItem("value"));
-  } else if (localStorage.getItem("value") > score2.innerHTML) {
-      localStorage.setItem("secondPlace", localStorage.getItem("value"));
-  } else if (localStorage.getItem("value") > score3.innerHTML) {
-      localStorage.setItem("thirdPlace", localStorage.getItem("value"));
-  }
-}, 1000);
-
-leaderboardClose.onclick = () => leaderboardModal.style.display = "none";
-
-// Close either modal when clicking outside
-window.onclick = function(event) {
-  if (event.target == settingsModal)    settingsModal.style.display   = "none";
-  if (event.target == leaderboardModal) leaderboardModal.style.display = "none";
-}
+// Close either modal when clicking the backdrop
+window.addEventListener("click", (event) => {
+  if (event.target === settingsModal)    settingsModal.style.display   = "none";
+  if (event.target === leaderboardModal) leaderboardModal.style.display = "none";
+});
