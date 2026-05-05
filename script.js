@@ -1,8 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, doc, setDoc, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-// ── Paste your Firebase config from console.firebase.google.com ──
 const firebaseConfig = {
   apiKey: "AIzaSyApp-f5tcN3v7nACEvRNV1jdI1E6iu9bT4",
   authDomain: "generic-clicker-game.firebaseapp.com",
@@ -22,8 +21,19 @@ const uid = auth.currentUser.uid;
 
 // ── Local state ──
 const informer = document.querySelector(".informer");
-let number     = parseInt(localStorage.getItem("value")) || 0;
-let playerName = localStorage.getItem("playerName") || "Anonymous";
+let number     = 0;
+let playerName = "Anonymous";
+
+// Show Loading... until we get the value from Firestore
+document.getElementById("counter").innerHTML = "Loading...";
+
+// Fetch this player's saved score and name from Firestore
+const playerDoc = await getDoc(doc(db, "leaderboard", uid));
+if (playerDoc.exists()) {
+  const data = playerDoc.data();
+  number     = data.score ?? 0;
+  playerName = data.name  ?? "Anonymous";
+}
 
 document.getElementById("counter").innerHTML = number;
 document.getElementById("playerNameInput").value = playerName;
