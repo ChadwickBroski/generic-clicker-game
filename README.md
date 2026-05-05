@@ -6,8 +6,13 @@ It is a generic clicker game. You click, and counter go up.
 If you have find any bugs or have ideas, open an issue in this github repo.
 - Make sure you type out the bug or idea in detail.
 
+## How to play
 Play this game on [chadwickbroski.github.io/generic-clicker-game](https://chadwickbroski.github.io/generic-clicker-game).
 
 OR
 
 Go to [chadwickbroski.github.io](https://chadwickbroski.github.io) and click on the Generic Clicker Game that is displayed on the page.
+
+## Upcoming updates (probably)
+### Tags
+Example: First 100 players, Owner, Bug Finder, Ideator, etc.
