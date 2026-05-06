@@ -22,17 +22,17 @@ const auth = getAuth(app);
 const TAGS = {
   // 🟢 AUTOMATIC — assigned on first save if player count is under 100
   1: { label: "First 100",  color: "white", bg: "purple" },
-  // 🔴 MANUAL — set this in Firestore console
+  // 🔴 MANUAL — set this yourself in Firestore console
   2: { label: "Owner",      color: "white", bg: "black" },
-  // 🔴 MANUAL — set this in Firestore console (needs Cloud Function to automate later)
+  // 🔴 MANUAL — set this yourself in Firestore console (needs Cloud Function to automate later)
   3: { label: "Former #1",  color: "white", bg: "#8B0000" },
   // 🟢 AUTOMATIC — shown for whoever is rank 1 when the leaderboard is opened
   4: { label: "Top Player", color: "white", bg: "royalblue" },
-  // 🔴 MANUAL — set this in Firestore console (needs Cloud Function to automate later)
+  // 🔴 MANUAL — set this yourself in Firestore console (needs Cloud Function to automate later)
   5: { label: "Legend",     color: "white", bg: "gold" },
-  // 🔴 MANUAL — set this in Firestore console
+  // 🔴 MANUAL — set this yourself in Firestore console
   6: { label: "Bug Finder", color: "white", bg: "green" },
-  // 🔴 MANUAL — set this in Firestore console
+  // 🔴 MANUAL — set this yourself in Firestore console
   7: { label: "Ideator",    color: "white", bg: "beige" },
 };
 
@@ -41,6 +41,7 @@ const MANUAL_TAGS = new Set([2, 3, 5, 6, 7]);
 
 // Returns an HTML string for a single tag badge, or "" if no tag
 function renderTag(tagNumber) {
+  if (tagNumber === null || tagNumber === undefined) return "";
   const tag = TAGS[tagNumber];
   if (!tag) return "";
   return `<span style="
@@ -159,14 +160,21 @@ async function showLeaderboard() {
   const nameSlots  = ["name1",  "name2",  "name3"];
 
   snapshot.docs.forEach((docSnap, i) => {
-    const { name, score, tag } = docSnap.data();
+    const data = docSnap.data();
+    const name  = data.name  ?? "Anonymous";
+    const score = data.score ?? 0;
+
+    // Treat missing/non-number tag fields as null
+    const storedTag = typeof data.tag === "number" ? data.tag : null;
 
     // 🟢 AUTOMATIC: Top Player tag
-    // Rank 1 always shows Top Player tag unless they have a manual tag.
+    // Rank 1 always shows Top Player (tag 4) unless they have a manual tag.
     // Tags are non-stacked — only one tag is ever shown per player.
-    let displayTag = tag;
-    if (i === 0 && !MANUAL_TAGS.has(tag)) {
+    let displayTag;
+    if (i === 0 && !MANUAL_TAGS.has(storedTag)) {
       displayTag = 4; // Top Player
+    } else {
+      displayTag = storedTag;
     }
 
     document.getElementById(nameSlots[i]).innerHTML  = name + renderTag(displayTag);
@@ -208,6 +216,5 @@ document.getElementById("leaderboardClose").addEventListener("click", () => lead
 // Close either modal when clicking the backdrop
 window.addEventListener("click", (event) => {
   if (event.target === settingsModal)    settingsModal.style.display   = "none";
-  
   if (event.target === leaderboardModal) leaderboardModal.style.display = "none";
 });
