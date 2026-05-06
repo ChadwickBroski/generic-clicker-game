@@ -85,9 +85,12 @@ setInterval(() => {
 // ── Global leaderboard — reads top 3 from Firestore ──
 async function showLeaderboard() {
   // Show loading state while fetching
-  document.getElementById("score1").innerHTML = "Loading...";
-  document.getElementById("score2").innerHTML = "Loading...";
-  document.getElementById("score3").innerHTML = "Loading...";
+  document.getElementById("name1").innerHTML  = "Loading...";
+  document.getElementById("name2").innerHTML  = "Loading...";
+  document.getElementById("name3").innerHTML  = "Loading...";
+  document.getElementById("score1").innerHTML = "...";
+  document.getElementById("score2").innerHTML = "...";
+  document.getElementById("score3").innerHTML = "...";
   leaderboardModal.style.display = "block";
 
   const q = query(
@@ -97,16 +100,19 @@ async function showLeaderboard() {
   );
 
   const snapshot = await getDocs(q);
-  const slots = ["score1", "score2", "score3"];
+  const scoreSlots = ["score1", "score2", "score3"];
+  const nameSlots  = ["name1",  "name2",  "name3"];
 
   snapshot.docs.forEach((docSnap, i) => {
     const { name, score } = docSnap.data();
-    document.getElementById(slots[i]).innerHTML = `${name}: ${score}`;
+    document.getElementById(nameSlots[i]).innerHTML  = name;
+    document.getElementById(scoreSlots[i]).innerHTML = score.toLocaleString();
   });
 
   // Fill any empty slots if fewer than 3 players exist yet
   for (let i = snapshot.docs.length; i < 3; i++) {
-    document.getElementById(slots[i]).innerHTML = "—";
+    document.getElementById(nameSlots[i]).innerHTML  = "—";
+    document.getElementById(scoreSlots[i]).innerHTML = "—";
   }
 }
 
