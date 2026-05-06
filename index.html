@@ -37,10 +37,6 @@
           <p class="reset-desc">Reset button erases all of your progress. This cannot be undone.</p>
           <button type="button" class="button reset-btn" id="resetBtn">Reset</button>
         </div>
-        <h3>BUGS OR IDEAS</h3>
-        <div class="reset-row">
-          <p class="reset-desc">If you find any bugs or have an idea, open an issue in the <a href="https://github.com/ChadwickBroski/generic-clicker-game/issues">github repo</a>.</p>
-        </div>
       </div>
     </div>
 
@@ -52,17 +48,17 @@
         <hr class="modal-divider">
         <div class="leaderboard-list">
           <div class="leaderboard-row">
-            <span class="leaderboard-rank">🥇 1st</span>
+            <span class="leaderboard-rank">🥇 1st&nbsp;&nbsp;<span id="name1" style="font-weight:500;">—</span></span>
             <span class="leaderboard-score" id="score1">—</span>
           </div>
           <hr class="modal-divider">
           <div class="leaderboard-row">
-            <span class="leaderboard-rank">🥈 2nd</span>
+            <span class="leaderboard-rank">🥈 2nd&nbsp;&nbsp;<span id="name2" style="font-weight:500;">—</span></span>
             <span class="leaderboard-score" id="score2">—</span>
           </div>
           <hr class="modal-divider">
           <div class="leaderboard-row">
-            <span class="leaderboard-rank">🥉 3rd</span>
+            <span class="leaderboard-rank">🥉 3rd&nbsp;&nbsp;<span id="name3" style="font-weight:500;">—</span></span>
             <span class="leaderboard-score" id="score3">—</span>
           </div>
         </div>
@@ -74,7 +70,7 @@
       <p class="informer">Progress saved!</p>
     </div>
 
-    <p class="auto-save" style="right:auto;left:3%;">v1.33.0</p>
+    <p class="auto-save" style="right:auto;left:3%;">Game auto-saves every 10 seconds</p>
     <p class="auto-save" style="left: auto; right: 3%;">Made by <a href="chadwickbroski.github.io" style="color:#002CF2;">ChadwickBroski</a>.</p>
 
     <!-- type="module" is required for Firebase imports to work -->
