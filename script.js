@@ -139,25 +139,40 @@ setInterval(() => {
   }
 }, 10000);
 
-// ── Global leaderboard — reads top 3 from Firestore ──
+// ── Global leaderboard — reads top 10 from Firestore ──
 async function showLeaderboard() {
   document.getElementById("name1").innerHTML  = "Loading...";
   document.getElementById("name2").innerHTML  = "Loading...";
   document.getElementById("name3").innerHTML  = "Loading...";
+  document.getElementById("name4").innerHTML  = "Loading...";
+  document.getElementById("name5").innerHTML  = "Loading...";
+  document.getElementById("name6").innerHTML  = "Loading...";
+  document.getElementById("name7").innerHTML  = "Loading...";
+  document.getElementById("name8").innerHTML  = "Loading...";
+  document.getElementById("name9").innerHTML  = "Loading...";
+  document.getElementById("name10").innerHTML = "Loading...";
   document.getElementById("score1").innerHTML = "...";
   document.getElementById("score2").innerHTML = "...";
   document.getElementById("score3").innerHTML = "...";
+  document.getElementById("score4").innerHTML = "...";
+  document.getElementById("score5").innerHTML = "...";
+  document.getElementById("score6").innerHTML = "...";
+  document.getElementById("score7").innerHTML = "...";
+  document.getElementById("score8").innerHTML = "...";
+  document.getElementById("score9").innerHTML = "...";
+  document.getElementById("score10").innerHTML = "...";
   leaderboardModal.style.display = "block";
 
   const q = query(
     collection(db, "leaderboard"),
     orderBy("score", "desc"),
-    limit(3)
+    limit(10)
   );
 
   const snapshot = await getDocs(q);
-  const scoreSlots = ["score1", "score2", "score3"];
-  const nameSlots  = ["name1",  "name2",  "name3"];
+  const scoreSlots = ["score1", "score2", "score3", "score4", "score5", "score6", "score7", "score8", "score9", "score10"];
+  const nameSlots  = ["name1",  "name2",  "name3",  "name4",  "name5",  "name6",  "name7",  "name8",  "name9",  "name10"];
+  const medals = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"];
 
   snapshot.docs.forEach((docSnap, i) => {
     const data = docSnap.data();
@@ -181,8 +196,8 @@ async function showLeaderboard() {
     document.getElementById(scoreSlots[i]).innerHTML = score.toLocaleString();
   });
 
-  // Fill any empty slots if fewer than 3 players exist yet
-  for (let i = snapshot.docs.length; i < 3; i++) {
+  // Fill any empty slots if fewer than 10 players exist yet
+  for (let i = snapshot.docs.length; i < 10; i++) {
     document.getElementById(nameSlots[i]).innerHTML  = "—";
     document.getElementById(scoreSlots[i]).innerHTML = "—";
   }
