@@ -88,12 +88,13 @@ h3 {
   display: none;
   position: fixed;
   z-index: 100;
-  padding-top: 100px;
+  padding-top: 50px;
+  padding-bottom: 50px;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto;
+  overflow-y: auto;
   background-color: rgba(0, 0, 0, 0.4);
 }
 
@@ -108,6 +109,8 @@ h3 {
   font-family: "Nunito", sans-serif;
   color: black;
   box-shadow: 5px 5px 0 0 black;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
 }
 
 /* ── Close button ── */
@@ -167,6 +170,7 @@ h3 {
 /* ── Leaderboard ── */
 .leaderboard-list {
   margin-top: 12px;
+  margin-bottom: 12px;
 }
 
 .leaderboard-row {
