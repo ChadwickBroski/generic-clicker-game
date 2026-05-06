@@ -89,12 +89,12 @@ h3 {
   position: fixed;
   z-index: 100;
   padding-top: 50px;
-  padding-bottom: 50px;
+  padding-bottom: 100px;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  overflow-y: auto;
+  overflow: auto;
   background-color: rgba(0, 0, 0, 0.4);
 }
 
@@ -109,8 +109,6 @@ h3 {
   font-family: "Nunito", sans-serif;
   color: black;
   box-shadow: 5px 5px 0 0 black;
-  max-height: 85vh; /* Limit to 85% of the viewport height */
-  overflow-y: auto; /* Enable scrolling inside modal when content overflows */
 }
 
 /* ── Close button ── */
