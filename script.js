@@ -49,7 +49,7 @@ function renderTag(tagNumber) {
     font-size:11px;
     font-weight:700;
     font-family:'Nunito',sans-serif;
-    padding:2px 8px;
+    padding:4px 8px;
     border-radius:20px;
     margin-left:8px;
     color:${tag.color};
