@@ -208,5 +208,6 @@ document.getElementById("leaderboardClose").addEventListener("click", () => lead
 // Close either modal when clicking the backdrop
 window.addEventListener("click", (event) => {
   if (event.target === settingsModal)    settingsModal.style.display   = "none";
+  
   if (event.target === leaderboardModal) leaderboardModal.style.display = "none";
 });
