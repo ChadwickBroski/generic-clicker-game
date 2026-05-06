@@ -5,6 +5,7 @@ It is a generic clicker game. You click, and counter go up.
 
 If you have find any bugs or have ideas, open an issue in this github repo.
 - Make sure you type out the bug or idea in detail.
+- Keep your game name in the issue. You might get a tag for your help.
 
 ## How to play
 Play this game on [chadwickbroski.github.io/generic-clicker-game](https://chadwickbroski.github.io/generic-clicker-game).
