@@ -109,8 +109,8 @@ h3 {
   font-family: "Nunito", sans-serif;
   color: black;
   box-shadow: 5px 5px 0 0 black;
-  max-height: calc(100vh - 100px);
-  overflow-y: auto;
+  max-height: 85vh; /* Limit to 85% of the viewport height */
+  overflow-y: auto; /* Enable scrolling inside modal when content overflows */
 }
 
 /* ── Close button ── */
