@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc, getCountFromServer, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -11,9 +11,52 @@ const firebaseConfig = {
   appId: "1:43436296491:web:8c32c9578410806ef51d6e"
 };
 
-const app = initializeApp(firebaseConfig);
-const db  = getFirestore(app);
+const app  = initializeApp(firebaseConfig);
+const db   = getFirestore(app);
 const auth = getAuth(app);
+
+// ── Tag definitions ──
+// 🔴 MANUAL tags — set these in the Firestore console by adding a "tag" field
+//    to the player's document. These are never overwritten by the game.
+// 🟢 AUTOMATIC tags — assigned by the game automatically (see logic below)
+const TAGS = {
+  // 🟢 AUTOMATIC — assigned on first save if player count is under 100
+  1: { label: "First 100",  color: "white", bg: "purple" },
+  // 🔴 MANUAL — set this in Firestore console
+  2: { label: "Owner",      color: "white", bg: "black" },
+  // 🔴 MANUAL — set this in Firestore console (needs Cloud Function to automate later)
+  3: { label: "Former #1",  color: "white", bg: "#8B0000" },
+  // 🟢 AUTOMATIC — shown for whoever is rank 1 when the leaderboard is opened
+  4: { label: "Top Player", color: "white", bg: "royalblue" },
+  // 🔴 MANUAL — set this in Firestore console (needs Cloud Function to automate later)
+  5: { label: "Legend",     color: "white", bg: "gold" },
+  // 🔴 MANUAL — set this in Firestore console
+  6: { label: "Bug Finder", color: "white", bg: "green" },
+  // 🔴 MANUAL — set this in Firestore console
+  7: { label: "Ideator",    color: "white", bg: "beige" },
+};
+
+// Tags that are set manually and must never be overwritten by automatic logic
+const MANUAL_TAGS = new Set([2, 3, 5, 6, 7]);
+
+// Returns an HTML string for a single tag badge, or "" if no tag
+function renderTag(tagNumber) {
+  const tag = TAGS[tagNumber];
+  if (!tag) return "";
+  return `<span style="
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    font-family:'Nunito',sans-serif;
+    padding:2px 8px;
+    border-radius:20px;
+    margin-left:8px;
+    color:${tag.color};
+    background:${tag.bg};
+    border:1.5px solid ${tag.color};
+    vertical-align:middle;
+  ">${tag.label}</span>`;
+}
 
 // Sign in anonymously — gives every player a unique uid automatically
 await signInAnonymously(auth);
@@ -23,6 +66,7 @@ const uid = auth.currentUser.uid;
 const informer = document.querySelector(".informer");
 let number     = 0;
 let playerName = "Anonymous";
+let isNewPlayer = false;
 
 // Show Loading... until we get the value from Firestore
 document.getElementById("counter").innerHTML = "Loading...";
@@ -33,21 +77,33 @@ if (playerDoc.exists()) {
   const data = playerDoc.data();
   number     = data.score ?? 0;
   playerName = data.name  ?? "Anonymous";
+} else {
+  // Player has never saved before — flag them as new for First 100 check
+  isNewPlayer = true;
 }
 
 document.getElementById("counter").innerHTML = number;
 document.getElementById("playerNameInput").value = playerName;
 
-// ── Save to both localStorage (for offline) and Firestore (for leaderboard) ──
+// ── Save to localStorage (offline) and Firestore (leaderboard) ──
+// merge:true ensures manual tags set in the Firestore console are never overwritten
 async function save() {
   localStorage.setItem("value", number);
 
-  // Write this player's score to Firestore under their uid.
-  // setDoc overwrites, so each player only ever has one entry.
-  await setDoc(doc(db, "leaderboard", uid), {
-    name:  playerName,
-    score: number
-  });
+  const dataToSave = { name: playerName, score: number };
+
+  // 🟢 AUTOMATIC: First 100 tag
+  // On first ever save, count how many players already exist.
+  // If under 100, this player earns the First 100 tag automatically.
+  if (isNewPlayer) {
+    const snapshot = await getCountFromServer(collection(db, "leaderboard"));
+    if (snapshot.data().count < 100) {
+      dataToSave.tag = 1; // Assign First 100 tag
+    }
+    isNewPlayer = false; // Only run this check once
+  }
+
+  await setDoc(doc(db, "leaderboard", uid), dataToSave, { merge: true });
 
   // "Progress saved!" animation
   informer.classList.remove("fade-in-trigger", "fade-out-trigger");
@@ -84,7 +140,6 @@ setInterval(() => {
 
 // ── Global leaderboard — reads top 3 from Firestore ──
 async function showLeaderboard() {
-  // Show loading state while fetching
   document.getElementById("name1").innerHTML  = "Loading...";
   document.getElementById("name2").innerHTML  = "Loading...";
   document.getElementById("name3").innerHTML  = "Loading...";
@@ -104,8 +159,17 @@ async function showLeaderboard() {
   const nameSlots  = ["name1",  "name2",  "name3"];
 
   snapshot.docs.forEach((docSnap, i) => {
-    const { name, score } = docSnap.data();
-    document.getElementById(nameSlots[i]).innerHTML  = name;
+    const { name, score, tag } = docSnap.data();
+
+    // 🟢 AUTOMATIC: Top Player tag
+    // Rank 1 always shows Top Player tag unless they have a manual tag.
+    // Tags are non-stacked — only one tag is ever shown per player.
+    let displayTag = tag;
+    if (i === 0 && !MANUAL_TAGS.has(tag)) {
+      displayTag = 4; // Top Player
+    }
+
+    document.getElementById(nameSlots[i]).innerHTML  = name + renderTag(displayTag);
     document.getElementById(scoreSlots[i]).innerHTML = score.toLocaleString();
   });
 
@@ -122,7 +186,7 @@ document.getElementById("saveNameBtn").addEventListener("click", () => {
   if (input) {
     playerName = input;
     localStorage.setItem("playerName", playerName);
-    save(); // update Firestore with the new name right away
+    save();
   }
 });
 
