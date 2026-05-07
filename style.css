@@ -88,8 +88,7 @@ h3 {
   display: none;
   position: fixed;
   z-index: 100;
-  padding-top: 50px;
-  padding-bottom: 100px;
+  padding-top: 100px;
   left: 0;
   top: 0;
   width: 100%;
@@ -102,7 +101,6 @@ h3 {
 .modal-content {
   background-color: white;
   margin: auto;
-  margin-bottom: 100px;
   padding: 28px 20px;
   border: 3px solid black;
   border-radius: 8px;
@@ -169,7 +167,6 @@ h3 {
 /* ── Leaderboard ── */
 .leaderboard-list {
   margin-top: 12px;
-  margin-bottom: 12px;
 }
 
 .leaderboard-row {
@@ -192,19 +189,45 @@ h3 {
   color: #333;
 }
 
-::-webkit-scrollbar {
-  width: 10px;
+/* ── Tag badge ── */
+/* Colors are set per-tag in the TAGS object in script.js via --tag-color and --tag-bg */
+/* Everything else about how the tag looks is controlled here */
+.tag {
+  display: inline-block;
+  font-size: 11px;           /* ← change text size here */
+  font-weight: 700;
+  font-family: "Nunito", sans-serif;
+  padding: 2px 8px;          /* ← change badge padding here */
+  border-radius: 20px;       /* ← change roundness here */
+  margin-left: 8px;          /* ← change gap between name and badge here */
+  color: var(--tag-color);
+  background: var(--tag-bg);
+  border: 1.5px solid var(--tag-color);
+  vertical-align: middle;
+  position: relative;        /* needed for tooltip positioning */
+  cursor: default;
 }
 
-::-webkit-scrollbar-track {
-  border-radius: 10px;
+/* ── Tag tooltip ── */
+/* Shows above the badge on hover. Text comes from data-tooltip in script.js */
+.tag::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 130%;              /* ← change how far above the badge the tooltip appears */
+  left: 50%;
+  transform: translateX(-50%);
+  background: black;         /* ← change tooltip background color here */
+  color: white;              /* ← change tooltip text color here */
+  font-size: 11px;           /* ← change tooltip text size here */
+  font-family: "Nunito", sans-serif;
+  padding: 4px 8px;          /* ← change tooltip padding here */
+  border-radius: 6px;        /* ← change tooltip roundness here */
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
 }
 
-::-webkit-scrollbar-thumb {
-  background: black;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: dimgray;
+.tag:hover::before {
+  opacity: 1;
 }

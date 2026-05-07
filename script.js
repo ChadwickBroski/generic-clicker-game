@@ -8,7 +8,8 @@ const firebaseConfig = {
   projectId: "generic-clicker-game",
   storageBucket: "generic-clicker-game.firebasestorage.app",
   messagingSenderId: "43436296491",
-  appId: "1:43436296491:web:8c32c9578410806ef51d6e"
+  appId: "1:43436296491:web:8c32c9578410806ef51d6e",
+  measurementId: "G-S6553DC8PN"
 };
 
 const app  = initializeApp(firebaseConfig);
@@ -21,42 +22,33 @@ const auth = getAuth(app);
 // 🟢 AUTOMATIC tags — assigned by the game automatically (see logic below)
 const TAGS = {
   // 🟢 AUTOMATIC — assigned on first save if player count is under 100
-  1: { label: "First 100",  color: "white", bg: "purple" },
+  1: { label: "First 100",  color: "white", bg: "purple",    tooltip: "One of the first 100 players that have played this game" },
   // 🔴 MANUAL — set this yourself in Firestore console
-  2: { label: "Owner",      color: "white", bg: "black" },
+  2: { label: "Owner",      color: "white", bg: "black",     tooltip: "The owner of this game" },
   // 🔴 MANUAL — set this yourself in Firestore console (needs Cloud Function to automate later)
-  3: { label: "Former #1",  color: "white", bg: "#8B0000" },
+  3: { label: "Former #1",  color: "white", bg: "#8B0000", tooltip: "Was #1 for over a week" },
   // 🟢 AUTOMATIC — shown for whoever is rank 1 when the leaderboard is opened
-  4: { label: "Top Player", color: "white", bg: "royalblue" },
+  4: { label: "Top Player", color: "white", bg: "royalblue", tooltip: "Currently #1 on the leaderboard" },
   // 🔴 MANUAL — set this yourself in Firestore console (needs Cloud Function to automate later)
-  5: { label: "Legend",     color: "white", bg: "gold" },
+  5: { label: "Legend",     color: "white", bg: "gold",      tooltip: "Was #1 for over a year" },
   // 🔴 MANUAL — set this yourself in Firestore console
-  6: { label: "Bug Finder", color: "white", bg: "green" },
+  6: { label: "Bug Finder", color: "white", bg: "green",     tooltip: "Reported a bug to the owner that has been fixed" },
   // 🔴 MANUAL — set this yourself in Firestore console
-  7: { label: "Ideator",    color: "white", bg: "beige" },
+  7: { label: "Ideator",    color: "white", bg: "beige",     tooltip: "Contributed by giving an idea to the owner that is currently in the game" },
 };
 
 // Tags that are set manually and must never be overwritten by automatic logic
 const MANUAL_TAGS = new Set([2, 3, 5, 6, 7]);
 
 // Returns an HTML string for a single tag badge, or "" if no tag
+// Shape/size/font are controlled by the .tag class in style.css
+// Colors come from the TAGS object above and are passed as CSS variables
+// Tooltip text comes from the tooltip field in the TAGS object above
 function renderTag(tagNumber) {
   if (tagNumber === null || tagNumber === undefined) return "";
   const tag = TAGS[tagNumber];
   if (!tag) return "";
-  return `<span style="
-    display:inline-block;
-    font-size:11px;
-    font-weight:700;
-    font-family:'Nunito',sans-serif;
-    padding:4px 8px;
-    border-radius:20px;
-    margin-left:8px;
-    color:${tag.color};
-    background:${tag.bg};
-    border:1.5px solid ${tag.color};
-    vertical-align:middle;
-  ">${tag.label}</span>`;
+  return `<span class="tag" style="--tag-color:${tag.color}; --tag-bg:${tag.bg};" data-tooltip="${tag.tooltip}">${tag.label}</span>`;
 }
 
 // Sign in anonymously — gives every player a unique uid automatically
@@ -139,40 +131,25 @@ setInterval(() => {
   }
 }, 10000);
 
-// ── Global leaderboard — reads top 10 from Firestore ──
+// ── Global leaderboard — reads top 3 from Firestore ──
 async function showLeaderboard() {
   document.getElementById("name1").innerHTML  = "Loading...";
   document.getElementById("name2").innerHTML  = "Loading...";
   document.getElementById("name3").innerHTML  = "Loading...";
-  document.getElementById("name4").innerHTML  = "Loading...";
-  document.getElementById("name5").innerHTML  = "Loading...";
-  document.getElementById("name6").innerHTML  = "Loading...";
-  document.getElementById("name7").innerHTML  = "Loading...";
-  document.getElementById("name8").innerHTML  = "Loading...";
-  document.getElementById("name9").innerHTML  = "Loading...";
-  document.getElementById("name10").innerHTML = "Loading...";
   document.getElementById("score1").innerHTML = "...";
   document.getElementById("score2").innerHTML = "...";
   document.getElementById("score3").innerHTML = "...";
-  document.getElementById("score4").innerHTML = "...";
-  document.getElementById("score5").innerHTML = "...";
-  document.getElementById("score6").innerHTML = "...";
-  document.getElementById("score7").innerHTML = "...";
-  document.getElementById("score8").innerHTML = "...";
-  document.getElementById("score9").innerHTML = "...";
-  document.getElementById("score10").innerHTML = "...";
   leaderboardModal.style.display = "block";
 
   const q = query(
     collection(db, "leaderboard"),
     orderBy("score", "desc"),
-    limit(10)
+    limit(3)
   );
 
   const snapshot = await getDocs(q);
-  const scoreSlots = ["score1", "score2", "score3", "score4", "score5", "score6", "score7", "score8", "score9", "score10"];
-  const nameSlots  = ["name1",  "name2",  "name3",  "name4",  "name5",  "name6",  "name7",  "name8",  "name9",  "name10"];
-  const medals = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"];
+  const scoreSlots = ["score1", "score2", "score3"];
+  const nameSlots  = ["name1",  "name2",  "name3"];
 
   snapshot.docs.forEach((docSnap, i) => {
     const data = docSnap.data();
@@ -196,8 +173,8 @@ async function showLeaderboard() {
     document.getElementById(scoreSlots[i]).innerHTML = score.toLocaleString();
   });
 
-  // Fill any empty slots if fewer than 10 players exist yet
-  for (let i = snapshot.docs.length; i < 10; i++) {
+  // Fill any empty slots if fewer than 3 players exist yet
+  for (let i = snapshot.docs.length; i < 3; i++) {
     document.getElementById(nameSlots[i]).innerHTML  = "—";
     document.getElementById(scoreSlots[i]).innerHTML = "—";
   }
