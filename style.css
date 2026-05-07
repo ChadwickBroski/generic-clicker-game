@@ -88,7 +88,7 @@ h3 {
   display: none;
   position: fixed;
   z-index: 100;
-  padding-top: 100px;
+  padding: auto;
   left: 0;
   top: 0;
   width: 100%;
