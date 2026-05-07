@@ -89,6 +89,7 @@ h3 {
   position: fixed;
   z-index: 100;
   padding: auto;
+  margin-top: 50px;
   left: 0;
   top: 0;
   width: 100%;
