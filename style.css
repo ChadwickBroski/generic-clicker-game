@@ -89,7 +89,6 @@ h3 {
   position: fixed;
   z-index: 100;
   padding: auto;
-  margin-top: 50px;
   left: 0;
   top: 0;
   width: 100%;
@@ -102,6 +101,7 @@ h3 {
 .modal-content {
   background-color: white;
   margin: auto;
+  margin-top: 50px;
   padding: 28px 20px;
   border: 3px solid black;
   border-radius: 8px;
