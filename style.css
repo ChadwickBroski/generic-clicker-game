@@ -236,7 +236,7 @@ h3 {
 }
 
 /* width */
-::webkit-scrollbar {
+::-webkit-scrollbar {
   width: 10px;
   border-radius: 10px;
 }
@@ -248,7 +248,7 @@ h3 {
  
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: dimgray; 
+  background: #999999; 
   border-radius: 10px;
 }
 
