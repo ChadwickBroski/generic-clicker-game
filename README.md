@@ -15,5 +15,9 @@ OR
 Go to [chadwickbroski.github.io](https://chadwickbroski.github.io) and click on the Generic Clicker Game that is displayed on the page.
 
 ## Upcoming updates (probably)
-### Tags
-Example: First 100 players, Owner, Bug Finder, Ideator, etc.
+### Music
+- Background music.
+
+### Customization
+- Allow customization like color of the names that is being displayed.
+- Be able to change the style of the button, background, music, themes, etc.
