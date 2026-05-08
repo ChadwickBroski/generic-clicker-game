@@ -248,11 +248,11 @@ h3 {
  
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: black; 
+  background: dimgray; 
   border-radius: 10px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: dimgray; 
+  background: #505050; 
 }
