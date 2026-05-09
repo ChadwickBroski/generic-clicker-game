@@ -196,6 +196,11 @@ async function showLeaderboard() {
   }
 }
 
+async function showCustomization() {
+  updateUnlockedStyles();
+  customizationModal.style.display = "block";
+}
+
 // ── Player name — saved to localStorage and Firestore ──
 document.getElementById("saveNameBtn").addEventListener("click", () => {
   const input = document.getElementById("playerNameInput").value.trim();
