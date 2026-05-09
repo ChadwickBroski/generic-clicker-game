@@ -42,6 +42,18 @@ const TAGS = {
 // Tags that are set manually and must never be overwritten by automatic logic
 const MANUAL_TAGS = new Set([2, 3, 5, 6, 7]);
 
+// ── Name style definitions ──
+// Stored in Firestore as a number in the "nameStyle" field
+// 1 = Default, 2 = Blue, 3 = Gold, 4 = Purple, 5 = Crimson Fade, 6 = Rainbow
+const NAME_STYLES = {
+  1: { id: "blackStyleBtn"   },
+  2: { id: "blueStyleBtn"    },
+  3: { id: "goldStyleBtn"    },
+  4: { id: "purpleStyleBtn"  },
+  5: { id: "redPinkStyleBtn" },
+  6: { id: "rainbowStyleBtn" },
+};
+
 // Returns an HTML string for a single tag badge, or "" if no tag
 // Shape/size/font are controlled by the .tag class in style.css
 // Colors come from the TAGS object above and are passed as CSS variables
@@ -62,6 +74,7 @@ const informer = document.querySelector(".informer");
 let number     = 0;
 let playerName = "Anonymous";
 let isNewPlayer = false;
+let nameStyle   = 1; // Default
 
 // Show Loading... until we get the value from Firestore
 document.getElementById("counter").innerHTML = "Loading...";
@@ -70,8 +83,9 @@ document.getElementById("counter").innerHTML = "Loading...";
 const playerDoc = await getDoc(doc(db, "leaderboard", uid));
 if (playerDoc.exists()) {
   const data = playerDoc.data();
-  number     = data.score ?? 0;
-  playerName = data.name  ?? "Anonymous";
+  number     = data.score     ?? 0;
+  playerName = data.name      ?? "Anonymous";
+  nameStyle  = data.nameStyle ?? 1;
 } else {
   // Player has never saved before — flag them as new for First 100 check
   isNewPlayer = true;
@@ -79,6 +93,26 @@ if (playerDoc.exists()) {
 
 document.getElementById("counter").innerHTML = number;
 document.getElementById("playerNameInput").value = playerName;
+
+// Highlight the card that matches the player's saved style
+applySelectedCard(nameStyle);
+
+// ── Name style helpers ──
+
+// Highlights the correct style card in the customization modal
+function applySelectedCard(styleNum) {
+  Object.values(NAME_STYLES).forEach(s => {
+    document.getElementById(s.id)?.classList.remove("selected");
+  });
+  document.getElementById(NAME_STYLES[styleNum]?.id)?.classList.add("selected");
+}
+
+// Saves the chosen nameStyle number to Firestore
+async function saveNameStyle(styleNum) {
+  nameStyle = styleNum;
+  applySelectedCard(styleNum);
+  await setDoc(doc(db, "leaderboard", uid), { nameStyle: styleNum }, { merge: true });
+}
 
 // ── Save to localStorage (offline) and Firestore (leaderboard) ──
 // merge:true ensures manual tags set in the Firestore console are never overwritten
@@ -295,7 +329,7 @@ onClick("blackStyleBtn", () => {
   purpleStyleCard.classList.remove("selected");
   redPinkStyleCard.classList.remove("selected");
   rainbowStyleCard.classList.remove("selected");
-  if (typeof blackStyle === "function") blackStyle();
+  saveNameStyle(1);
 });
 
 const blueStyleCard = document.getElementById("blueStyleBtn");
@@ -309,7 +343,7 @@ onClick("blueStyleBtn", () => {
     purpleStyleCard.classList.remove("selected");
     redPinkStyleCard.classList.remove("selected");
     rainbowStyleCard.classList.remove("selected");
-    if (typeof blueStyle === "function") blueStyle();
+    saveNameStyle(2);
   }
 });
 
@@ -324,7 +358,7 @@ onClick("goldStyleBtn", () => {
     purpleStyleCard.classList.remove("selected");
     redPinkStyleCard.classList.remove("selected");
     rainbowStyleCard.classList.remove("selected");
-    if (typeof goldStyle === "function") goldStyle();
+    saveNameStyle(3);
   }
 });
 
@@ -339,7 +373,7 @@ onClick("purpleStyleBtn", () => {
     purpleStyleCard.classList.add("selected");
     redPinkStyleCard.classList.remove("selected");
     rainbowStyleCard.classList.remove("selected");
-    if (typeof purpleStyle === "function") purpleStyle();
+    saveNameStyle(4);
   }
 });
 
@@ -354,7 +388,7 @@ onClick("redPinkStyleBtn", () => {
     purpleStyleCard.classList.remove("selected");
     redPinkStyleCard.classList.add("selected");
     rainbowStyleCard.classList.remove("selected");
-    if (typeof redPinkStyle === "function") redPinkStyle();
+    saveNameStyle(5);
   }
 });
 
@@ -369,7 +403,7 @@ onClick("rainbowStyleBtn", () => {
     purpleStyleCard.classList.remove("selected");
     redPinkStyleCard.classList.remove("selected");
     rainbowStyleCard.classList.add("selected");
-    if (typeof rainbowStyle === "function") rainbowStyle();
+    saveNameStyle(6);
   }
 });
 
