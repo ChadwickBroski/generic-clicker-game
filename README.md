@@ -21,3 +21,6 @@ Go to [chadwickbroski.github.io](https://chadwickbroski.github.io) and click on 
 ### Customization
 - Allow customization like color of the names that is being displayed.
 - Be able to change the style of the button, background, music, themes, etc.
+### Auto Clicker
+- Buy upgrades for auto clickers and get clicks faster.
+- Auto clicks for you as long as you are logged in.
