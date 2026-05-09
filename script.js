@@ -273,11 +273,6 @@ if (typeof save === "function") onClick("saveBtn", save);
 if (typeof reset === "function") onClick("resetBtn", reset);
 if (typeof showLeaderboard === "function") onClick("leaderboardBtn", showLeaderboard);
 
-// Settings modal
-const settingsModal = document.getElementById("settingsModal");
-onClick("settingsBtn", () => settingsModal.style.display = "block");
-onClick("settingsClose", () => settingsModal.style.display = "none");
-
 // Customization modal
 const customizationModal = document.getElementById("customizationModal");
 onClick("customizationBtn", () => {
