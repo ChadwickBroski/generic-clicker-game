@@ -16,7 +16,7 @@ Go to [chadwickbroski.github.io](https://chadwickbroski.github.io) and click on 
 
 ## Upcoming updates (probably)
 ### Music
-- Background music.
+- Chill background music.
 
 ### Customization
 - Allow customization like color of the names that is being displayed.
