@@ -206,12 +206,180 @@ document.getElementById("saveNameBtn").addEventListener("click", () => {
   }
 });
 
+const onClick = (id, handler) => {
+  const element = document.getElementById(id);
+  if (element) element.addEventListener("click", handler);
+};
+
+const getScore = () => {
+  const counter = document.getElementById("counter");
+  return Number(counter?.textContent.replace(/,/g, "")) || 0;
+};
+
+const updateUnlockedStyles = () => {
+  const score = getScore();
+
+  const blackStyleCard = document.getElementById("blackStyleBtn");
+  const blueStyleCard = document.getElementById("blueStyleBtn");
+  const goldStyleCard = document.getElementById("goldStyleBtn");
+  const purpleStyleCard = document.getElementById("purpleStyleBtn");
+  const redPinkStyleCard = document.getElementById("redPinkStyleBtn");
+  const rainbowStyleCard = document.getElementById("rainbowStyleBtn");
+
+  blackStyleCard.classList.add("locked");
+  blueStyleCard.classList.add("locked");
+  goldStyleCard.classList.add("locked");
+  purpleStyleCard.classList.add("locked");
+  redPinkStyleCard.classList.add("locked");
+  rainbowStyleCard.classList.add("locked");
+
+  document.getElementById("blackSublabel").textContent = "Always unlocked";
+  document.getElementById("blueSublabel").textContent = "🔒 Unlock at 1,000";
+  document.getElementById("goldSublabel").textContent = "🔒 Unlock at 10,000";
+  document.getElementById("purpleSublabel").textContent = "🔒 Unlock at 100,000";
+  document.getElementById("redPinkSublabel").textContent = "🔒 Unlock at 1,000,000";
+  document.getElementById("rainbowSublabel").textContent = "🔒 Unlock at 10,000,000";
+
+  if (score >= 0) {
+    blackStyleCard.classList.remove("locked");
+  }
+  if (score >= 1000) {
+    blueStyleCard.classList.remove("locked");
+    document.getElementById("blueSublabel").textContent = "Unlocked at 1,000";
+  }
+  if (score >= 10000) {
+    goldStyleCard.classList.remove("locked");
+    document.getElementById("goldSublabel").textContent = "Unlocked at 10,000";
+  }
+  if (score >= 100000) {
+    purpleStyleCard.classList.remove("locked");
+    document.getElementById("purpleSublabel").textContent = "Unlocked at 100,000";
+  }
+  if (score >= 1000000) {
+    redPinkStyleCard.classList.remove("locked");
+    document.getElementById("redPinkSublabel").textContent = "Unlocked at 1,000,000";
+  }
+  if (score >= 10000000) {
+    rainbowStyleCard.classList.remove("locked");
+    document.getElementById("rainbowSublabel").textContent = "Unlocked at 10,000,000";
+  }
+};
+
+window.onload = updateUnlockedStyles;
+
+// Wire up buttons that exist on the current page.
+if (typeof add === "function") onClick("clickBtn", add);
+if (typeof save === "function") onClick("saveBtn", save);
+if (typeof reset === "function") onClick("resetBtn", reset);
+if (typeof showLeaderboard === "function") onClick("leaderboardBtn", showLeaderboard);
+
+// Settings modal
+const settingsModal = document.getElementById("settingsModal");
+onClick("settingsBtn", () => settingsModal.style.display = "block");
+onClick("settingsClose", () => settingsModal.style.display = "none");
+
+// Customization modal
+const customizationModal = document.getElementById("customizationModal");
+onClick("customizationBtn", () => {
+  updateUnlockedStyles();
+  customizationModal.style.display = "block";
+});
+onClick("customizationClose", () => customizationModal.style.display = "none");
+
+// Customization [NAME STYLES]
+const blackStyleCard = document.getElementById("blackStyleBtn");
+onClick("blackStyleBtn", () => {
+  blackStyleCard.classList.add("selected");
+  blueStyleCard.classList.remove("selected");
+  goldStyleCard.classList.remove("selected");
+  purpleStyleCard.classList.remove("selected");
+  redPinkStyleCard.classList.remove("selected");
+  rainbowStyleCard.classList.remove("selected");
+  if (typeof blackStyle === "function") blackStyle();
+});
+
+const blueStyleCard = document.getElementById("blueStyleBtn");
+onClick("blueStyleBtn", () => {
+  if (blueStyleCard.classList.contains("locked")) {
+    return alert("This style is locked! Reach 1,000 points to unlock it.");
+  } else {
+    blackStyleCard.classList.remove("selected");
+    blueStyleCard.classList.add("selected");
+    goldStyleCard.classList.remove("selected");
+    purpleStyleCard.classList.remove("selected");
+    redPinkStyleCard.classList.remove("selected");
+    rainbowStyleCard.classList.remove("selected");
+    if (typeof blueStyle === "function") blueStyle();
+  }
+});
+
+const goldStyleCard = document.getElementById("goldStyleBtn");
+onClick("goldStyleBtn", () => {
+  if (goldStyleCard.classList.contains("locked")) {
+    return alert("This style is locked! Reach 10,000 points to unlock it.");
+  } else {
+    blackStyleCard.classList.remove("selected");
+    blueStyleCard.classList.remove("selected");
+    goldStyleCard.classList.add("selected");
+    purpleStyleCard.classList.remove("selected");
+    redPinkStyleCard.classList.remove("selected");
+    rainbowStyleCard.classList.remove("selected");
+    if (typeof goldStyle === "function") goldStyle();
+  }
+});
+
+const purpleStyleCard = document.getElementById("purpleStyleBtn");
+onClick("purpleStyleBtn", () => {
+  if (purpleStyleCard.classList.contains("locked")) {
+    return alert("This style is locked! Reach 100,000 points to unlock it.");
+  } else {
+    blackStyleCard.classList.remove("selected");
+    blueStyleCard.classList.remove("selected");
+    goldStyleCard.classList.remove("selected");
+    purpleStyleCard.classList.add("selected");
+    redPinkStyleCard.classList.remove("selected");
+    rainbowStyleCard.classList.remove("selected");
+    if (typeof purpleStyle === "function") purpleStyle();
+  }
+});
+
+const redPinkStyleCard = document.getElementById("redPinkStyleBtn");
+onClick("redPinkStyleBtn", () => {
+  if (redPinkStyleCard.classList.contains("locked")) {
+    return alert("This style is locked! Reach 1,000,000 points to unlock it.");
+  } else {
+    blackStyleCard.classList.remove("selected");
+    blueStyleCard.classList.remove("selected");
+    goldStyleCard.classList.remove("selected");
+    purpleStyleCard.classList.remove("selected");
+    redPinkStyleCard.classList.add("selected");
+    rainbowStyleCard.classList.remove("selected");
+    if (typeof redPinkStyle === "function") redPinkStyle();
+  }
+});
+
+const rainbowStyleCard = document.getElementById("rainbowStyleBtn");
+onClick("rainbowStyleBtn", () => {
+  if (rainbowStyleCard.classList.contains("locked")) {
+    return alert("This style is locked! Reach 10,000,000 points to unlock it.");
+  } else {
+    blackStyleCard.classList.remove("selected");
+    blueStyleCard.classList.remove("selected");
+    goldStyleCard.classList.remove("selected");
+    purpleStyleCard.classList.remove("selected");
+    redPinkStyleCard.classList.remove("selected");
+    rainbowStyleCard.classList.add("selected");
+    if (typeof rainbowStyle === "function") rainbowStyle();
+  }
+});
+
+
 // ── Wire up all buttons ──
 document.getElementById("clickBtn").addEventListener("click", add);
 document.getElementById("saveBtn").addEventListener("click", save);
 document.getElementById("resetBtn").addEventListener("click", reset);
 document.getElementById("leaderboardBtn").addEventListener("click", showLeaderboard);
-// document.getElementById("customizationBtn").addEventListener('click', showCustomization) ← REMOVE THIS
+document.getElementById("customizationBtn").addEventListener('click', showCustomization)
 
 // Settings modal
 const settingsModal = document.getElementById("settingsModal");
@@ -223,9 +391,9 @@ const leaderboardModal = document.getElementById("leaderboardModal");
 document.getElementById("leaderboardClose").addEventListener("click", () => leaderboardModal.style.display = "none");
 
 // Customization modal
-// const customizationModal = document.getElementById("customizationModal");
-// document.getElementById("customizationBtn").addEventListener("click", () => customizationModal.style.display = "block");
-// document.getElementById("customizationClose").addEventListener("click", () => customizationModal.style.display = "none");
+const customizationModal = document.getElementById("customizationModal");
+document.getElementById("customizationBtn").addEventListener("click", () => customizationModal.style.display = "block");
+document.getElementById("customizationClose").addEventListener("click", () => customizationModal.style.display = "none");
 
 window.addEventListener("click", (event) => {
   if (event.target === settingsModal)    settingsModal.style.display   = "none";

@@ -16,8 +16,76 @@
     <!-- Leaderboard Button -->
     <button type="button" class="button" id="leaderboardBtn" style="top:20%; left:10%; right:auto; padding: 7px 11px;--button-color:orange;--button-bg:lightyellow;">Leaderboard</button>
 
-    <!-- Customization Button (UPCOMING)-->
-    <!-- <button type="button" class="button" id="customizationBtn" style="top:20%; left: 90%; right:auto; padding: 7px 11px; --button-color:rgb(160, 3, 160);--button-bg:rgb(255, 239, 254);">Customization</button> -->
+    <!-- Customization Button -->
+    <button type="button" class="button" id="customizationBtn" style="top:20%; left: 90%; right:auto; padding: 7px 11px; --button-color:rgb(160, 3, 160);--button-bg:rgb(255, 239, 254);">Customization</button>
+
+    <div id="customizationModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="customizationClose">&times;</span>
+        <h2>Customization</h2>
+        <hr class="modal-divider">
+        <h3>NAME STYLE</h3>
+        <p class="reset-desc" style="margin-top:8px;">Choose how your name appears on the leaderboard. Some styles unlock at score milestones.</p>
+
+        <div class="style-grid">
+
+          <!-- Default -->
+          <div class="style-card selected" data-style="default" id="blackStyleBtn">
+            <div class="style-preview">
+              <span style="color:black;">YourName</span>
+            </div>
+            <div class="style-label">Default</div>
+            <div class="style-sublabel" id="blackSublabel">Always unlocked</div>
+          </div>
+
+          <!-- Blue -->
+          <div class="style-card" data-style="blue" id="blueStyleBtn">
+            <div class="style-preview">
+              <span style="color:#1a6fcf;">YourName</span>
+            </div>
+            <div class="style-label">Blue</div>
+            <div class="style-sublabel" id="blueSublabel">🔒 Unlock at 1,000</div>
+          </div>
+
+          <!-- Gold -->
+          <div class="style-card" data-style="gold" id="goldStyleBtn">
+            <div class="style-preview">
+              <span style="color:#B8860B;">YourName</span>
+            </div>
+            <div class="style-label">Gold</div>
+            <div class="style-sublabel" id="goldSublabel">🔒 Unlock at 10,000</div>
+          </div>
+
+          <!-- Purple -->
+          <div class="style-card" data-style="purple" id="purpleStyleBtn">
+            <div class="style-preview">
+              <span style="color:#7B2FBE;">YourName</span>
+            </div>
+            <div class="style-label">Purple</div>
+            <div class="style-sublabel" id="purpleSublabel">🔒 Unlock at 100,000</div>
+          </div>
+
+          <!-- Red-Pink Gradient -->
+          <div class="style-card locked" data-style="gradient-redpink" id="redPinkStyleBtn">
+            <div class="style-preview">
+              <span style="background:linear-gradient(90deg,#e8000d,#ff69b4); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">YourName</span>
+            </div>
+            <div class="style-label">Crimson Fade</div>
+            <div class="style-sublabel" id="redPinkSublabel">🔒 Unlock at 1,000,000</div>
+          </div>
+
+          <!-- Rainbow -->
+          <div class="style-card locked" data-style="gradient-rainbow" id="rainbowStyleBtn">
+            <div class="style-preview">
+              <span style="background:linear-gradient(90deg,#e8000d,#ff8c00,#FFD700,#1a6fcf,#7B2FBE); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">YourName</span>
+            </div>
+            <div class="style-label">Rainbow</div>
+            <div class="style-sublabel" id="rainbowSublabel">🔒 Unlock at 10,000,000</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
 
     <!-- Settings Modal -->
     <div id="settingsModal" class="modal">

@@ -256,3 +256,76 @@ h3 {
 ::-webkit-scrollbar-thumb:hover {
   background: #505050; 
 }
+
+/* ── Customization style grid ── */
+.style-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.style-card {
+  border: 2px solid black;
+  border-radius: 8px;
+  box-shadow: 3px 3px 0 0 black;
+  padding: 12px 8px 10px;
+  cursor: pointer;
+  transition: box-shadow 100ms ease, transform 100ms ease;
+  text-align: center;
+  background: white;
+  position: relative;
+}
+
+.style-card:hover {
+  box-shadow: 1px 1px 0 0 black;
+  transform: translate(2px, 2px);
+}
+
+.style-card.selected {
+  border-color: rgb(160, 3, 160);
+  box-shadow: 3px 3px 0 0 rgb(160, 3, 160);
+  background: rgb(255, 239, 254);
+}
+
+.style-card.selected:hover {
+  box-shadow: 1px 1px 0 0 rgb(160, 3, 160);
+}
+
+/* Locked cards are dimmed and not clickable */
+.style-card.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.style-card.locked:hover {
+  box-shadow: 3px 3px 0 0 black;
+  transform: none;
+}
+
+/* Preview area showing the name in that style */
+.style-preview {
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 10px 4px;
+  border-bottom: 1.5px solid #eee;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.style-label {
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: black;
+}
+
+.style-sublabel {
+  font-family: "Nunito", sans-serif;
+  font-size: 11px;
+  color: #888;
+  margin-top: 2px;
+}
