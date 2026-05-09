@@ -385,11 +385,6 @@ document.getElementById("settingsClose").addEventListener("click", () => setting
 const leaderboardModal = document.getElementById("leaderboardModal");
 document.getElementById("leaderboardClose").addEventListener("click", () => leaderboardModal.style.display = "none");
 
-// Customization modal
-const customizationModal = document.getElementById("customizationModal");
-document.getElementById("customizationBtn").addEventListener("click", () => customizationModal.style.display = "block");
-document.getElementById("customizationClose").addEventListener("click", () => customizationModal.style.display = "none");
-
 window.addEventListener("click", (event) => {
   if (event.target === settingsModal)    settingsModal.style.display   = "none";
   if (event.target === leaderboardModal) leaderboardModal.style.display = "none";
