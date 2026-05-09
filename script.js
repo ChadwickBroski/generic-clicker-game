@@ -43,26 +43,71 @@ const TAGS = {
 const MANUAL_TAGS = new Set([2, 3, 5, 6, 7]);
 
 // ── Name style definitions ──
-// Stored in Firestore as a number in the "nameStyle" field
+// Stored in Firestore as an integer in the "nameStyles" field
 // 1 = Default, 2 = Blue, 3 = Gold, 4 = Purple, 5 = Crimson Fade, 6 = Rainbow
+const NAME_STYLE_FIELD = "nameStyles";
+const LEGACY_NAME_STYLE_FIELD = "nameStyle";
+const DEFAULT_NAME_STYLE = 1;
 const NAME_STYLES = {
-  1: { id: "blackStyleBtn"   },
-  2: { id: "blueStyleBtn"    },
-  3: { id: "goldStyleBtn"    },
-  4: { id: "purpleStyleBtn"  },
-  5: { id: "redPinkStyleBtn" },
-  6: { id: "rainbowStyleBtn" },
+  1: { id: "blackStyleBtn",   className: "name-style-default" },
+  2: { id: "blueStyleBtn",    className: "name-style-blue" },
+  3: { id: "goldStyleBtn",    className: "name-style-gold" },
+  4: { id: "purpleStyleBtn",  className: "name-style-purple" },
+  5: { id: "redPinkStyleBtn", className: "name-style-crimson-fade", gradient: true },
+  6: { id: "rainbowStyleBtn", className: "name-style-rainbow", gradient: true },
 };
 
-// Returns an HTML string for a single tag badge, or "" if no tag
-// Shape/size/font are controlled by the .tag class in style.css
-// Colors come from the TAGS object above and are passed as CSS variables
-// Tooltip text comes from the tooltip field in the TAGS object above
-function renderTag(tagNumber) {
-  if (tagNumber === null || tagNumber === undefined) return "";
+function normalizeNameStyle(styleNum) {
+  const parsedStyle = Number(styleNum);
+  if (Number.isInteger(parsedStyle) && NAME_STYLES[parsedStyle]) {
+    return parsedStyle;
+  }
+  return DEFAULT_NAME_STYLE;
+}
+
+function getStoredNameStyle(data = {}) {
+  return normalizeNameStyle(data[NAME_STYLE_FIELD] ?? data[LEGACY_NAME_STYLE_FIELD] ?? DEFAULT_NAME_STYLE);
+}
+
+function getNameStyleSaveData(styleNum) {
+  return { [NAME_STYLE_FIELD]: normalizeNameStyle(styleNum) };
+}
+
+// Returns a tag badge element, or null if no tag.
+function createTagElement(tagNumber) {
+  if (tagNumber === null || tagNumber === undefined) return null;
   const tag = TAGS[tagNumber];
-  if (!tag) return "";
-  return `<span class="tag" style="--tag-color:${tag.color}; --tag-bg:${tag.bg};" data-tooltip="${tag.tooltip}">${tag.label}</span>`;
+  if (!tag) return null;
+
+  const tagElement = document.createElement("span");
+  tagElement.className = "tag";
+  tagElement.textContent = tag.label;
+  tagElement.dataset.tooltip = tag.tooltip;
+  tagElement.style.setProperty("--tag-color", tag.color);
+  tagElement.style.setProperty("--tag-bg", tag.bg);
+  return tagElement;
+}
+
+function applyNameStyle(element, styleNum) {
+  const style = NAME_STYLES[normalizeNameStyle(styleNum)];
+  element.className = "leaderboard-name";
+  element.classList.add(style.className);
+  if (style.gradient) element.classList.add("name-style-gradient");
+}
+
+function renderLeaderboardName(slotId, name, styleNum, tagNumber) {
+  const slot = document.getElementById(slotId);
+  if (!slot) return;
+
+  slot.textContent = "";
+
+  const nameElement = document.createElement("span");
+  nameElement.textContent = name;
+  applyNameStyle(nameElement, styleNum);
+  slot.appendChild(nameElement);
+
+  const tagElement = createTagElement(tagNumber);
+  if (tagElement) slot.appendChild(tagElement);
 }
 
 // Sign in anonymously — gives every player a unique uid automatically
@@ -85,7 +130,7 @@ if (playerDoc.exists()) {
   const data = playerDoc.data();
   number     = data.score     ?? 0;
   playerName = data.name      ?? "Anonymous";
-  nameStyle  = data.nameStyle ?? 1;
+  nameStyle  = getStoredNameStyle(data);
 } else {
   // Player has never saved before — flag them as new for First 100 check
   isNewPlayer = true;
@@ -101,17 +146,18 @@ applySelectedCard(nameStyle);
 
 // Highlights the correct style card in the customization modal
 function applySelectedCard(styleNum) {
+  const safeStyle = normalizeNameStyle(styleNum);
   Object.values(NAME_STYLES).forEach(s => {
     document.getElementById(s.id)?.classList.remove("selected");
   });
-  document.getElementById(NAME_STYLES[styleNum]?.id)?.classList.add("selected");
+  document.getElementById(NAME_STYLES[safeStyle].id)?.classList.add("selected");
 }
 
-// Saves the chosen nameStyle number to Firestore
+// Saves the chosen nameStyles integer to Firestore
 async function saveNameStyle(styleNum) {
-  nameStyle = styleNum;
-  applySelectedCard(styleNum);
-  await setDoc(doc(db, "leaderboard", uid), { nameStyle: styleNum }, { merge: true });
+  nameStyle = normalizeNameStyle(styleNum);
+  applySelectedCard(nameStyle);
+  await setDoc(doc(db, "leaderboard", uid), getNameStyleSaveData(nameStyle), { merge: true });
 }
 
 // ── Save to localStorage (offline) and Firestore (leaderboard) ──
@@ -119,7 +165,7 @@ async function saveNameStyle(styleNum) {
 async function save() {
   localStorage.setItem("value", number);
 
-  const dataToSave = { name: playerName, score: number };
+  const dataToSave = { name: playerName, score: number, ...getNameStyleSaveData(nameStyle) };
 
   // 🟢 AUTOMATIC: First 100 tag
   // On first ever save, count how many players already exist.
@@ -205,6 +251,7 @@ async function showLeaderboard() {
     const data = docSnap.data();
     const name  = data.name  ?? "Anonymous";
     const score = data.score ?? 0;
+    const storedNameStyle = getStoredNameStyle(data);
 
     // Treat missing/non-number tag fields as null
     const storedTag = typeof data.tag === "number" ? data.tag : null;
@@ -219,7 +266,7 @@ async function showLeaderboard() {
       displayTag = storedTag;
     }
 
-    document.getElementById(nameSlots[i]).innerHTML  = name + renderTag(displayTag);
+    renderLeaderboardName(nameSlots[i], name, storedNameStyle, displayTag);
     document.getElementById(scoreSlots[i]).innerHTML = score.toLocaleString();
   });
 
