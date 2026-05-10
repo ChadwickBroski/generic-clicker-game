@@ -455,7 +455,7 @@ onClick("rainbowStyleBtn", () => {
 });
 
 // Customization [BACKGROUND MUSIC]
-const c418Audio = new Audio("music1.mp3"); // replace with your actual file path
+const c418Audio = new Audio("C418 - Subwoofer Lullaby.mp3"); // replace with your actual file path
 c418Audio.loop = true;
 let isC418Playing = false;
 
