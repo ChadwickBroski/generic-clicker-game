@@ -1,0 +1,356 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,600;1,600&display=swap');
+
+body {
+  background-color: white;
+}
+
+h1 {
+  position: absolute;
+  top: 4%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: "Nunito", sans-serif;
+}
+h2 {
+  font-size: 40px;
+  margin: 5px 5px;
+  text-align: center;
+}
+h3 {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #777;
+  margin: 24px 0px 0px 0px;
+  font-family: "Nunito", sans-serif;
+}
+
+.button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  --button-color: black;
+  --button-bg: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background-color: var(--button-bg);
+  color: var(--button-color);
+  padding: 14px 22px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: "Nunito", sans-serif;
+  font-weight: 600;
+  font-size: 1em;
+  border: 2px solid var(--button-color);
+  transition: 100ms ease;
+  box-shadow: 5px 5px 0 0 var(--button-color);
+}
+.button:hover  { box-shadow: 2px 2px 0 0 var(--button-color); }
+.button:active { transition: 50ms ease; box-shadow: 0 0 0 0 var(--button-color); }
+
+.counter {
+  font-family: "Nunito", sans-serif;
+  font-weight: 600;
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 50px;
+}
+
+.informer {
+  position: absolute;
+  top: 12%;
+  left: 4%;
+  font-family: "Nunito", sans-serif;
+  color: orange;
+  opacity: 0;
+}
+
+.fade-in-trigger  { animation: fade-in  1s forwards; }
+.fade-out-trigger { animation: fade-out 1s forwards; }
+
+@keyframes fade-in  { to { top: 8%; opacity: 1; } }
+@keyframes fade-out { from { top: 8%; opacity: 1; } to { top: 8%; opacity: 0; } }
+
+.auto-save {
+  font-family: "Nunito", sans-serif;
+  position: absolute;
+  top: 92%;
+  font-size: 14px;
+}
+
+/* ── Modal backdrop ── */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  padding: auto;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* ── Modal box ── */
+.modal-content {
+  background-color: white;
+  margin: auto;
+  margin-top: 50px;
+  padding: 28px 20px;
+  border: 3px solid black;
+  border-radius: 8px;
+  width: 40%;
+  font-family: "Nunito", sans-serif;
+  color: black;
+  box-shadow: 5px 5px 0 0 black;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* ── Close button ── */
+.close {
+  color: black;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  background: white;
+  padding: 5px 15px;
+  border: 3px solid black;
+  border-radius: 8px;
+  box-shadow: 5px 5px 0 0 black;
+  cursor: pointer;
+  transition: 100ms ease;
+}
+.close:hover  { box-shadow: 2px 2px 0 0 black; }
+.close:active { box-shadow: 0 0 0 0 black; }
+
+/* ── Divider ── */
+.modal-divider {
+  border: none;
+  height: 2px;
+  background-color: black;
+  margin: 12px -20px;
+  width: calc(100% + 40px);
+}
+
+/* ── Reset row ── */
+.reset-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.reset-desc {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+  flex: 1;
+  margin: 0;
+}
+
+.reset-btn {
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+  flex-shrink: 0;
+  padding: 9px 18px;
+  --button-color: #c0392b;
+  --button-bg: #fff0f0;
+}
+
+/* ── Leaderboard ── */
+.leaderboard-list {
+  margin-top: 12px;
+}
+
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 4px;
+}
+
+.leaderboard-rank {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: "Nunito", sans-serif;
+}
+
+.leaderboard-score {
+  font-size: 24px;
+  font-weight: 700;
+  font-family: "Nunito", sans-serif;
+  color: #333;
+}
+
+.leaderboard-name {
+  font-weight: 700;
+}
+
+.name-style-default { color: black; }
+.name-style-blue { color: #1a6fcf; }
+.name-style-gold { color: #B8860B; }
+.name-style-purple { color: #7B2FBE; }
+
+.name-style-gradient {
+  display: inline-block;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.name-style-crimson-fade {
+  background-image: linear-gradient(90deg, #e8000d, #ff69b4);
+}
+
+.name-style-rainbow {
+  background-image: linear-gradient(90deg, #e8000d, #ff8c00, #FFD700, #1a6fcf, #7B2FBE);
+}
+
+/* ── Tag badge ── */
+/* Colors are set per-tag in the TAGS object in script.js via --tag-color and --tag-bg */
+/* Everything else about how the tag looks is controlled here */
+.tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: "Nunito", sans-serif;
+  padding: 4px 8px;
+  border-radius: 20px;
+  margin-left: 8px;
+  color: var(--tag-color);
+  background: var(--tag-bg);
+  border: 1.5px solid var(--tag-color);
+  vertical-align: middle;
+  position: relative;
+  cursor: default;
+}
+
+/* ── Tag tooltip ── */
+/* Shows above the badge on hover. Text comes from data-tooltip in script.js */
+.tag::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 130%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: black;
+  color: white;
+  font-size: 11px;
+  font-family: "Nunito", sans-serif;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.tag:hover::before {
+  opacity: 1;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  border-radius: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #999999; 
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #505050; 
+}
+
+/* ── Customization style grid ── */
+.style-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.style-card {
+  border: 2px solid black;
+  border-radius: 8px;
+  box-shadow: 3px 3px 0 0 black;
+  padding: 12px 8px 10px;
+  cursor: pointer;
+  transition: box-shadow 100ms ease, transform 100ms ease;
+  text-align: center;
+  background: white;
+  position: relative;
+}
+
+.style-card:hover {
+  box-shadow: 1px 1px 0 0 black;
+  transform: translate(2px, 2px);
+}
+
+.style-card.selected {
+  border-color: rgb(160, 3, 160);
+  box-shadow: 3px 3px 0 0 rgb(160, 3, 160);
+  background: rgb(255, 239, 254);
+}
+
+.style-card.selected:hover {
+  box-shadow: 1px 1px 0 0 rgb(160, 3, 160);
+}
+
+/* Locked cards are dimmed and not clickable */
+.style-card.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.style-card.locked:hover {
+  box-shadow: 3px 3px 0 0 black;
+  transform: none;
+}
+
+/* Preview area showing the name in that style */
+.style-preview {
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 10px 4px;
+  border-bottom: 1.5px solid #eee;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.style-label {
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: black;
+}
+
+.style-sublabel {
+  font-family: "Nunito", sans-serif;
+  font-size: 11px;
+  color: #888;
+  margin-top: 2px;
+}

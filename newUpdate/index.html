@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="GenericLogo-removebg-preview__1_-removebg-preview.png">
+    <title>Generic Clicker Game</title>
+  </head>
+  <body>
+    <h1>Generic Clicker Game</h1>
+    <div class="counter" id="counter">Loading...</div>
+    <button type="button" class="button" id="clickBtn">CLICK ME</button>
+
+    <!-- Settings Button -->
+    <button type="button" class="button" id="settingsBtn" style="top:6%; left: 90%; right:auto; padding: 7px 11px;--button-color:blue;--button-bg:azure;">Settings</button>
+
+    <!-- Leaderboard Button -->
+    <button type="button" class="button" id="leaderboardBtn" style="top:20%; left:10%; right:auto; padding: 7px 11px;--button-color:orange;--button-bg:lightyellow;">Leaderboard</button>
+
+    <!-- Customization Button -->
+    <button type="button" class="button" id="customizationBtn" style="top:20%; left: 90%; right:auto; padding: 7px 11px; --button-color:rgb(160, 3, 160);--button-bg:rgb(255, 239, 254);">Customization</button>
+
+    <div id="customizationModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="customizationClose">&times;</span>
+        <h2>Customization</h2>
+        <hr class="modal-divider">
+        <h3>NAME STYLE</h3>
+        <p class="reset-desc" style="margin-top:8px;">Choose how your name appears on the leaderboard. Some styles unlock at score milestones.</p>
+
+        <div class="style-grid">
+
+          <!-- Default -->
+          <div class="style-card selected" data-style="default" id="blackStyleBtn">
+            <div class="style-preview">
+              <span style="color:black;">YourName</span>
+            </div>
+            <div class="style-label">Default</div>
+            <div class="style-sublabel" id="blackSublabel">Always unlocked</div>
+          </div>
+
+          <!-- Blue -->
+          <div class="style-card" data-style="blue" id="blueStyleBtn">
+            <div class="style-preview">
+              <span style="color:#1a6fcf;">YourName</span>
+            </div>
+            <div class="style-label">Blue</div>
+            <div class="style-sublabel" id="blueSublabel">🔒 Unlock at 1,000</div>
+          </div>
+
+          <!-- Gold -->
+          <div class="style-card" data-style="gold" id="goldStyleBtn">
+            <div class="style-preview">
+              <span style="color:#B8860B;">YourName</span>
+            </div>
+            <div class="style-label">Gold</div>
+            <div class="style-sublabel" id="goldSublabel">🔒 Unlock at 10,000</div>
+          </div>
+
+          <!-- Purple -->
+          <div class="style-card" data-style="purple" id="purpleStyleBtn">
+            <div class="style-preview">
+              <span style="color:#7B2FBE;">YourName</span>
+            </div>
+            <div class="style-label">Purple</div>
+            <div class="style-sublabel" id="purpleSublabel">🔒 Unlock at 100,000</div>
+          </div>
+
+          <!-- Red-Pink Gradient -->
+          <div class="style-card locked" data-style="gradient-redpink" id="redPinkStyleBtn">
+            <div class="style-preview">
+              <span style="background:linear-gradient(90deg,#e8000d,#ff69b4); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">YourName</span>
+            </div>
+            <div class="style-label">Crimson Fade</div>
+            <div class="style-sublabel" id="redPinkSublabel">🔒 Unlock at 1,000,000</div>
+          </div>
+
+          <!-- Rainbow -->
+          <div class="style-card locked" data-style="gradient-rainbow" id="rainbowStyleBtn">
+            <div class="style-preview">
+              <span style="background:linear-gradient(90deg,#e8000d,#ff8c00,#FFD700,#1a6fcf,#7B2FBE); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">YourName</span>
+            </div>
+            <div class="style-label">Rainbow</div>
+            <div class="style-sublabel" id="rainbowSublabel">🔒 Unlock at 10,000,000</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="settingsClose">&times;</span>
+        <h2>Settings</h2>
+        <hr class="modal-divider">
+        <h3>PLAYER NAME</h3>
+        <div class="reset-row">
+          <input
+            type="text"
+            id="playerNameInput"
+            placeholder="Enter your name"
+            maxlength="20"
+            style="font-family:'Nunito',sans-serif; font-size:16px; padding:8px 12px; border:2px solid black; border-radius:8px; flex:1; outline:none;"
+          >
+          <button type="button" class="button reset-btn" id="saveNameBtn" style="--button-color:green;--button-bg:#f0fff0;">Save name</button>
+        </div>
+        <h3>RESET PROGRESS</h3>
+        <div class="reset-row">
+          <p class="reset-desc">Reset button erases all of your progress. This cannot be undone.</p>
+          <button type="button" class="button reset-btn" id="resetBtn">Reset</button>
+        </div>
+        <h3>BUGS OR IDEAS</h3>
+        <p class="reset-desc">
+          If you have find any bugs or have ideas, open an issue in the <a href="https://github.com/ChadwickBroski/generic-clicker-game/issues">github</a> repo.
+          </br>
+          - Make sure you type out the bug or idea in detail.</br>- Keep your game name in the issue. You might get a tag for your help.
+        </p>
+      </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div id="leaderboardModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="leaderboardClose">&times;</span>
+        <h2>Leaderboard</h2>
+        <p class="reset-desc">Currently holding a competition by Abhay. Whoever gets the highest score by sunday midnight wins.</p>
+        <hr class="modal-divider">
+        <div class="leaderboard-list">
+          <div class="leaderboard-row">
+            <span class="leaderboard-rank">🥇 1st -&nbsp;&nbsp;<span id="name1" style="font-weight:500;">—</span></span>
+            <span class="leaderboard-score" id="score1">—</span>
+          </div>
+          <hr class="modal-divider">
+          <div class="leaderboard-row">
+            <span class="leaderboard-rank">🥈 2nd -&nbsp;&nbsp;<span id="name2" style="font-weight:500;">—</span></span>
+            <span class="leaderboard-score" id="score2">—</span>
+          </div>
+          <hr class="modal-divider">
+          <div class="leaderboard-row">
+            <span class="leaderboard-rank">🥉 3rd -&nbsp;&nbsp;<span id="name3" style="font-weight:500;">—</span></span>
+            <span class="leaderboard-score" id="score3">—</span>
+          </div>
+          <hr class="modal-divider">
+          <div class="leaderboard-row">
+            <span class="leaderboard-rank">4️⃣ 4th -&nbsp;&nbsp;<span id="name4" style="font-weight:500;">—</span></span>
+            <span class="leaderboard-score" id="score4">—</span>
+          </div>
+          <hr class="modal-divider">
+          <div class="leaderboard-row">
+            <span class="leaderboard-rank">5️⃣ 5th -&nbsp;&nbsp;<span id="name5" style="font-weight:500;">—</span></span>
+            <span class="leaderboard-score" id="score5">—</span>
+          </div>
+          <hr class="modal-divider">
+          <div class="leaderboard-row">
+            <span class="leaderboard-rank">6️⃣ 6th -&nbsp;&nbsp;<span id="name6" style="font-weight:500;">—</span></span>
+            <span class="leaderboard-score" id="score6">—</span>
+          </div>
+          <hr class="modal-divider">
+          <div class="leaderboard-row">
+            <span class="leaderboard-rank">7️⃣ 7th -&nbsp;&nbsp;<span id="name7" style="font-weight:500;">—</span></span>
+            <span class="leaderboard-score" id="score7">—</span>
+          </div>
+          <hr class="modal-divider">
+          <div class="leaderboard-row">
+            <span class="leaderboard-rank">8️⃣ 8th -&nbsp;&nbsp;<span id="name8" style="font-weight:500;">—</span></span>
+            <span class="leaderboard-score" id="score8">—</span>
+          </div>
+          <hr class="modal-divider">
+          <div class="leaderboard-row">
+            <span class="leaderboard-rank">9️⃣ 9th -&nbsp;&nbsp;<span id="name9" style="font-weight:500;">—</span></span>
+            <span class="leaderboard-score" id="score9">—</span>
+          </div>
+          <hr class="modal-divider">
+          <div class="leaderboard-row">
+            <span class="leaderboard-rank">🔟 10th -&nbsp;&nbsp;<span id="name10" style="font-weight:500;">—</span></span>
+            <span class="leaderboard-score" id="score10">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <button type="button" class="button" id="saveBtn" style="top:6%; left:8%; right:auto; padding: 7px 11px;--button-color:orange;--button-bg:lightyellow;">Save</button>
+      <p class="informer">Progress saved!</p>
+    </div>
+
+    <a class="auto-save" style="right:auto;left:3%;">v0.3.0</a>
+    <p class="auto-save" style="left: auto; right: 3%;">Made by <a href="chadwickbroski.github.io" style="color:#002CF2;">ChadwickBroski</a>.</p>
+
+    <!-- type="module" is required for Firebase imports to work -->
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
