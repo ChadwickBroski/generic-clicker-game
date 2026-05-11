@@ -36,7 +36,7 @@ const TAGS = {
   // 🔴 MANUAL — set this yourself in Firestore console
   7: { label: "Ideator",    color: "white", bg: "green",     tooltip: "Contributed by giving an idea to the owner that is currently in the game" },
   // 🔴 MANUAL — set this yourself in Firestore console
-  8: {label: "Winner",      color: "white", bg: "white",     tooltip: "Won a contest hosted by the owner" }
+  8: { label: "Winner",     color: "white", bg: "white",     tooltip: "Won a contest hosted by the owner" }
 };
 
 // Tags that are set manually and must never be overwritten by automatic logic
