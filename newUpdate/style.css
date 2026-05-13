@@ -341,6 +341,35 @@ h3 {
   text-overflow: ellipsis;
 }
 
+.upgrade-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  white-space: normal;
+}
+
+.upgrade-count {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  min-width: 22px;
+  padding: 2px 6px;
+  background: white;
+  color: black;
+  font-family: "Nunito", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.upgrade-image {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+}
+
 .style-label {
   font-family: "Nunito", sans-serif;
   font-weight: 700;
