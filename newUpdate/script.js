@@ -45,38 +45,57 @@ const NAME_STYLES = {
   6: { id: "rainbowStyleBtn", className: "name-style-rainbow",      gradient: true },
 };
 
+let _score = Number(
+  (document.getElementById("counter")?.textContent || "0").replace(/,/g, "")
+) || 0;
+
+const getScore = () => _score;
+
+const setScore = (newScore) => {
+  _score = Math.max(0, newScore);
+  document.getElementById("counter").textContent = Math.floor(_score).toLocaleString();
+};
+
+// addScore is called by manual clicks and must also refresh affordability UI.
+const addScore = (amount) => {
+  _score += amount;
+  document.getElementById("counter").textContent = Math.floor(_score).toLocaleString();
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+};
+
 // ── Upgrade constants ──
 const AUTOCLICKER_UNLOCK_COST = 1000;
 // Mouse
-const MOUSE_BASE_COST      = 10;
+const MOUSE_BASE_COST = 10;
 const MOUSE_COST_MULTIPLIER = 1.14;
-const MOUSE_CPS_GAIN       = 0.1;
-const MOUSE_MAX_LEVEL      = 99;
+const MOUSE_CPS_GAIN = 0.1;
+const MOUSE_MAX_LEVEL = 99;
 // Servant
-const SERVANT_BASE_COST      = 250;
+const SERVANT_BASE_COST = 250;
 const SERVANT_COST_MULTIPLIER = 1.16;
-const SERVANT_CPS_GAIN       = 2;
-const SERVANT_MAX_LEVEL      = 99;
+const SERVANT_CPS_GAIN = 2;
+const SERVANT_MAX_LEVEL = 99;
 // Robot
-const ROBOT_BASE_COST      = 1000;
+const ROBOT_BASE_COST = 1000;
 const ROBOT_COST_MULTIPLIER = 1.18;
-const ROBOT_CPS_GAIN       = 10;
-const ROBOT_MAX_LEVEL      = 99;
+const ROBOT_CPS_GAIN = 10;
+const ROBOT_MAX_LEVEL = 99;
 // Hacker
-const HACKER_BASE_COST      = 2000;
+const HACKER_BASE_COST = 2000;
 const HACKER_COST_MULTIPLIER = 1.2;
-const HACKER_CPS_GAIN       = 20;
-const HACKER_MAX_LEVEL      = 99;
+const HACKER_CPS_GAIN = 20;
+const HACKER_MAX_LEVEL = 99;
 // Army
-const ARMY_BASE_COST      = 5000;
+const ARMY_BASE_COST = 5000;
 const ARMY_COST_MULTIPLIER = 1.22;
-const ARMY_CPS_GAIN       = 40;
-const ARMY_MAX_LEVEL      = 99;
+const ARMY_CPS_GAIN = 40;
+const ARMY_MAX_LEVEL = 99;
 // Server
-const SERVER_BASE_COST      = 25000;
+const SERVER_BASE_COST = 25000;
 const SERVER_COST_MULTIPLIER = 1.24;
-const SERVER_CPS_GAIN       = 175;
-const SERVER_MAX_LEVEL      = 99;
+const SERVER_CPS_GAIN = 175;
+const SERVER_MAX_LEVEL = 99;
 
 // ── Name style helpers (defined before await so they're available during load) ──
 
@@ -199,33 +218,45 @@ const getRobotCps   = () => robotLevel   * ROBOT_CPS_GAIN;
 const getHackerCps  = () => hackerLevel  * HACKER_CPS_GAIN;
 const getArmyCps    = () => armyLevel    * ARMY_CPS_GAIN;
 const getServerCps  = () => serverLevel  * SERVER_CPS_GAIN;
-const getTotalAutoClickerCps = () =>
-  getMouseCps() + getServantCps() + getRobotCps() + getHackerCps() + getArmyCps() + getServerCps();
+const getTotalAutoClickerCps = () => getMouseCps() + getServantCps() + getRobotCps() + getHackerCps() + getArmyCps() + getServerCps();
 
 // ── Cost helpers ──
-const getMouseCost   = () => Math.floor(MOUSE_BASE_COST   * MOUSE_COST_MULTIPLIER   ** mouseLevel);
-const getServantCost = () => Math.floor(SERVANT_BASE_COST * SERVANT_COST_MULTIPLIER ** servantLevel);
-const getRobotCost   = () => Math.floor(ROBOT_BASE_COST   * ROBOT_COST_MULTIPLIER   ** robotLevel);
-const getHackerCost  = () => Math.floor(HACKER_BASE_COST  * HACKER_COST_MULTIPLIER  ** hackerLevel);
-const getArmyCost    = () => Math.floor(ARMY_BASE_COST    * ARMY_COST_MULTIPLIER    ** armyLevel);
-const getServerCost  = () => Math.floor(SERVER_BASE_COST  * SERVER_COST_MULTIPLIER  ** serverLevel);
-
+const getMouseCost = () => {
+  return Math.floor(MOUSE_BASE_COST * MOUSE_COST_MULTIPLIER ** mouseLevel);
+};
+const getServantCost = () => {
+  return Math.floor(SERVANT_BASE_COST * SERVANT_COST_MULTIPLIER ** servantLevel);
+};
+const getRobotCost = () => {
+  return Math.floor(ROBOT_BASE_COST * ROBOT_COST_MULTIPLIER ** robotLevel);
+};
+const getHackerCost = () => {
+  return Math.floor(HACKER_BASE_COST * HACKER_COST_MULTIPLIER ** hackerLevel);
+};
+const getArmyCost = () => {
+  return Math.floor(ARMY_BASE_COST * ARMY_COST_MULTIPLIER ** armyLevel);
+};
+const getServerCost = () => {
+  return Math.floor(SERVER_BASE_COST * SERVER_COST_MULTIPLIER ** serverLevel);
+}
 // ── Smooth rAF-based autoclicker ──
 // Uses requestAnimationFrame so the counter climbs smoothly every ~16ms
 // instead of jumping once per second with setInterval.
-let _rafId        = null;
-let _lastRafTime  = null;
-let _lastUiRefresh = 0;
+let _rafId = null;
+let _lastRafTime = null;
+let _lastUiRefresh = 0; // timestamp of last affordability/label refresh
 
 const _rafTick = (timestamp) => {
   if (_lastRafTime !== null) {
     const delta = (timestamp - _lastRafTime) / 1000; // seconds since last frame
-    const cps   = getTotalAutoClickerCps();
+
+    const cps = getTotalAutoClickerCps();
     if (cps > 0) {
-      number += cps * delta;
-      document.getElementById("counter").textContent = Math.floor(number).toLocaleString();
+      _score += cps * delta;
+      document.getElementById("counter").textContent =
+        Math.floor(_score).toLocaleString();
     }
-    // Refresh affordability labels every 200ms to avoid DOM thrashing every frame
+
     if (timestamp - _lastUiRefresh > 200) {
       _updateCpsDisplay();
       updateUnlockedStyles();
@@ -233,6 +264,7 @@ const _rafTick = (timestamp) => {
       _lastUiRefresh = timestamp;
     }
   }
+
   _lastRafTime = timestamp;
   _rafId = requestAnimationFrame(_rafTick);
 };
@@ -242,6 +274,9 @@ const startSmoothLoop = () => {
   _rafId = requestAnimationFrame(_rafTick);
 };
 
+const restartAutoClickers = () => {};
+
+// Updates the "X.X CPS" label beneath the counter.
 const _updateCpsDisplay = () => {
   const el = document.getElementById("totalCps");
   if (el) el.textContent = `${getTotalAutoClickerCps().toFixed(1)} CPS`;
@@ -262,17 +297,25 @@ const showInformer = (id) => {
 
 // ── Upgrade unlock ──
 function showUpgrades() {
-  if (autoClickerUnlocked) {
-    document.getElementById("upgradesBtn").style.display = "block";
+  const upgradesBtn = document.getElementById("upgradesBtn");
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades to use this feature!");
+  } else {
+    upgradesBtn.style.display = "block";
   }
 }
+document.getElementById("autoclickerbuyBtn").style.display = "block";
 
 function unlockAutoClickerUpgrades() {
-  if (getScore() < AUTOCLICKER_UNLOCK_COST) {
-    alert(`Not enough clicks! You need ${AUTOCLICKER_UNLOCK_COST.toLocaleString()} clicks.`);
+  const score = getScore();
+
+  // This only unlocks the Upgrades menu. It does not start giving clicks.
+  if (score < AUTOCLICKER_UNLOCK_COST) {
+    alert(`Not enough clicks to unlock autoclicker upgrades! You need ${AUTOCLICKER_UNLOCK_COST.toLocaleString()} clicks.`);
     return;
   }
-  setScore(getScore() - AUTOCLICKER_UNLOCK_COST);
+
+  setScore(score - AUTOCLICKER_UNLOCK_COST);
   autoClickerUnlocked = true;
   document.getElementById("autoclickerbuyBtn").style.display = "none";
   showInformer("autoclickerInformer");
@@ -281,68 +324,152 @@ function unlockAutoClickerUpgrades() {
   updateUnlockedAutoClicker();
 }
 
-// ── Buy functions ──
 function buyMouseUpgrade() {
-  if (!autoClickerUnlocked) { alert("Unlock autoclicker upgrades first!"); return; }
-  if (mouseLevel >= MOUSE_MAX_LEVEL) { alert("Low-End Mouse is already maxed out!"); return; }
-  const cost = getMouseCost();
-  if (getScore() < cost) { alert(`Not enough clicks! You need ${cost.toLocaleString()} clicks.`); return; }
-  setScore(getScore() - cost);
+  const score = getScore();
+  const mouseCost = getMouseCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (mouseLevel >= MOUSE_MAX_LEVEL) {
+    alert("Low-End Mouse is already maxed out!");
+    return;
+  }
+
+  if (score < mouseCost) {
+    alert(`Not enough clicks to purchase the Mouse upgrade! You need ${mouseCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - mouseCost);
   mouseLevel++;
   updateUnlockedStyles();
   updateUnlockedAutoClicker();
 }
 
 function buyServantUpgrade() {
-  if (!autoClickerUnlocked) { alert("Unlock autoclicker upgrades first!"); return; }
-  if (servantLevel >= SERVANT_MAX_LEVEL) { alert("Servant is already maxed out!"); return; }
-  const cost = getServantCost();
-  if (getScore() < cost) { alert(`Not enough clicks! You need ${cost.toLocaleString()} clicks.`); return; }
-  setScore(getScore() - cost);
+  const score = getScore();
+  const servantCost = getServantCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (servantLevel >= SERVANT_MAX_LEVEL) {
+    alert("Servant is already maxed out!");
+    return;
+  }
+
+  if (score < servantCost) {
+    alert(`Not enough clicks to purchase the Servant upgrade! You need ${servantCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - servantCost);
   servantLevel++;
   updateUnlockedStyles();
   updateUnlockedAutoClicker();
 }
 
 function buyRobotUpgrade() {
-  if (!autoClickerUnlocked) { alert("Unlock autoclicker upgrades first!"); return; }
-  if (robotLevel >= ROBOT_MAX_LEVEL) { alert("Robot is already maxed out!"); return; }
-  const cost = getRobotCost();
-  if (getScore() < cost) { alert(`Not enough clicks! You need ${cost.toLocaleString()} clicks.`); return; }
-  setScore(getScore() - cost);
+  const score = getScore();
+  const robotCost = getRobotCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (robotLevel >= ROBOT_MAX_LEVEL) {
+    alert("Robot is already maxed out!");
+    return;
+  }
+
+  if (score < robotCost) {
+    alert(`Not enough clicks to purchase the Robot upgrade! You need ${robotCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - robotCost);
   robotLevel++;
   updateUnlockedStyles();
   updateUnlockedAutoClicker();
 }
 
+
 function buyHackerUpgrade() {
-  if (!autoClickerUnlocked) { alert("Unlock autoclicker upgrades first!"); return; }
-  if (hackerLevel >= HACKER_MAX_LEVEL) { alert("Hacker is already maxed out!"); return; }
-  const cost = getHackerCost();
-  if (getScore() < cost) { alert(`Not enough clicks! You need ${cost.toLocaleString()} clicks.`); return; }
-  setScore(getScore() - cost);
+  const score = getScore();
+  const hackerCost = getHackerCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (hackerLevel >= HACKER_MAX_LEVEL) {
+    alert("Hacker is already maxed out!");
+    return;
+  }
+
+  if (score < hackerCost) {
+    alert(`Not enough clicks to purchase the Hacker upgrade! You need ${hackerCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - hackerCost);
   hackerLevel++;
   updateUnlockedStyles();
   updateUnlockedAutoClicker();
 }
 
 function buyArmyUpgrade() {
-  if (!autoClickerUnlocked) { alert("Unlock autoclicker upgrades first!"); return; }
-  if (armyLevel >= ARMY_MAX_LEVEL) { alert("Army is already maxed out!"); return; }
-  const cost = getArmyCost();
-  if (getScore() < cost) { alert(`Not enough clicks! You need ${cost.toLocaleString()} clicks.`); return; }
-  setScore(getScore() - cost);
+  const score = getScore();
+  const armyCost = getArmyCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (armyLevel >= ARMY_MAX_LEVEL) {
+    alert("Army is already maxed out!");
+    return;
+  }
+
+  if (score < armyCost) {
+    alert(`Not enough clicks to purchase the Army upgrade! You need ${armyCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - armyCost);
   armyLevel++;
   updateUnlockedStyles();
   updateUnlockedAutoClicker();
 }
 
 function buyServerUpgrade() {
-  if (!autoClickerUnlocked) { alert("Unlock autoclicker upgrades first!"); return; }
-  if (serverLevel >= SERVER_MAX_LEVEL) { alert("Server is already maxed out!"); return; }
-  const cost = getServerCost();
-  if (getScore() < cost) { alert(`Not enough clicks! You need ${cost.toLocaleString()} clicks.`); return; }
-  setScore(getScore() - cost);
+  const score = getScore();
+  const serverCost = getServerCost();
+  
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (serverLevel >= SERVER_MAX_LEVEL) {
+    alert("Server is already maxed out!");
+    return;
+  }
+
+  if (score < serverCost) {
+    alert(`Not enough clicks to purchase the Server upgrade! You need ${serverCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - serverCost);
   serverLevel++;
   updateUnlockedStyles();
   updateUnlockedAutoClicker();
@@ -351,76 +478,161 @@ function buyServerUpgrade() {
 // ── Update upgrade card UI ──
 const updateUnlockedAutoClicker = () => {
   const score = getScore();
+  const mouseCps = getMouseCps();
+  const mouseCost = getMouseCost();
+  const mouseMaxed = mouseLevel >= MOUSE_MAX_LEVEL;
 
-  const mouseCost    = getMouseCost();   const mouseCps    = getMouseCps();   const mouseMaxed    = mouseLevel    >= MOUSE_MAX_LEVEL;
-  const servantCost  = getServantCost(); const servantCps  = getServantCps(); const servantMaxed  = servantLevel  >= SERVANT_MAX_LEVEL;
-  const robotCost    = getRobotCost();   const robotCps    = getRobotCps();   const robotMaxed    = robotLevel    >= ROBOT_MAX_LEVEL;
-  const hackerCost   = getHackerCost();  const hackerCps   = getHackerCps();  const hackerMaxed   = hackerLevel   >= HACKER_MAX_LEVEL;
-  const armyCost     = getArmyCost();    const armyCps     = getArmyCps();    const armyMaxed     = armyLevel     >= ARMY_MAX_LEVEL;
-  const serverCost   = getServerCost();  const serverCps   = getServerCps();  const serverMaxed   = serverLevel   >= SERVER_MAX_LEVEL;
+  const servantCps = getServantCps();
+  const servantCost = getServantCost();
+  const servantMaxed = servantLevel >= SERVANT_MAX_LEVEL;
 
-  // Lock/unlock each card based on affordability
-  const toggleCard = (id, locked) => document.getElementById(id)?.classList.toggle("locked", locked);
-  toggleCard("mouse",   !autoClickerUnlocked || score < mouseCost   || mouseMaxed);
-  toggleCard("servant", !autoClickerUnlocked || score < servantCost || servantMaxed);
-  toggleCard("robot",   !autoClickerUnlocked || score < robotCost   || robotMaxed);
-  toggleCard("hacker",  !autoClickerUnlocked || score < hackerCost  || hackerMaxed);
-  toggleCard("army",    !autoClickerUnlocked || score < armyCost    || armyMaxed);
-  toggleCard("server",  !autoClickerUnlocked || score < serverCost  || serverMaxed);
+  const robotCps = getRobotCps();
+  const robotCost = getRobotCost();
+  const robotMaxed = robotLevel >= ROBOT_MAX_LEVEL;
 
-  // Update each card's label, count badge, and cost/CPS sublabel
-  const updateCard = (cardId, cps, level, cost, maxLevel, cpsGain, maxed) => {
-    const card = document.getElementById(cardId);
-    if (!card) return;
-    const label    = card.querySelector(".style-label");
-    const count    = card.querySelector(".upgrade-count");
-    const sublabel = card.querySelector(".style-sublabel");
-    if (label)    label.textContent    = `Current: ${cps.toFixed(1)} CPS`;
-    if (count)    count.textContent    = level.toLocaleString();
-    if (sublabel) sublabel.textContent = maxed
-      ? `Maxed out at ${maxLevel} upgrades`
-      : `Cost: ${cost.toLocaleString()} Clicks | +${cpsGain.toFixed(1)} CPS`;
-  };
+  const hackerCps = getHackerCps();
+  const hackerCost = getHackerCost();
+  const hackerMaxed = hackerLevel >= HACKER_MAX_LEVEL;
 
-  updateCard("mouse",   mouseCps,   mouseLevel,   mouseCost,   MOUSE_MAX_LEVEL,   MOUSE_CPS_GAIN,   mouseMaxed);
-  updateCard("servant", servantCps, servantLevel, servantCost, SERVANT_MAX_LEVEL, SERVANT_CPS_GAIN, servantMaxed);
-  updateCard("robot",   robotCps,   robotLevel,   robotCost,   ROBOT_MAX_LEVEL,   ROBOT_CPS_GAIN,   robotMaxed);
-  updateCard("hacker",  hackerCps,  hackerLevel,  hackerCost,  HACKER_MAX_LEVEL,  HACKER_CPS_GAIN,  hackerMaxed);
-  updateCard("army",    armyCps,    armyLevel,    armyCost,    ARMY_MAX_LEVEL,    ARMY_CPS_GAIN,    armyMaxed);
-  updateCard("server",  serverCps,  serverLevel,  serverCost,  SERVER_MAX_LEVEL,  SERVER_CPS_GAIN,  serverMaxed);
+  const armyCps = getArmyCps();
+  const armyCost = getArmyCost();
+  const armyMaxed = armyLevel >= ARMY_MAX_LEVEL;
 
-  // Update the "Cost: X Clicks" text under the unlock button
-  const sublabel = document.getElementById("autoclickerbuySublabel");
-  if (sublabel) sublabel.textContent = `Cost: ${AUTOCLICKER_UNLOCK_COST.toLocaleString()} Clicks`;
-};
+  const serverCps = getServerCps();
+  const serverCost = getServerCost();
+  const serverMaxed = serverLevel >= SERVER_MAX_LEVEL;
 
-// ── Update name style card locks ──
-const updateUnlockedStyles = () => {
-  const score = getScore();
+  const autoclickerSublabel = document.getElementById("autoclickerbuySublabel");
+  // Low-end mouse
+  const mouse = document.getElementById("mouse");
+  const mouseLabel = mouse?.querySelector(".style-label");
+  const mouseSublabel = document.getElementById("mouseSublabel");
+  const mouseUpgradeCount = document.getElementById("mouseUpgradeCount");
+  // Servant
+  const servant = document.getElementById("servant");
+  const servantLabel = servant?.querySelector(".style-label");
+  const servantSublabel = document.getElementById("servantSublabel");
+  const servantUpgradeCount = document.getElementById("servantUpgradeCount");
+  // Robot
+  const robot = document.getElementById("robot");
+  const robotLabel = robot?.querySelector(".style-label");
+  const robotSublabel = document.getElementById("robotSublabel");
+  const robotUpgradeCount = document.getElementById("robotUpgradeCount");
+  // Hacker
+  const hacker = document.getElementById("hacker");
+  const hackerLabel = hacker?.querySelector(".style-label");
+  const hackerSublabel = document.getElementById("hackerSublabel");
+  const hackerUpgradeCount = document.getElementById("hackerUpgradeCount");
+  // Army
+  const army = document.getElementById("army");
+  const armyLabel = army?.querySelector(".style-label");
+  const armySublabel = document.getElementById("armySublabel");
+  const armyUpgradeCount = document.getElementById("armyUpgradeCount");
+  // Server
+  const server = document.getElementById("server");
+  const serverLabel = server?.querySelector(".style-label");
+  const serverSublabel = document.getElementById("serverSublabel");
+  const serverUpgradeCount = document.getElementById("serverUpgradeCount");
 
-  const cards = {
-    black:   document.getElementById("blackStyleBtn"),
-    blue:    document.getElementById("blueStyleBtn"),
-    gold:    document.getElementById("goldStyleBtn"),
-    purple:  document.getElementById("purpleStyleBtn"),
-    redPink: document.getElementById("redPinkStyleBtn"),
-    rainbow: document.getElementById("rainbowStyleBtn"),
-  };
+  // Update the text under the main unlock button.
+  if (autoclickerSublabel) {
+    autoclickerSublabel.textContent = `Cost: ${AUTOCLICKER_UNLOCK_COST.toLocaleString()} Clicks`;
+  }
 
-  Object.values(cards).forEach(c => c?.classList.add("locked"));
-  document.getElementById("blackSublabel").textContent   = "Always unlocked";
-  document.getElementById("blueSublabel").textContent    = "🔒 Unlock at 1,000";
-  document.getElementById("goldSublabel").textContent    = "🔒 Unlock at 10,000";
-  document.getElementById("purpleSublabel").textContent  = "🔒 Unlock at 100,000";
-  document.getElementById("redPinkSublabel").textContent = "🔒 Unlock at 1,000,000";
-  document.getElementById("rainbowSublabel").textContent = "🔒 Unlock at 10,000,000";
+  // Lock the upgrade card when the menu is locked or the player cannot afford it.
+  if (mouse) {
+    mouse.classList.toggle("locked", !autoClickerUnlocked || score < mouseCost || mouseMaxed);
+  }
+  if (servant) {
+    servant.classList.toggle("locked", !autoClickerUnlocked || score < servantCost || servantMaxed);
+  }
+  if (robot) {
+    robot.classList.toggle("locked", !autoClickerUnlocked || score < robotCost || robotMaxed);
+  }
+  if (hacker) {
+    hacker.classList.toggle("locked", !autoClickerUnlocked || score < hackerCost || hackerMaxed);
+  }
+  if (army) {
+    army.classList.toggle("locked", !autoClickerUnlocked || score < armyCost || armyMaxed);
+  }
+  if (server) {
+    server.classList.toggle("locked", !autoClickerUnlocked || score < serverCost || serverMaxed);
+  }
 
-  cards.black?.classList.remove("locked");
-  if (score >= 1000)     { cards.blue?.classList.remove("locked");    document.getElementById("blueSublabel").textContent    = "Unlocked at 1,000"; }
-  if (score >= 10000)    { cards.gold?.classList.remove("locked");    document.getElementById("goldSublabel").textContent    = "Unlocked at 10,000"; }
-  if (score >= 100000)   { cards.purple?.classList.remove("locked");  document.getElementById("purpleSublabel").textContent  = "Unlocked at 100,000"; }
-  if (score >= 1000000)  { cards.redPink?.classList.remove("locked"); document.getElementById("redPinkSublabel").textContent = "Unlocked at 1,000,000"; }
-  if (score >= 10000000) { cards.rainbow?.classList.remove("locked"); document.getElementById("rainbowSublabel").textContent = "Unlocked at 10,000,000"; }
+  // Show the current CPS inside the Upgrades menu.
+  if (mouseLabel) {
+    mouseLabel.textContent = `Current: ${mouseCps.toFixed(1)} CPS`;
+  }
+  // Show how many Low-End Mouse upgrades have been bought.
+  if (mouseUpgradeCount) {
+    mouseUpgradeCount.textContent = mouseLevel.toLocaleString();
+  }
+  // Show the cost and reward for the upgrade inside the Upgrades menu.
+  if (mouseSublabel) {
+    mouseSublabel.textContent = mouseMaxed
+      ? `Maxed out at ${MOUSE_MAX_LEVEL} upgrades`
+      : `Cost: ${mouseCost.toLocaleString()} Clicks | +${MOUSE_CPS_GAIN.toFixed(1)} CPS`;
+  }
+
+  if (servantLabel) {
+    servantLabel.textContent = `Current: ${servantCps.toFixed(1)} CPS`;
+  }
+  if (servantUpgradeCount) {
+    servantUpgradeCount.textContent = servantLevel.toLocaleString();
+  }
+  if (servantSublabel) {
+    servantSublabel.textContent = servantMaxed
+      ? `Maxed out at ${SERVANT_MAX_LEVEL} upgrades`
+      : `Cost: ${servantCost.toLocaleString()} Clicks | +${SERVANT_CPS_GAIN.toFixed(1)} CPS`;
+  }
+
+  if (robotLabel) {
+    robotLabel.textContent = `Current: ${robotCps.toFixed(1)} CPS`;
+  }
+  if (robotUpgradeCount) {
+    robotUpgradeCount.textContent = robotLevel.toLocaleString();
+  }
+  if (robotSublabel) {
+    robotSublabel.textContent = robotMaxed
+      ? `Maxed out at ${ROBOT_MAX_LEVEL} upgrades`
+      : `Cost: ${robotCost.toLocaleString()} Clicks | +${ROBOT_CPS_GAIN.toFixed(1)} CPS`;
+  }
+
+  if (hackerLabel) {
+    hackerLabel.textContent = `Current: ${hackerCps.toFixed(1)} CPS`;
+  }
+  if (hackerUpgradeCount) {
+    hackerUpgradeCount.textContent = hackerLevel.toLocaleString();
+  }
+  if (hackerSublabel) {
+    hackerSublabel.textContent = hackerMaxed
+      ? `Maxed out at ${HACKER_MAX_LEVEL} upgrades`
+      : `Cost: ${hackerCost.toLocaleString()} Clicks | +${HACKER_CPS_GAIN.toFixed(1)} CPS`;
+  }
+
+  if (armyLabel) {
+    armyLabel.textContent = `Current: ${armyCps.toFixed(1)} CPS`;
+  }
+  if (armyUpgradeCount) {
+    armyUpgradeCount.textContent = armyLevel.toLocaleString();
+  }
+  if (armySublabel) {
+    armySublabel.textContent = armyMaxed
+      ? `Maxed out at ${ARMY_MAX_LEVEL} upgrades`
+      : `Cost: ${armyCost.toLocaleString()} Clicks | +${ARMY_CPS_GAIN.toFixed(1)} CPS`;
+  }
+
+  if (serverLabel) {
+    serverLabel.textContent = `Current: ${serverCps.toFixed(1)} CPS`;
+  }
+  if (serverUpgradeCount) {
+    serverUpgradeCount.textContent = serverLevel.toLocaleString();
+  }
+  if (serverSublabel) {
+    serverSublabel.textContent = serverMaxed
+      ? `Maxed out at ${SERVER_MAX_LEVEL} upgrades`
+      : `Cost: ${serverCost.toLocaleString()} Clicks | +${SERVER_CPS_GAIN.toFixed(1)} CPS`;
+  }
 };
 
 // ── Save ──
@@ -446,6 +658,8 @@ async function save() {
   await setDoc(doc(db, "leaderboard", uid), dataToSave, { merge: true });
 
   // "Progress saved!" animation
+  document.getElementById("autoclickerInformer").textContent = "Progress saved!";
+
   savedInformer.classList.remove("fade-in-trigger", "fade-out-trigger");
   void savedInformer.offsetWidth;
   savedInformer.classList.add("fade-in-trigger");
@@ -561,17 +775,17 @@ onClick("autoclickerbuyBtn", unlockAutoClickerUpgrades);
 
 // ── Upgrades modal ──
 const upgradesModal = document.getElementById("upgradesModal");
-onClick("upgradesBtn",   () => upgradesModal.style.display = "block");
+onClick("upgradesBtn", () => upgradesModal.style.display = "block");
 onClick("upgradesClose", () => upgradesModal.style.display = "none");
 
-// ── Upgrade cards ──
-onClick("mouse",   buyMouseUpgrade);
+// Upgrades [Mouse, Servant, Robot]
+onClick("mouse", buyMouseUpgrade);
 onClick("servant", buyServantUpgrade);
-onClick("robot",   buyRobotUpgrade);
-onClick("hacker",  buyHackerUpgrade);
-onClick("army",    buyArmyUpgrade);
-onClick("server",  buyServerUpgrade);
-
+onClick("robot", buyRobotUpgrade);
+onClick("hacker", buyHackerUpgrade);
+onClick("army", buyArmyUpgrade);
+onClick("server", buyServerUpgrade);
+ 
 // ── Settings modal ──
 const settingsModal = document.getElementById("settingsModal");
 document.getElementById("settingsBtn").addEventListener("click",   () => settingsModal.style.display = "block");
@@ -627,8 +841,8 @@ onClick("music1Card", () => {
 
 // ── Close modals on backdrop click ──
 window.addEventListener("click", (event) => {
-  if (event.target === settingsModal)      settingsModal.style.display      = "none";
-  if (event.target === leaderboardModal)   leaderboardModal.style.display   = "none";
+  if (event.target === settingsModal) settingsModal.style.display = "none";
   if (event.target === customizationModal) customizationModal.style.display = "none";
-  if (event.target === upgradesModal)      upgradesModal.style.display      = "none";
+  if (event.target === leaderboardModal) leaderboardModal.style.display = "none";
+  if (event.target === upgradesModal) upgradesModal.style.display = "none";
 });
