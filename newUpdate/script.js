@@ -303,15 +303,13 @@ const getScore = () => {
 };
 
 const setScore = (newScore) => {
-  let _score = 0
-  _score = Math.max(0, newScore);
-  document.getElementById("counter").textContent = Math.floor(_score).toLocaleString();
+  score = Math.max(0, newScore);
+  document.getElementById("counter").textContent = Math.floor(score).toLocaleString();
 };
 
 const addScore = (amount) => {
-  let _score = 0
-  _score += amount;
-  document.getElementById("counter").textContent = Math.floor(_score).toLocaleString();
+  score += amount;
+  document.getElementById("counter").textContent = Math.floor(score).toLocaleString();
   updateUnlockedStyles();
   updateUnlockedAutoClicker();
 };
@@ -406,9 +404,9 @@ const _rafTick = (timestamp) => {
 
     const cps = getTotalAutoClickerCps();
     if (cps > 0) {
-      _score += cps * delta;
+      score += cps * delta;
       document.getElementById("counter").textContent =
-        Math.floor(_score).toLocaleString();
+        Math.floor(score).toLocaleString();
     }
 
     if (timestamp - _lastUiRefresh > 200) {
