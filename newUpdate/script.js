@@ -308,7 +308,7 @@ const setScore = (newScore) => {
 };
 
 const addScore = (amount) => {
-  let score += amount;
+  score += amount;
   document.getElementById("counter").textContent = Math.floor(score).toLocaleString();
   updateUnlockedStyles();
   updateUnlockedAutoClicker();
