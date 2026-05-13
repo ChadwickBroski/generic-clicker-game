@@ -203,13 +203,6 @@ if (autoClickerUnlocked) {
 }
 
 // ── Score helpers ──
-// getScore returns the internal float so CPS math stays precise
-const getScore = () => number;
-
-const setScore = (newScore) => {
-  number = Math.max(0, newScore);
-  document.getElementById("counter").textContent = Math.floor(number).toLocaleString();
-};
 
 // ── CPS helpers ──
 const getMouseCps   = () => mouseLevel   * MOUSE_CPS_GAIN;
