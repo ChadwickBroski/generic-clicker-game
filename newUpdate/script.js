@@ -457,7 +457,7 @@ onClick("rainbowStyleBtn", () => {
 // Customization [BACKGROUND MUSIC]
 const bgmusic = new Audio("Chill-prettyjohn1.mp3"); // replace with your actual file path
 bgmusic.loop = true;
-let isbgmusicPlaying = false;
+let isbgmusicPlaying = true;
 
 const music1Card = document.getElementById("music1Card");
 //const music2Card = document.getElementById("music2Card");
