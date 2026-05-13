@@ -455,29 +455,29 @@ onClick("rainbowStyleBtn", () => {
 });
 
 // Customization [BACKGROUND MUSIC]
-const c418Audio = new Audio("C418 - Subwoofer Lullaby.mp3"); // replace with your actual file path
-c418Audio.loop = true;
-let isC418Playing = false;
+const bgmusic = new Audio("Chill-prettyjohn1.mp3"); // replace with your actual file path
+bgmusic.loop = true;
+let isbgmusicPlaying = false;
 
 const music1Card = document.getElementById("music1Card");
-const music2Card = document.getElementById("music2Card");
-const music3Card = document.getElementById("music3Card");
+//const music2Card = document.getElementById("music2Card");
+//const music3Card = document.getElementById("music3Card");
 
 onClick("music1Card", () => {
-  if (isC418Playing) {
-    c418Audio.pause();
-    isC418Playing = false;
+  if (isbgmusicPlaying) {
+    bgmusic.pause();
+    isbgmusicPlaying = false;
     music1Card.classList.remove("selected");
     document.getElementById("music1Label").textContent = "Off";
   } else {
-    c418Audio.play();
-    isC418Playing = true;
+    bgmusic.play();
+    isbgmusicPlaying = true;
     music1Card.classList.add("selected");
-    music2Card.classList.remove("selected");
-    music3Card.classList.remove("selected");
+    //music2Card.classList.remove("selected");
+    //music3Card.classList.remove("selected");
     document.getElementById("music1Label").textContent = "Playing ▶";
-    document.getElementById("music2Label").textContent = "Off";
-    document.getElementById("music3Label").textContent = "Off";
+    //document.getElementById("music2Label").textContent = "Off";
+    //document.getElementById("music3Label").textContent = "Off";
   }
 });
 
