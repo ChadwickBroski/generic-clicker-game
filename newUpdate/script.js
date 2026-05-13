@@ -462,6 +462,7 @@ let isbgmusicPlaying = false;
 const music1Card = document.getElementById("music1Card");
 //const music2Card = document.getElementById("music2Card");
 //const music3Card = document.getElementById("music3Card");
+bgmusic.volume = 0.5; // Set initial volume to 50%
 
 onClick("music1Card", () => {
   if (isbgmusicPlaying) {
