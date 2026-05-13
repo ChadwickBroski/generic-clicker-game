@@ -303,12 +303,12 @@ const getScore = () => {
 };
 
 const setScore = (newScore) => {
-  score = Math.max(0, newScore);
+  let score = Math.max(0, newScore);
   document.getElementById("counter").textContent = Math.floor(score).toLocaleString();
 };
 
 const addScore = (amount) => {
-  score += amount;
+  let score += amount;
   document.getElementById("counter").textContent = Math.floor(score).toLocaleString();
   updateUnlockedStyles();
   updateUnlockedAutoClicker();
