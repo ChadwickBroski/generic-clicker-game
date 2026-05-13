@@ -305,7 +305,7 @@ const getScore = () => {
 const setScore = (newScore) => {
   let _score = 0
   _score = Math.max(0, newScore);
-  document.getElementById("counter").textContent = Math.floor(score).toLocaleString();
+  document.getElementById("counter").textContent = Math.floor(_score).toLocaleString();
 };
 
 const addScore = (amount) => {
