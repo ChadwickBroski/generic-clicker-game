@@ -17,7 +17,6 @@ Go to [chadwickbroski.github.io](https://chadwickbroski.github.io) and click on 
 ## Upcoming updates (probably)
 ### Music
 - Chill background music.
-
 ### Customization
 - Allow customization like color of the names that is being displayed.
 - Be able to change the style of the button, background, music, themes, etc.
