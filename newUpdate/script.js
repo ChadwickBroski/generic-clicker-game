@@ -199,6 +199,7 @@ async function save() {
   await setDoc(doc(db, "leaderboard", uid), dataToSave, { merge: true });
 
   // "Progress saved!" animation
+  informer.textContent = "Progress saved!";
   informer.classList.remove("fade-in-trigger", "fade-out-trigger");
   void informer.offsetWidth;
   informer.classList.add("fade-in-trigger");

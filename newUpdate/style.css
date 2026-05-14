@@ -63,18 +63,23 @@ h3 {
 
 .informer {
   position: absolute;
-  top: 12%;
-  left: 4%;
+  top: 6%;
+  left: 82%;
+  right: auto;
   font-family: "Nunito", sans-serif;
   color: orange;
+  border: 2px solid orange;
+  padding: 12px 24px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 0 0 orange;
   opacity: 0;
 }
 
 .fade-in-trigger  { animation: fade-in  1s forwards; }
 .fade-out-trigger { animation: fade-out 1s forwards; }
 
-@keyframes fade-in  { to { top: 8%; opacity: 1; } }
-@keyframes fade-out { from { top: 8%; opacity: 1; } to { top: 8%; opacity: 0; } }
+@keyframes fade-in  { to { left: 78%; opacity: 1; } }
+@keyframes fade-out { from { left: 78%; opacity: 1; } to {left: 78%; opacity: 0; } }
 
 .auto-save {
   font-family: "Nunito", sans-serif;
