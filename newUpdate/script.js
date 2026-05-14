@@ -121,6 +121,10 @@ let playerName = "Anonymous";
 let isNewPlayer = false;
 let nameStyle   = 1; // Default
 
+const renderScore = () => {
+  document.getElementById("counter").textContent = Math.floor(number).toLocaleString();
+};
+
 // Show Loading... until we get the value from Firestore
 document.getElementById("counter").innerHTML = "Loading...";
 
@@ -136,7 +140,7 @@ if (playerDoc.exists()) {
   isNewPlayer = true;
 }
 
-document.getElementById("counter").innerHTML = number;
+renderScore();
 document.getElementById("playerNameInput").value = playerName;
 
 // Highlight the card that matches the player's saved style
@@ -163,9 +167,10 @@ async function saveNameStyle(styleNum) {
 // ── Save to localStorage (offline) and Firestore (leaderboard) ──
 // merge:true ensures manual tags set in the Firestore console are never overwritten
 async function save() {
-  localStorage.setItem("value", number);
+  const savedScore = Math.floor(number);
+  localStorage.setItem("value", savedScore);
 
-  const dataToSave = { name: playerName, score: number, ...getNameStyleSaveData(nameStyle) };
+  const dataToSave = { name: playerName, score: savedScore, ...getNameStyleSaveData(nameStyle) };
 
   // 🟢 AUTOMATIC: First 100 tag
   // On first ever save, count how many players already exist.
@@ -193,13 +198,17 @@ async function save() {
 
 function add() {
   number++;
-  document.getElementById("counter").innerHTML = number;
+  renderScore();
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
 }
 
 function reset() {
   if (confirm("Do you want to reset your progress? (Removes all of your progress)")) {
     number = 0;
-    document.getElementById("counter").innerHTML = number;
+    renderScore();
+    updateUnlockedStyles();
+    updateUnlockedAutoClicker();
     save();
   }
 }
@@ -298,18 +307,17 @@ const onClick = (id, handler) => {
 };
 
 const getScore = () => {
-  const counter = document.getElementById("counter");
-  return Number(counter?.textContent.replace(/,/g, "")) || 0;
+  return Math.floor(number);
 };
 
 const setScore = (newScore) => {
-  let score = Math.max(0, newScore);
-  document.getElementById("counter").textContent = Math.floor(score).toLocaleString();
+  number = Math.max(0, Number(newScore) || 0);
+  renderScore();
 };
 
 const addScore = (amount) => {
-  score += amount;
-  document.getElementById("counter").textContent = Math.floor(score).toLocaleString();
+  number += amount;
+  renderScore();
   updateUnlockedStyles();
   updateUnlockedAutoClicker();
 };
@@ -404,9 +412,8 @@ const _rafTick = (timestamp) => {
 
     const cps = getTotalAutoClickerCps();
     if (cps > 0) {
-      score += cps * delta;
-      document.getElementById("counter").textContent =
-        Math.floor(score).toLocaleString();
+      number += cps * delta;
+      renderScore();
     }
 
     if (timestamp - _lastUiRefresh > 200) {
