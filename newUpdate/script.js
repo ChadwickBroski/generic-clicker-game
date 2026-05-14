@@ -120,6 +120,7 @@ let number     = 0;
 let playerName = "Anonymous";
 let isNewPlayer = false;
 let nameStyle   = 1; // Default
+let savedPlayerData = null;
 
 const renderScore = () => {
   document.getElementById("counter").textContent = Math.floor(number).toLocaleString();
@@ -132,6 +133,7 @@ document.getElementById("counter").innerHTML = "Loading...";
 const playerDoc = await getDoc(doc(db, "leaderboard", uid));
 if (playerDoc.exists()) {
   const data = playerDoc.data();
+  savedPlayerData = data;
   number     = data.score     ?? 0;
   playerName = data.name      ?? "Anonymous";
   nameStyle  = getStoredNameStyle(data);
@@ -170,7 +172,18 @@ async function save() {
   const savedScore = Math.floor(number);
   localStorage.setItem("value", savedScore);
 
-  const dataToSave = { name: playerName, score: savedScore, ...getNameStyleSaveData(nameStyle) };
+  const dataToSave = {
+    name: playerName,
+    score: savedScore,
+    autoClickerUnlocked,
+    mouseLevel,
+    servantLevel,
+    robotLevel,
+    hackerLevel,
+    armyLevel,
+    serverLevel,
+    ...getNameStyleSaveData(nameStyle)
+  };
 
   // 🟢 AUTOMATIC: First 100 tag
   // On first ever save, count how many players already exist.
@@ -206,9 +219,15 @@ function add() {
 function reset() {
   if (confirm("Do you want to reset your progress? (Removes all of your progress)")) {
     number = 0;
+    autoClickerUnlocked = false;
+    mouseLevel = 0;
+    servantLevel = 0;
+    robotLevel = 0;
+    hackerLevel = 0;
+    armyLevel = 0;
+    serverLevel = 0;
     renderScore();
-    updateUnlockedStyles();
-    updateUnlockedAutoClicker();
+    refreshAutoClickerUi();
     save();
   }
 }
@@ -356,6 +375,12 @@ const SERVER_COST_MULTIPLIER = 1.24;
 const SERVER_CPS_GAIN = 175;
 const SERVER_MAX_LEVEL = 99;
 
+const normalizeUpgradeLevel = (level, maxLevel) => {
+  const parsedLevel = Number(level);
+  if (!Number.isFinite(parsedLevel)) return 0;
+  return Math.min(Math.max(0, Math.floor(parsedLevel)), maxLevel);
+};
+
 // This starts false because the Upgrades menu is locked at first.
 let autoClickerUnlocked = false;
 
@@ -365,6 +390,16 @@ let robotLevel = 0;
 let hackerLevel = 0;
 let armyLevel = 0;
 let serverLevel = 0;
+
+if (savedPlayerData) {
+  autoClickerUnlocked = savedPlayerData.autoClickerUnlocked === true;
+  mouseLevel = normalizeUpgradeLevel(savedPlayerData.mouseLevel, MOUSE_MAX_LEVEL);
+  servantLevel = normalizeUpgradeLevel(savedPlayerData.servantLevel, SERVANT_MAX_LEVEL);
+  robotLevel = normalizeUpgradeLevel(savedPlayerData.robotLevel, ROBOT_MAX_LEVEL);
+  hackerLevel = normalizeUpgradeLevel(savedPlayerData.hackerLevel, HACKER_MAX_LEVEL);
+  armyLevel = normalizeUpgradeLevel(savedPlayerData.armyLevel, ARMY_MAX_LEVEL);
+  serverLevel = normalizeUpgradeLevel(savedPlayerData.serverLevel, SERVER_MAX_LEVEL);
+}
 
 // Mouse CPS depends on how many Mouse upgrades were bought inside the Upgrades menu.
 const getMouseCps = () => mouseLevel * MOUSE_CPS_GAIN;
@@ -441,6 +476,13 @@ const _updateCpsDisplay = () => {
   if (el) el.textContent = `${getTotalAutoClickerCps().toFixed(1)} CPS`;
 };
 
+const refreshAutoClickerUi = () => {
+  updateAutoClickerButtons();
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+  _updateCpsDisplay();
+};
+
 // ──────────────────────────────────────────────────────────────────────────
 
 const showInformer = (id) => {
@@ -466,7 +508,14 @@ function showUpgrades() {
   }
 }
 
-document.getElementById("autoclickerbuyBtn").style.display = "block";
+function updateAutoClickerButtons() {
+  const unlockBtn = document.getElementById("autoclickerbuyBtn");
+  const upgradesBtn = document.getElementById("upgradesBtn");
+  if (unlockBtn) unlockBtn.style.display = autoClickerUnlocked ? "none" : "block";
+  if (upgradesBtn) upgradesBtn.style.display = autoClickerUnlocked ? "block" : "none";
+}
+
+updateAutoClickerButtons();
 
 function unlockAutoClickerUpgrades() {
   const score = getScore();
@@ -479,11 +528,9 @@ function unlockAutoClickerUpgrades() {
 
   setScore(score - AUTOCLICKER_UNLOCK_COST);
   autoClickerUnlocked = true;
-  document.getElementById("autoclickerbuyBtn").style.display = "none";
+  updateAutoClickerButtons();
   showInformer("autoclickerInformer");
-  showUpgrades();
-  updateUnlockedStyles();
-  updateUnlockedAutoClicker();
+  refreshAutoClickerUi();
 }
 
 function buyMouseUpgrade() {
@@ -507,8 +554,7 @@ function buyMouseUpgrade() {
 
   setScore(score - mouseCost);
   mouseLevel++;
-  updateUnlockedStyles();
-  updateUnlockedAutoClicker();
+  refreshAutoClickerUi();
 }
 
 function buyServantUpgrade() {
@@ -532,8 +578,7 @@ function buyServantUpgrade() {
 
   setScore(score - servantCost);
   servantLevel++;
-  updateUnlockedStyles();
-  updateUnlockedAutoClicker();
+  refreshAutoClickerUi();
 }
 
 function buyRobotUpgrade() {
@@ -557,8 +602,7 @@ function buyRobotUpgrade() {
 
   setScore(score - robotCost);
   robotLevel++;
-  updateUnlockedStyles();
-  updateUnlockedAutoClicker();
+  refreshAutoClickerUi();
 }
 
 
@@ -583,8 +627,7 @@ function buyHackerUpgrade() {
 
   setScore(score - hackerCost);
   hackerLevel++;
-  updateUnlockedStyles();
-  updateUnlockedAutoClicker();
+  refreshAutoClickerUi();
 }
 
 function buyArmyUpgrade() {
@@ -608,8 +651,7 @@ function buyArmyUpgrade() {
 
   setScore(score - armyCost);
   armyLevel++;
-  updateUnlockedStyles();
-  updateUnlockedAutoClicker();
+  refreshAutoClickerUi();
 }
 
 function buyServerUpgrade() {
@@ -633,8 +675,7 @@ function buyServerUpgrade() {
 
   setScore(score - serverCost);
   serverLevel++;
-  updateUnlockedStyles();
-  updateUnlockedAutoClicker();
+  refreshAutoClickerUi();
 }
 
 // Updates the autoclicker labels and locked styles.
@@ -846,12 +887,16 @@ const updateUnlockedStyles = () => {
   }
 };
 
-window.addEventListener("load", () => {
-  updateUnlockedStyles();
-  updateUnlockedAutoClicker();
-  _updateCpsDisplay();
+const initializeGameLoop = () => {
+  refreshAutoClickerUi();
   startSmoothLoop(); // kick off the rAF counter animation
-});
+};
+
+if (document.readyState === "loading") {
+  window.addEventListener("DOMContentLoaded", initializeGameLoop, { once: true });
+} else {
+  initializeGameLoop();
+}
 
 // Upgrades Modal
 const upgradesModal = document.getElementById("upgradesModal");
