@@ -3,13 +3,24 @@
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/x-icon" href="GenericLogo-removebg-preview__1_-removebg-preview.png">
+    <link rel="icon" type="image/x-icon" href="assets/GenericLogo-removebg-preview__1_-removebg-preview.png">
     <title>Generic Clicker Game</title>
   </head>
   <body>
     <h1>Generic Clicker Game</h1>
     <div class="counter" id="counter">Loading...</div>
+    <div class="counter" id="totalCps" style="font-size: 20px; top: 35%;">0.0 CPS</div>
+    <div class="informer" id="autoclickerInformer">Autoclicker upgrade bought!</div>
+    
     <button type="button" class="button" id="clickBtn">CLICK ME</button>
+
+    <button type="button" class="button" id="autoclickerbuyBtn" style="flex-direction: column;top:70%; padding: 17px 11px; --button-color:green;--button-bg:#f0fff0;">
+      Unlock Autoclicker Upgrades
+      <span style="display:block;font-size:12px;" id="autoclickerbuySublabel">Cost: 1,000 Clicks</span>
+    </button>
+
+    <!-- Autoclicker Upgrade -->
+    <button type="button" class="button" id="upgradesBtn" style="top:30%; left: 10%; right:auto; padding: 7px 11px; --button-color:green;--button-bg:#f0fff0; display:none;">Upgrades</button>
 
     <!-- Settings Button -->
     <button type="button" class="button" id="settingsBtn" style="top:6%; left: 90%; right:auto; padding: 7px 11px;--button-color:blue;--button-bg:azure;">Settings</button>
@@ -20,6 +31,87 @@
     <!-- Customization Button -->
     <button type="button" class="button" id="customizationBtn" style="top:20%; left: 90%; right:auto; padding: 7px 11px; --button-color:rgb(160, 3, 160);--button-bg:rgb(255, 239, 254);">Customization</button>
 
+    <!-- Upgrades Modal -->
+    <div id="upgradesModal" class="modal">
+      <div class="modal-content" style="width: 80%;">
+        <span class="close" id="upgradesClose">&times;</span>
+        <h2>Upgrades</h2>
+        <hr class="modal-divider">
+        <p class="reset-desc" style="margin-top:8px;">Upgrades are like Autoclickers. They can be bought with clicks.</p>
+        <!-- Upgrade options will be added here -->
+        <div class="style-grid">
+
+          <!-- Mouse -->
+          <div class="style-card" id="mouse">
+            <div class="upgrade-count" id="mouseUpgradeCount">0</div>
+            <div class="style-preview upgrade-preview">
+              <img src="assets/lowEndMouse.png" alt="Mouse upgrade" class="upgrade-image">
+              <span style="color:black;">Low-End Mouse</span>
+            </div>
+            <div class="style-label">Current: 0.0 CPS</div>
+            <div class="style-sublabel" id="mouseSublabel">Cost: 10 Clicks | +0.1 CPS</div>
+          </div>
+
+          <!-- Servant -->
+          <div class="style-card" id="servant">
+            <div class="upgrade-count" id="servantUpgradeCount">0</div>
+            <div class="style-preview upgrade-preview">
+              <img src="assets/servant.png" alt="Servant upgrade" class="upgrade-image">
+              <span style="color:black;">Servant</span>
+            </div>
+            <div class="style-label">Current: 0.0 CPS</div>
+            <div class="style-sublabel" id="servantSublabel">Cost: 250 Clicks | +2.0 CPS</div>
+          </div>
+
+          <!-- Robot -->
+          <div class="style-card" id="robot">
+            <div class="upgrade-count" id="robotUpgradeCount">0</div>
+            <div class="style-preview upgrade-preview">
+              <img src="assets/robot.png" alt="Robot upgrade" class="upgrade-image">
+              <span style="color:black;">Robot</span>
+            </div>
+            <div class="style-label">Current: 0.0 CPS</div>
+            <div class="style-sublabel" id="robotSublabel">Cost: 1,000 Clicks | +10.0 CPS</div>
+          </div>
+          
+          <!-- Hacker -->
+          <div class="style-card" id="hacker">
+            <div class="upgrade-count" id="hackerUpgradeCount">0</div>
+            <div class="style-preview upgrade-preview">
+              <img src="assets/robot.png" alt="Hacker upgrade" class="upgrade-image">
+              <span style="color:black;">Hacker</span>
+            </div>
+            <div class="style-label">Current: 0.0 CPS</div>
+            <div class="style-sublabel" id="hackerSublabel">Cost: 1,000 Clicks | +10.0 CPS</div>
+          </div>
+
+          <!-- Army -->
+          <div class="style-card" id="army">
+            <div class="upgrade-count" id="armyUpgradeCount">0</div>
+            <div class="style-preview upgrade-preview">
+              <img src="assets/army.png" alt="Army upgrade" class="upgrade-image">
+              <span style="color:black;">Army</span>
+            </div>
+            <div class="style-label">Current: 0.0 CPS</div>
+            <div class="style-sublabel" id="armySublabel">Cost: 1,000 Clicks | +10.0 CPS</div>
+          </div>
+
+          <!-- Server -->
+          <div class="style-card" id="server">
+            <div class="upgrade-count" id="serverUpgradeCount">0</div>
+            <div class="style-preview upgrade-preview">
+              <img src="assets/server.png" alt="Server upgrade" class="upgrade-image">
+              <span style="color:black;">Server</span>
+            </div>
+            <div class="style-label">Current: 0.0 CPS</div>
+            <div class="style-sublabel" id="serverSublabel">Cost: 1,000 Clicks | +10.0 CPS</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- CustomizationModal -->
     <div id="customizationModal" class="modal">
       <div class="modal-content">
         <span class="close" id="customizationClose">&times;</span>
@@ -84,8 +176,17 @@
             <div class="style-sublabel" id="rainbowSublabel">🔒 Unlock at 10,000,000</div>
           </div>
         </div>
-      </div>
-    </div>
+        <h3>BACKGROUND MUSIC</h3>
+        <div class="style-grid">
+          <div class="style-card" id="music1Card">
+            <div class="style-preview">
+              <span style="color:black; width: 100%;">Chill - prettyjohn1 - Pixabay</span>
+            </div>
+            <div class="style-label" id="music1Label">Off</div>
+          </div>
+        </div>  
+      </div>  
+    </div>   
 
     <!-- Settings Modal -->
     <div id="settingsModal" class="modal">
@@ -123,6 +224,7 @@
       <div class="modal-content">
         <span class="close" id="leaderboardClose">&times;</span>
         <h2>Leaderboard</h2>
+        <p class="reset-desc">Currently holding a competition by Abhay. Whoever gets the highest score by sunday midnight wins.</p>
         <hr class="modal-divider">
         <div class="leaderboard-list">
           <div class="leaderboard-row">
@@ -179,11 +281,11 @@
     </div>
 
     <div>
-      <button type="button" class="button" id="saveBtn" style="top:6%; left:8%; right:auto; padding: 7px 11px;--button-color:orange;--button-bg:lightyellow;">Save</button>
+      <button type="button" class="button" id="saveBtn" style="top:6%; left:8%; right:auto; padding: 7px 11px;--button-color:orange;--button-bg:lightyellow; z-index: 50;">Save</button>
       <p class="informer">Progress saved!</p>
     </div>
 
-    <a class="auto-save" style="right:auto;left:3%;">v0.3.0</a>
+    <a class="auto-save" style="right:auto;left:3%;">v0.3.0 - NEW UPDATES FOR TESTING WILL BE SHOWN HERE.</a>
     <p class="auto-save" style="left: auto; right: 3%;">Made by <a href="chadwickbroski.github.io" style="color:#002CF2;">ChadwickBroski</a>.</p>
 
     <!-- type="module" is required for Firebase imports to work -->
