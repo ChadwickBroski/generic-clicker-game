@@ -1008,7 +1008,7 @@ onClick("rainbowStyleBtn", () => {
 });
 
 // Customization [BACKGROUND MUSIC]
-const bgmusic = new Audio("assets/Chill-prettyjohn1.mp3"); // replace with your actual file path
+const bgmusic = new Audio("ChadwickBroski/generic-clicker-game/assets/Chill-prettyjohn1.mp3"); // replace with your actual file path
 bgmusic.loop = true;
 let isbgmusicPlaying = true;
 
