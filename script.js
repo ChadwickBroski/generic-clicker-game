@@ -1012,6 +1012,10 @@ const bgmusic = new Audio("assets/Chill-prettyjohn1.mp3"); // replace with your 
 bgmusic.loop = true;
 let isbgmusicPlaying = true;
 
+window.onload = () => {
+  isbgmusicPlaying = true;
+};
+
 const music1Card = document.getElementById("music1Card");
 //const music2Card = document.getElementById("music2Card");
 //const music3Card = document.getElementById("music3Card");
