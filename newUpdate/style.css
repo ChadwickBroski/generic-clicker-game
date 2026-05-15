@@ -75,7 +75,7 @@ h3 {
   box-shadow: 2px 2px 0 0 orange;
   margin: 0;
   opacity: 0;
-  z-index: 99;
+  z-index: 50;
 }
 
 .fade-in-trigger  { animation: fade-in  1s forwards; }
