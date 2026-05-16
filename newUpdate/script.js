@@ -1016,11 +1016,7 @@ const music1Card = document.getElementById("music1Card");
 const musicVolume = document.getElementById("musicVolume");
 //const music2Card = document.getElementById("music2Card");
 //const music3Card = document.getElementById("music3Card");
-bgmusic.volume = musicVolume.value / 100;
-
-musicVolume.addEventListener("input", () => {
-  bgmusic.volume = musicVolume.value / 100;
-});
+bgmusic.volume = 0.5;
 
 onClick("music1Card", () => {
   if (isbgmusicPlaying) {
@@ -1039,7 +1035,6 @@ onClick("music1Card", () => {
     //document.getElementById("music3Label").textContent = "Off";
   }
 });
-
 
 // Wire up buttons that exist on the current page.
 if (typeof add === "function") onClick("clickBtn", add);
