@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/x-icon" href="assets/GenericLogo-removebg-preview__1_-removebg-preview.png">
+    <link rel="icon" type="image/x-icon" href="../assets/GenericLogo-removebg-preview__1_-removebg-preview.png">
     <title>Generic Clicker Game</title>
   </head>
   <body>
@@ -38,6 +38,10 @@
         <h2>Upgrades</h2>
         <hr class="modal-divider">
         <p class="reset-desc" style="margin-top:8px;">Upgrades are like Autoclickers. They can be bought with clicks.</p>
+        <button type="button" class="button reset-btn prestige-btn" id="prestigeBtn" style="--button-color:black;--button-bg:white; padding: 7px 18px;">
+            Prestige
+        </button>
+        
         <!-- Upgrade options will be added here -->
         <div class="style-grid">
 
@@ -45,7 +49,7 @@
           <div class="style-card" id="mouse">
             <div class="upgrade-count" id="mouseUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="assets/lowEndMouse.png" alt="Mouse upgrade" class="upgrade-image">
+              <img src="../assets/lowEndMouse.png" alt="Mouse upgrade" class="upgrade-image">
               <span style="color:black;">Low-End Mouse</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
@@ -56,7 +60,7 @@
           <div class="style-card" id="servant">
             <div class="upgrade-count" id="servantUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="assets/servant.png" alt="Servant upgrade" class="upgrade-image">
+              <img src="../assets/servant.png" alt="Servant upgrade" class="upgrade-image">
               <span style="color:black;">Servant</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
@@ -67,18 +71,29 @@
           <div class="style-card" id="robot">
             <div class="upgrade-count" id="robotUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="assets/robot.png" alt="Robot upgrade" class="upgrade-image">
+              <img src="../assets/robot.png" alt="Robot upgrade" class="upgrade-image">
               <span style="color:black;">Robot</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
             <div class="style-sublabel" id="robotSublabel">Cost: 1,000 Clicks | +10.0 CPS</div>
+          </div>
+
+          <!-- Team -->
+          <div class="style-card" id="team">
+            <div class="upgrade-count" id="teamUpgradeCount">0</div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/team.png" alt="Team upgrade" class="upgrade-image">
+              <span style="color:black;">Team</span>
+            </div>
+            <div class="style-label">Current: 0.0 CPS</div>
+            <div class="style-sublabel" id="teamSublabel">Cost: 2,500 Clicks | +20.0 CPS</div>
           </div>
           
           <!-- Hacker -->
           <div class="style-card" id="hacker">
             <div class="upgrade-count" id="hackerUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="assets/hacker.png" alt="Hacker upgrade" class="upgrade-image">
+              <img src="../assets/hacker.png" alt="Hacker upgrade" class="upgrade-image">
               <span style="color:black;">Hacker</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
@@ -89,7 +104,7 @@
           <div class="style-card" id="army">
             <div class="upgrade-count" id="armyUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="assets/army.png" alt="Army upgrade" class="upgrade-image">
+              <img src="../assets/army.png" alt="Army upgrade" class="upgrade-image">
               <span style="color:black;">Army</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
@@ -100,13 +115,65 @@
           <div class="style-card" id="server">
             <div class="upgrade-count" id="serverUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="assets/server.png" alt="Server upgrade" class="upgrade-image">
+              <img src="../assets/server.png" alt="Server upgrade" class="upgrade-image">
               <span style="color:black;">Server</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
             <div class="style-sublabel" id="serverSublabel">Cost: 1,000 Clicks | +10.0 CPS</div>
           </div>
 
+          <!-- Data Center -->
+          <div class="style-card" id="dataCenter">
+            <div class="upgrade-count" id="dataCenterUpgradeCount">0</div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/dataCenter.png" alt="Data Center upgrade" class="upgrade-image">
+              <span style="color:black;">Data Center</span>
+            </div>
+            <div class="style-label">Current: 0.0 CPS</div>
+            <div class="style-sublabel" id="dataCenterSublabel">Cost: 1,000 Clicks | +10.0 CPS</div>
+          </div>
+
+          <!-- Automation Lab -->
+          <div class="style-card" id="automationLab">
+            <div class="upgrade-count" id="automationLabUpgradeCount">0</div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/automationLab.png" alt="Automation Lab upgrade" class="upgrade-image">
+              <span style="color:black;">Automation Lab</span>
+            </div>
+            <div class="style-label">Current: 0.0 CPS</div>
+            <div class="style-sublabel" id="automationLabSublabel">Cost: 1,000 Clicks | +10.0 CPS</div>
+          </div>
+
+          <!-- Cloud Region -->
+          <div class="style-card" id="cloudRegion">
+            <div class="upgrade-count" id="cloudRegionUpgradeCount">0</div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/cloudRegion.png" alt="Cloud Region upgrade" class="upgrade-image">
+              <span style="color:black;">Cloud Region</span>
+            </div>
+            <div class="style-label">Current: 0.0 CPS</div>
+            <div class="style-sublabel" id="cloudRegionSublabel">Cost: 1,000 Clicks | +10.0 CPS</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Prestige Modal -->
+    <div id="prestigeModal" class="modal modal-overlay-top">
+      <div class="modal-content prestige-modal-content">
+        <span class="close" id="prestigeClose">&times;</span>
+        <h2 class="prestige-title">Prestige</h2>
+        <hr class="modal-divider">
+        <p class="reset-desc" style="margin-top:8px;">Clicking Prestige will reset your progress but permanently multiplies every upgrade by x10.</p>
+        <div class="style-card" id="prestige" style="margin-top: 8px;">
+          <div class="upgrade-count" id="prestigeUpgradeCount">0</div>
+          <div class="style-preview upgrade-preview">
+            <img src="../assets/prestige.png" alt="Prestige" class="upgrade-image">
+            <span style="color:black;">Prestige</span>
+          </div>
+          <div class="style-label">Current: x1.0 CPS multiplier</div>
+          <div class="style-sublabel" id="prestigeSublabel">Cost: 10,000,000 Clicks | x10 CPS to all upgrades</div>
         </div>
       </div>
     </div>
@@ -184,7 +251,7 @@
             </div>
             <div class="style-label" id="music1Label">Off</div>
           </div>
-        </div>  
+        </div>
       </div>  
     </div>   
 
@@ -284,7 +351,7 @@
       <p class="informer">Progress saved!</p>
     </div>
 
-    <a class="auto-save" style="right:auto;left:3%;">v0.4.0</a>
+    <a class="auto-save" style="right:auto;left:3%;">v0.4.1 - Upgrades and Prestige Update</a>
     <p class="auto-save" style="left: auto; right: 3%;">Made by <a href="chadwickbroski.github.io" style="color:#002CF2;">ChadwickBroski</a>.</p>
 
     <!-- type="module" is required for Firebase imports to work -->

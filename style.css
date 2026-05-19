@@ -391,3 +391,32 @@ h3 {
   color: #888;
   margin-top: 2px;
 }
+
+.modal-action-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.upgrades-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.prestige-btn {
+  padding: 7px 14px;
+  font-size: 14px;
+}
+
+.prestige-modal-content {
+  width: min(480px, calc(100% - 32px));
+  padding: 24px 20px;
+}
+
+.prestige-title {
+  margin: 4px 0;
+  font-size: 30px;
+}

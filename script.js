@@ -179,9 +179,14 @@ async function save() {
     mouseLevel,
     servantLevel,
     robotLevel,
+    teamLevel,
     hackerLevel,
     armyLevel,
     serverLevel,
+    dataCenterLevel,
+    automationLabLevel,
+    cloudRegionLevel,
+    prestigeCount,
     ...getNameStyleSaveData(nameStyle)
   };
 
@@ -224,9 +229,14 @@ function reset() {
     mouseLevel = 0;
     servantLevel = 0;
     robotLevel = 0;
+    teamLevel = 0;
     hackerLevel = 0;
     armyLevel = 0;
     serverLevel = 0;
+    dataCenterLevel = 0;
+    automationLabLevel = 0;
+    cloudRegionLevel = 0;
+    prestigeCount = 0;
     renderScore();
     refreshAutoClickerUi();
     save();
@@ -360,26 +370,56 @@ const ROBOT_BASE_COST = 1000;
 const ROBOT_COST_MULTIPLIER = 1.18;
 const ROBOT_CPS_GAIN = 10;
 const ROBOT_MAX_LEVEL = 99;
-// Hacker
-const HACKER_BASE_COST = 2000;
-const HACKER_COST_MULTIPLIER = 1.2;
-const HACKER_CPS_GAIN = 20;
-const HACKER_MAX_LEVEL = 99;
+// Team
+const TEAM_BASE_COST = 2500;
+const TEAM_COST_MULTIPLIER = 1.2;
+const TEAM_CPS_GAIN = 20;
+const TEAM_MAX_LEVEL = 99;
 // Army
-const ARMY_BASE_COST = 5000;
+const ARMY_BASE_COST = 4000;
 const ARMY_COST_MULTIPLIER = 1.22;
 const ARMY_CPS_GAIN = 40;
 const ARMY_MAX_LEVEL = 99;
+// Hacker
+const HACKER_BASE_COST = 8000;
+const HACKER_COST_MULTIPLIER = 1.24;
+const HACKER_CPS_GAIN = 100;
+const HACKER_MAX_LEVEL = 99;
 // Server
 const SERVER_BASE_COST = 25000;
-const SERVER_COST_MULTIPLIER = 1.24;
+const SERVER_COST_MULTIPLIER = 1.26;
 const SERVER_CPS_GAIN = 175;
 const SERVER_MAX_LEVEL = 99;
+// Data Center
+const DATA_CENTER_BASE_COST = 65000;
+const DATA_CENTER_COST_MULTIPLIER = 1.28;
+const DATA_CENTER_CPS_GAIN = 500;
+const DATA_CENTER_MAX_LEVEL = 99;
+// Automation Lab
+const AUTOMATION_LAB_BASE_COST = 100000;
+const AUTOMATION_LAB_COST_MULTIPLIER = 1.3;
+const AUTOMATION_LAB_CPS_GAIN = 1000;
+const AUTOMATION_LAB_MAX_LEVEL = 99;
+// Cloud Region
+const CLOUD_REGION_BASE_COST = 250000;
+const CLOUD_REGION_COST_MULTIPLIER = 1.32;
+const CLOUD_REGION_CPS_GAIN = 2500;
+const CLOUD_REGION_MAX_LEVEL = 99;
+
+// Prestige
+const PRESTIGE_BASE_COST = 10000000;
+const PRESTIGE_CPS_BOOST_MULTIPLIER = 10; // 10x CPS multiplier per prestige
 
 const normalizeUpgradeLevel = (level, maxLevel) => {
   const parsedLevel = Number(level);
   if (!Number.isFinite(parsedLevel)) return 0;
   return Math.min(Math.max(0, Math.floor(parsedLevel)), maxLevel);
+};
+
+const normalizePrestigeCount = (count) => {
+  const parsedCount = Number(count);
+  if (!Number.isFinite(parsedCount)) return 0;
+  return Math.max(0, Math.floor(parsedCount));
 };
 
 // This starts false because the Upgrades menu is locked at first.
@@ -388,30 +428,65 @@ let autoClickerUnlocked = false;
 let mouseLevel = 0;
 let servantLevel = 0;
 let robotLevel = 0;
-let hackerLevel = 0;
+let teamLevel = 0;
 let armyLevel = 0;
+let hackerLevel = 0;
 let serverLevel = 0;
+let dataCenterLevel = 0;
+let automationLabLevel = 0;
+let cloudRegionLevel = 0;
+let prestigeCount = 0;
+
+const getPrestigeMultiplier = () => PRESTIGE_CPS_BOOST_MULTIPLIER ** prestigeCount;
+const getPrestigeCost = () => Math.floor(PRESTIGE_BASE_COST * PRESTIGE_CPS_BOOST_MULTIPLIER ** prestigeCount);
+const applyPrestigeMultiplier = (baseCpsGain) => baseCpsGain * getPrestigeMultiplier();
 
 if (savedPlayerData) {
   autoClickerUnlocked = savedPlayerData.autoClickerUnlocked === true;
   mouseLevel = normalizeUpgradeLevel(savedPlayerData.mouseLevel, MOUSE_MAX_LEVEL);
   servantLevel = normalizeUpgradeLevel(savedPlayerData.servantLevel, SERVANT_MAX_LEVEL);
   robotLevel = normalizeUpgradeLevel(savedPlayerData.robotLevel, ROBOT_MAX_LEVEL);
+  teamLevel = normalizeUpgradeLevel(savedPlayerData.teamLevel, TEAM_MAX_LEVEL);
   hackerLevel = normalizeUpgradeLevel(savedPlayerData.hackerLevel, HACKER_MAX_LEVEL);
   armyLevel = normalizeUpgradeLevel(savedPlayerData.armyLevel, ARMY_MAX_LEVEL);
   serverLevel = normalizeUpgradeLevel(savedPlayerData.serverLevel, SERVER_MAX_LEVEL);
+  dataCenterLevel = normalizeUpgradeLevel(savedPlayerData.dataCenterLevel, DATA_CENTER_MAX_LEVEL);
+  automationLabLevel = normalizeUpgradeLevel(savedPlayerData.automationLabLevel, AUTOMATION_LAB_MAX_LEVEL);
+  cloudRegionLevel = normalizeUpgradeLevel(savedPlayerData.cloudRegionLevel, CLOUD_REGION_MAX_LEVEL);
+  prestigeCount = normalizePrestigeCount(savedPlayerData.prestigeCount);
 }
 
+const formatCps = (value) => {
+  const parsedValue = Number(value);
+  if (!Number.isFinite(parsedValue)) return "0.0";
+  return parsedValue.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+};
+
+const getMouseCpsGain = () => applyPrestigeMultiplier(MOUSE_CPS_GAIN);
+const getServantCpsGain = () => applyPrestigeMultiplier(SERVANT_CPS_GAIN);
+const getRobotCpsGain = () => applyPrestigeMultiplier(ROBOT_CPS_GAIN);
+const getTeamCpsGain = () => applyPrestigeMultiplier(TEAM_CPS_GAIN);
+const getArmyCpsGain = () => applyPrestigeMultiplier(ARMY_CPS_GAIN);
+const getHackerCpsGain = () => applyPrestigeMultiplier(HACKER_CPS_GAIN);
+const getServerCpsGain = () => applyPrestigeMultiplier(SERVER_CPS_GAIN);
+const getDataCenterCpsGain = () => applyPrestigeMultiplier(DATA_CENTER_CPS_GAIN);
+const getAutomationLabCpsGain = () => applyPrestigeMultiplier(AUTOMATION_LAB_CPS_GAIN);
+const getCloudRegionCpsGain = () => applyPrestigeMultiplier(CLOUD_REGION_CPS_GAIN);
+
 // Mouse CPS depends on how many Mouse upgrades were bought inside the Upgrades menu.
-const getMouseCps = () => mouseLevel * MOUSE_CPS_GAIN;
-const getServantCps = () => servantLevel * SERVANT_CPS_GAIN;
-const getRobotCps = () => robotLevel * ROBOT_CPS_GAIN;
-const getHackerCps = () => hackerLevel * HACKER_CPS_GAIN;
-const getArmyCps = () => armyLevel * ARMY_CPS_GAIN;
-const getServerCps = () => serverLevel * SERVER_CPS_GAIN;
+const getMouseCps = () => mouseLevel * getMouseCpsGain();
+const getServantCps = () => servantLevel * getServantCpsGain();
+const getRobotCps = () => robotLevel * getRobotCpsGain();
+const getTeamCps = () => teamLevel * getTeamCpsGain();
+const getArmyCps = () => armyLevel * getArmyCpsGain();
+const getHackerCps = () => hackerLevel * getHackerCpsGain();
+const getServerCps = () => serverLevel * getServerCpsGain();
+const getDataCenterCps = () => dataCenterLevel * getDataCenterCpsGain();
+const getAutomationLabCps = () => automationLabLevel * getAutomationLabCpsGain();
+const getCloudRegionCps = () => cloudRegionLevel * getCloudRegionCpsGain();
 
 // Total CPS is the sum of all upgrade CPS.
-const getTotalAutoClickerCps = () => getMouseCps() + getServantCps() + getRobotCps() + getHackerCps() + getArmyCps() + getServerCps();
+const getTotalAutoClickerCps = () => getMouseCps() + getServantCps() + getRobotCps() + getTeamCps() + getHackerCps() + getArmyCps() + getServerCps() + getDataCenterCps() + getAutomationLabCps() + getCloudRegionCps();
 
 // Each bought upgrade makes the next one cost more.
 const getMouseCost = () => {
@@ -423,15 +498,27 @@ const getServantCost = () => {
 const getRobotCost = () => {
   return Math.floor(ROBOT_BASE_COST * ROBOT_COST_MULTIPLIER ** robotLevel);
 };
-const getHackerCost = () => {
-  return Math.floor(HACKER_BASE_COST * HACKER_COST_MULTIPLIER ** hackerLevel);
+const getTeamCost = () => {
+  return Math.floor(TEAM_BASE_COST * TEAM_COST_MULTIPLIER ** teamLevel);
 };
 const getArmyCost = () => {
   return Math.floor(ARMY_BASE_COST * ARMY_COST_MULTIPLIER ** armyLevel);
 };
+const getHackerCost = () => {
+  return Math.floor(HACKER_BASE_COST * HACKER_COST_MULTIPLIER ** hackerLevel);
+};
 const getServerCost = () => {
   return Math.floor(SERVER_BASE_COST * SERVER_COST_MULTIPLIER ** serverLevel);
-}
+};
+const getDataCenterCost = () => {
+  return Math.floor(DATA_CENTER_BASE_COST * DATA_CENTER_COST_MULTIPLIER ** dataCenterLevel);
+};
+const getAutomationLabCost = () => {
+  return Math.floor(AUTOMATION_LAB_BASE_COST * AUTOMATION_LAB_COST_MULTIPLIER ** automationLabLevel);
+};
+const getCloudRegionCost = () => {
+  return Math.floor(CLOUD_REGION_BASE_COST * CLOUD_REGION_COST_MULTIPLIER ** cloudRegionLevel);
+};
 
 // ── Smooth rAF-based autoclicker ───────────────────────────────────────────
 // Instead of a 1-second setInterval that adds large chunks at once, we use
@@ -555,7 +642,8 @@ function buyMouseUpgrade() {
 
   setScore(score - mouseCost);
   mouseLevel++;
-  refreshAutoClickerUi();
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
 }
 
 function buyServantUpgrade() {
@@ -579,7 +667,8 @@ function buyServantUpgrade() {
 
   setScore(score - servantCost);
   servantLevel++;
-  refreshAutoClickerUi();
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
 }
 
 function buyRobotUpgrade() {
@@ -603,32 +692,33 @@ function buyRobotUpgrade() {
 
   setScore(score - robotCost);
   robotLevel++;
-  refreshAutoClickerUi();
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
 }
 
-
-function buyHackerUpgrade() {
+function buyTeamUpgrade() {
   const score = getScore();
-  const hackerCost = getHackerCost();
+  const teamCost = getTeamCost();
 
   if (!autoClickerUnlocked) {
     alert("Unlock autoclicker upgrades first!");
     return;
   }
 
-  if (hackerLevel >= HACKER_MAX_LEVEL) {
-    alert("Hacker is already maxed out!");
+  if (teamLevel >= TEAM_MAX_LEVEL) {
+    alert("Team is already maxed out!");
     return;
   }
 
-  if (score < hackerCost) {
-    alert(`Not enough clicks to purchase the Hacker upgrade! You need ${hackerCost.toLocaleString()} clicks.`);
+  if (score < teamCost) {
+    alert(`Not enough clicks to purchase the Team upgrade! You need ${teamCost.toLocaleString()} clicks.`);
     return;
   }
 
-  setScore(score - hackerCost);
-  hackerLevel++;
-  refreshAutoClickerUi();
+  setScore(score - teamCost);
+  teamLevel++;
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
 }
 
 function buyArmyUpgrade() {
@@ -652,7 +742,33 @@ function buyArmyUpgrade() {
 
   setScore(score - armyCost);
   armyLevel++;
-  refreshAutoClickerUi();
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+}
+
+function buyHackerUpgrade() {
+  const score = getScore();
+  const hackerCost = getHackerCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (hackerLevel >= HACKER_MAX_LEVEL) {
+    alert("Hacker is already maxed out!");
+    return;
+  }
+
+  if (score < hackerCost) {
+    alert(`Not enough clicks to purchase the Hacker upgrade! You need ${hackerCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - hackerCost);
+  hackerLevel++;
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
 }
 
 function buyServerUpgrade() {
@@ -676,12 +792,148 @@ function buyServerUpgrade() {
 
   setScore(score - serverCost);
   serverLevel++;
-  refreshAutoClickerUi();
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+}
+
+function buyDataCenterUpgrade() {
+  const score = getScore();
+  const dataCenterCost = getDataCenterCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (dataCenterLevel >= DATA_CENTER_MAX_LEVEL) {
+    alert("Data Center is already maxed out!");
+    return;
+  }
+
+  if (score < dataCenterCost) {
+    alert(`Not enough clicks to purchase the Data Center upgrade! You need ${dataCenterCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - dataCenterCost);
+  dataCenterLevel++;
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+}
+
+function buyAutomationLabUpgrade() {
+  const score = getScore();
+  const automationLabCost = getAutomationLabCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (automationLabLevel >= AUTOMATION_LAB_MAX_LEVEL) {
+    alert("Automation Lab is already maxed out!");
+    return;
+  }
+
+  if (score < automationLabCost) {
+    alert(`Not enough clicks to purchase the Automation Lab upgrade! You need ${automationLabCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - automationLabCost);
+  automationLabLevel++;
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+}
+
+function buyCloudRegionUpgrade() {
+  const score = getScore();
+  const cloudRegionCost = getCloudRegionCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (cloudRegionLevel >= CLOUD_REGION_MAX_LEVEL) {
+    alert("Cloud Region is already maxed out!");
+    return;
+  }
+
+  if (score < cloudRegionCost) {
+    alert(`Not enough clicks to purchase the Cloud Region upgrade! You need ${cloudRegionCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - cloudRegionCost);
+  cloudRegionLevel++;
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+}
+
+function buyPrestigeUpgrade() {
+  const score = getScore();
+  const prestigeCost = getPrestigeCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (score < prestigeCost) {
+    alert(`Not enough clicks to Prestige! You need ${prestigeCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  const confirmPrestige = confirm(
+    `Prestige will reset your clicks and all upgrade levels, but permanently multiplies every upgrade CPS by x${PRESTIGE_CPS_BOOST_MULTIPLIER}. Continue?`
+  );
+  if (!confirmPrestige) return;
+
+  prestigeCount++;
+  mouseLevel = 0;
+  servantLevel = 0;
+  robotLevel = 0;
+  teamLevel = 0;
+  armyLevel = 0;
+  hackerLevel = 0;
+  serverLevel = 0;
+  dataCenterLevel = 0;
+  automationLabLevel = 0;
+  cloudRegionLevel = 0;
+  autoClickerUnlocked = false;
+
+  setScore(0);
+  const autoclickerBuyBtn = document.getElementById("autoclickerbuyBtn");
+  const upgradesBtn = document.getElementById("upgradesBtn");
+  if (autoclickerBuyBtn) autoclickerBuyBtn.style.display = "block";
+  if (upgradesBtn) upgradesBtn.style.display = "none";
+  if (typeof prestigeModal !== "undefined" && prestigeModal) prestigeModal.style.display = "none";
+  if (typeof upgradesModal !== "undefined" && upgradesModal) upgradesModal.style.display = "none";
+
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+  _updateCpsDisplay();
+
+  alert(`Prestige complete! Total prestige multiplier is now x${formatCps(getPrestigeMultiplier())} on all upgrades.`);
 }
 
 // Updates the autoclicker labels and locked styles.
 const updateUnlockedAutoClicker = () => {
   const score = getScore();
+  const prestigeMultiplier = getPrestigeMultiplier();
+  const prestigeCost = getPrestigeCost();
+  const mouseCpsGain = getMouseCpsGain();
+  const servantCpsGain = getServantCpsGain();
+  const robotCpsGain = getRobotCpsGain();
+  const teamCpsGain = getTeamCpsGain();
+  const armyCpsGain = getArmyCpsGain();
+  const hackerCpsGain = getHackerCpsGain();
+  const serverCpsGain = getServerCpsGain();
+  const dataCenterCpsGain = getDataCenterCpsGain();
+  const automationLabCpsGain = getAutomationLabCpsGain();
+  const cloudRegionCpsGain = getCloudRegionCpsGain();
+
   const mouseCps = getMouseCps();
   const mouseCost = getMouseCost();
   const mouseMaxed = mouseLevel >= MOUSE_MAX_LEVEL;
@@ -694,17 +946,33 @@ const updateUnlockedAutoClicker = () => {
   const robotCost = getRobotCost();
   const robotMaxed = robotLevel >= ROBOT_MAX_LEVEL;
 
-  const hackerCps = getHackerCps();
-  const hackerCost = getHackerCost();
-  const hackerMaxed = hackerLevel >= HACKER_MAX_LEVEL;
+  const teamCps = getTeamCps();
+  const teamCost = getTeamCost();
+  const teamMaxed = teamLevel >= TEAM_MAX_LEVEL;
 
   const armyCps = getArmyCps();
   const armyCost = getArmyCost();
   const armyMaxed = armyLevel >= ARMY_MAX_LEVEL;
 
+  const hackerCps = getHackerCps();
+  const hackerCost = getHackerCost();
+  const hackerMaxed = hackerLevel >= HACKER_MAX_LEVEL;
+
   const serverCps = getServerCps();
   const serverCost = getServerCost();
   const serverMaxed = serverLevel >= SERVER_MAX_LEVEL;
+
+  const dataCenterCps = getDataCenterCps();
+  const dataCenterCost = getDataCenterCost();
+  const dataCenterMaxed = dataCenterLevel >= DATA_CENTER_MAX_LEVEL;
+
+  const automationLabCps = getAutomationLabCps();
+  const automationLabCost = getAutomationLabCost();
+  const automationLabMaxed = automationLabLevel >= AUTOMATION_LAB_MAX_LEVEL;
+
+  const cloudRegionCps = getCloudRegionCps();
+  const cloudRegionCost = getCloudRegionCost();
+  const cloudRegionMaxed = cloudRegionLevel >= CLOUD_REGION_MAX_LEVEL;
 
   const autoclickerSublabel = document.getElementById("autoclickerbuySublabel");
   // Low-end mouse
@@ -722,21 +990,47 @@ const updateUnlockedAutoClicker = () => {
   const robotLabel = robot?.querySelector(".style-label");
   const robotSublabel = document.getElementById("robotSublabel");
   const robotUpgradeCount = document.getElementById("robotUpgradeCount");
-  // Hacker
-  const hacker = document.getElementById("hacker");
-  const hackerLabel = hacker?.querySelector(".style-label");
-  const hackerSublabel = document.getElementById("hackerSublabel");
-  const hackerUpgradeCount = document.getElementById("hackerUpgradeCount");
+  // Team
+  const team = document.getElementById("team");
+  const teamLabel = team?.querySelector(".style-label");
+  const teamSublabel = document.getElementById("teamSublabel");
+  const teamUpgradeCount = document.getElementById("teamUpgradeCount");
   // Army
   const army = document.getElementById("army");
   const armyLabel = army?.querySelector(".style-label");
   const armySublabel = document.getElementById("armySublabel");
   const armyUpgradeCount = document.getElementById("armyUpgradeCount");
+  // Hacker
+  const hacker = document.getElementById("hacker");
+  const hackerLabel = hacker?.querySelector(".style-label");
+  const hackerSublabel = document.getElementById("hackerSublabel");
+  const hackerUpgradeCount = document.getElementById("hackerUpgradeCount");
   // Server
   const server = document.getElementById("server");
   const serverLabel = server?.querySelector(".style-label");
   const serverSublabel = document.getElementById("serverSublabel");
   const serverUpgradeCount = document.getElementById("serverUpgradeCount");
+  // Data Center
+  const dataCenter = document.getElementById("dataCenter");
+  const dataCenterLabel = dataCenter?.querySelector(".style-label");
+  const dataCenterSublabel = document.getElementById("dataCenterSublabel");
+  const dataCenterUpgradeCount = document.getElementById("dataCenterUpgradeCount");
+  // Automation Lab
+  const automationLab = document.getElementById("automationLab");
+  const automationLabLabel = automationLab?.querySelector(".style-label");
+  const automationLabSublabel = document.getElementById("automationLabSublabel");
+  const automationLabUpgradeCount = document.getElementById("automationLabUpgradeCount");
+  // Cloud Region
+  const cloudRegion = document.getElementById("cloudRegion");
+  const cloudRegionLabel = cloudRegion?.querySelector(".style-label");
+  const cloudRegionSublabel = document.getElementById("cloudRegionSublabel");
+  const cloudRegionUpgradeCount = document.getElementById("cloudRegionUpgradeCount");
+  
+  // Prestige
+  const prestige = document.getElementById("prestige");
+  const prestigeLabel = prestige?.querySelector(".style-label");
+  const prestigeSublabel = document.getElementById("prestigeSublabel");
+  const prestigeUpgradeCount = document.getElementById("prestigeUpgradeCount");
 
   // Update the text under the main unlock button.
   if (autoclickerSublabel) {
@@ -753,19 +1047,34 @@ const updateUnlockedAutoClicker = () => {
   if (robot) {
     robot.classList.toggle("locked", !autoClickerUnlocked || score < robotCost || robotMaxed);
   }
-  if (hacker) {
-    hacker.classList.toggle("locked", !autoClickerUnlocked || score < hackerCost || hackerMaxed);
+  if (team) {
+    team.classList.toggle("locked", !autoClickerUnlocked || score < teamCost || teamMaxed);
   }
   if (army) {
     army.classList.toggle("locked", !autoClickerUnlocked || score < armyCost || armyMaxed);
   }
+  if (hacker) {
+    hacker.classList.toggle("locked", !autoClickerUnlocked || score < hackerCost || hackerMaxed);
+  }
   if (server) {
     server.classList.toggle("locked", !autoClickerUnlocked || score < serverCost || serverMaxed);
+  }
+  if (prestige) {
+    prestige.classList.toggle("locked", !autoClickerUnlocked || score < prestigeCost);
+  }
+  if (dataCenter) {
+    dataCenter.classList.toggle("locked", !autoClickerUnlocked || score < dataCenterCost || dataCenterMaxed);
+  }
+  if (automationLab) {
+    automationLab.classList.toggle("locked", !autoClickerUnlocked || score < automationLabCost || automationLabMaxed);
+  }
+  if (cloudRegion) {
+    cloudRegion.classList.toggle("locked", !autoClickerUnlocked || score < cloudRegionCost || cloudRegionMaxed);
   }
 
   // Show the current CPS inside the Upgrades menu.
   if (mouseLabel) {
-    mouseLabel.textContent = `Current: ${mouseCps.toFixed(1)} CPS`;
+    mouseLabel.textContent = `Current: ${formatCps(mouseCps)} CPS`;
   }
   // Show how many Low-End Mouse upgrades have been bought.
   if (mouseUpgradeCount) {
@@ -775,11 +1084,11 @@ const updateUnlockedAutoClicker = () => {
   if (mouseSublabel) {
     mouseSublabel.textContent = mouseMaxed
       ? `Maxed out at ${MOUSE_MAX_LEVEL} upgrades`
-      : `Cost: ${mouseCost.toLocaleString()} Clicks | +${MOUSE_CPS_GAIN.toFixed(1)} CPS`;
+      : `Cost: ${mouseCost.toLocaleString()} Clicks | +${formatCps(mouseCpsGain)} CPS`;
   }
 
   if (servantLabel) {
-    servantLabel.textContent = `Current: ${servantCps.toFixed(1)} CPS`;
+    servantLabel.textContent = `Current: ${formatCps(servantCps)} CPS`;
   }
   if (servantUpgradeCount) {
     servantUpgradeCount.textContent = servantLevel.toLocaleString();
@@ -787,11 +1096,11 @@ const updateUnlockedAutoClicker = () => {
   if (servantSublabel) {
     servantSublabel.textContent = servantMaxed
       ? `Maxed out at ${SERVANT_MAX_LEVEL} upgrades`
-      : `Cost: ${servantCost.toLocaleString()} Clicks | +${SERVANT_CPS_GAIN.toFixed(1)} CPS`;
+      : `Cost: ${servantCost.toLocaleString()} Clicks | +${formatCps(servantCpsGain)} CPS`;
   }
 
   if (robotLabel) {
-    robotLabel.textContent = `Current: ${robotCps.toFixed(1)} CPS`;
+    robotLabel.textContent = `Current: ${formatCps(robotCps)} CPS`;
   }
   if (robotUpgradeCount) {
     robotUpgradeCount.textContent = robotLevel.toLocaleString();
@@ -799,23 +1108,23 @@ const updateUnlockedAutoClicker = () => {
   if (robotSublabel) {
     robotSublabel.textContent = robotMaxed
       ? `Maxed out at ${ROBOT_MAX_LEVEL} upgrades`
-      : `Cost: ${robotCost.toLocaleString()} Clicks | +${ROBOT_CPS_GAIN.toFixed(1)} CPS`;
+      : `Cost: ${robotCost.toLocaleString()} Clicks | +${formatCps(robotCpsGain)} CPS`;
   }
 
-  if (hackerLabel) {
-    hackerLabel.textContent = `Current: ${hackerCps.toFixed(1)} CPS`;
+  if (teamLabel) {
+    teamLabel.textContent = `Current: ${formatCps(teamCps)} CPS`;
   }
-  if (hackerUpgradeCount) {
-    hackerUpgradeCount.textContent = hackerLevel.toLocaleString();
+  if (teamUpgradeCount) {
+    teamUpgradeCount.textContent = teamLevel.toLocaleString();
   }
-  if (hackerSublabel) {
-    hackerSublabel.textContent = hackerMaxed
-      ? `Maxed out at ${HACKER_MAX_LEVEL} upgrades`
-      : `Cost: ${hackerCost.toLocaleString()} Clicks | +${HACKER_CPS_GAIN.toFixed(1)} CPS`;
+  if (teamSublabel) {
+    teamSublabel.textContent = teamMaxed
+      ? `Maxed out at ${TEAM_MAX_LEVEL} upgrades`
+      : `Cost: ${teamCost.toLocaleString()} Clicks | +${formatCps(teamCpsGain)} CPS`;
   }
 
   if (armyLabel) {
-    armyLabel.textContent = `Current: ${armyCps.toFixed(1)} CPS`;
+    armyLabel.textContent = `Current: ${formatCps(armyCps)} CPS`;
   }
   if (armyUpgradeCount) {
     armyUpgradeCount.textContent = armyLevel.toLocaleString();
@@ -823,11 +1132,23 @@ const updateUnlockedAutoClicker = () => {
   if (armySublabel) {
     armySublabel.textContent = armyMaxed
       ? `Maxed out at ${ARMY_MAX_LEVEL} upgrades`
-      : `Cost: ${armyCost.toLocaleString()} Clicks | +${ARMY_CPS_GAIN.toFixed(1)} CPS`;
+      : `Cost: ${armyCost.toLocaleString()} Clicks | +${formatCps(armyCpsGain)} CPS`;
+  }
+
+  if (hackerLabel) {
+    hackerLabel.textContent = `Current: ${formatCps(hackerCps)} CPS`;
+  }
+  if (hackerUpgradeCount) {
+    hackerUpgradeCount.textContent = hackerLevel.toLocaleString();
+  }
+  if (hackerSublabel) {
+    hackerSublabel.textContent = hackerMaxed
+      ? `Maxed out at ${HACKER_MAX_LEVEL} upgrades`
+      : `Cost: ${hackerCost.toLocaleString()} Clicks | +${formatCps(hackerCpsGain)} CPS`;
   }
 
   if (serverLabel) {
-    serverLabel.textContent = `Current: ${serverCps.toFixed(1)} CPS`;
+    serverLabel.textContent = `Current: ${formatCps(serverCps)} CPS`;
   }
   if (serverUpgradeCount) {
     serverUpgradeCount.textContent = serverLevel.toLocaleString();
@@ -835,7 +1156,53 @@ const updateUnlockedAutoClicker = () => {
   if (serverSublabel) {
     serverSublabel.textContent = serverMaxed
       ? `Maxed out at ${SERVER_MAX_LEVEL} upgrades`
-      : `Cost: ${serverCost.toLocaleString()} Clicks | +${SERVER_CPS_GAIN.toFixed(1)} CPS`;
+      : `Cost: ${serverCost.toLocaleString()} Clicks | +${formatCps(serverCpsGain)} CPS`;
+  }
+
+  if (dataCenterLabel) {
+    dataCenterLabel.textContent = `Current: ${formatCps(dataCenterCps)} CPS`;
+  }
+  if (dataCenterUpgradeCount) {
+    dataCenterUpgradeCount.textContent = dataCenterLevel.toLocaleString();
+  }
+  if (dataCenterSublabel) {
+    dataCenterSublabel.textContent = dataCenterMaxed
+      ? `Maxed out at ${DATA_CENTER_MAX_LEVEL} upgrades`
+      : `Cost: ${dataCenterCost.toLocaleString()} Clicks | +${formatCps(dataCenterCpsGain)} CPS`;
+  }
+
+  if (automationLabLabel) {
+    automationLabLabel.textContent = `Current: ${formatCps(automationLabCps)} CPS`;
+  }
+  if (automationLabUpgradeCount) {
+    automationLabUpgradeCount.textContent = automationLabLevel.toLocaleString();
+  }
+  if (automationLabSublabel) {
+    automationLabSublabel.textContent = automationLabMaxed
+      ? `Maxed out at ${AUTOMATION_LAB_MAX_LEVEL} upgrades`
+      : `Cost: ${automationLabCost.toLocaleString()} Clicks | +${formatCps(automationLabCpsGain)} CPS`;
+  }
+
+  if (cloudRegionLabel) {
+    cloudRegionLabel.textContent = `Current: ${formatCps(cloudRegionCps)} CPS`;
+  }
+  if (cloudRegionUpgradeCount) {
+    cloudRegionUpgradeCount.textContent = cloudRegionLevel.toLocaleString();
+  }
+  if (cloudRegionSublabel) {
+    cloudRegionSublabel.textContent = cloudRegionMaxed
+      ? `Maxed out at ${CLOUD_REGION_MAX_LEVEL} upgrades`
+      : `Cost: ${cloudRegionCost.toLocaleString()} Clicks | +${formatCps(cloudRegionCpsGain)} CPS`;
+  }
+
+  if (prestigeLabel) {
+    prestigeLabel.textContent = `Current: x${formatCps(prestigeMultiplier)} CPS multiplier`;
+  }
+  if (prestigeUpgradeCount) {
+    prestigeUpgradeCount.textContent = prestigeCount.toLocaleString();
+  }
+  if (prestigeSublabel) {
+    prestigeSublabel.textContent = `Cost: ${prestigeCost.toLocaleString()} Clicks | x${PRESTIGE_CPS_BOOST_MULTIPLIER} CPS to all upgrades`;
   }
 };
 
@@ -903,14 +1270,22 @@ if (document.readyState === "loading") {
 const upgradesModal = document.getElementById("upgradesModal");
 onClick("upgradesBtn", () => upgradesModal.style.display = "block");
 onClick("upgradesClose", () => upgradesModal.style.display = "none");
+const prestigeModal = document.getElementById("prestigeModal");
+onClick("prestigeBtn", () => prestigeModal.style.display = "block");
+onClick("prestigeClose", () => prestigeModal.style.display = "none");
 
 // Upgrades [Mouse, Servant, Robot]
 onClick("mouse", buyMouseUpgrade);
 onClick("servant", buyServantUpgrade);
 onClick("robot", buyRobotUpgrade);
-onClick("hacker", buyHackerUpgrade);
+onClick("team", buyTeamUpgrade);
 onClick("army", buyArmyUpgrade);
+onClick("hacker", buyHackerUpgrade);
 onClick("server", buyServerUpgrade);
+onClick("dataCenter", buyDataCenterUpgrade);
+onClick("automationLab", buyAutomationLabUpgrade);
+onClick("cloudRegion", buyCloudRegionUpgrade);
+onClick("prestige", buyPrestigeUpgrade);
 
 // Customization modal
 const customizationModal = document.getElementById("customizationModal");
@@ -1008,18 +1383,15 @@ onClick("rainbowStyleBtn", () => {
 });
 
 // Customization [BACKGROUND MUSIC]
-const bgmusic = new Audio("assets/Chill-prettyjohn1.mp3"); // replace with your actual file path
+const bgmusic = new Audio("../assets/Chill-prettyjohn1.mp3");
 bgmusic.loop = true;
-let isbgmusicPlaying = true;
-
-window.onload = () => {
-  isbgmusicPlaying = true;
-};
+let isbgmusicPlaying = false;
 
 const music1Card = document.getElementById("music1Card");
+const musicVolume = document.getElementById("musicVolume");
 //const music2Card = document.getElementById("music2Card");
 //const music3Card = document.getElementById("music3Card");
-bgmusic.volume = 0.5; // Set initial volume to 50%
+bgmusic.volume = 0.5;
 
 onClick("music1Card", () => {
   if (isbgmusicPlaying) {

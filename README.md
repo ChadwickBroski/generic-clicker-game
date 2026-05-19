@@ -1,4 +1,4 @@
-# Generic Clicker Game
+# Generic Clicker Game v0.4.1
 It is a generic clicker game. You click, and counter go up.
 
 ## Bugs or Ideas
@@ -15,11 +15,6 @@ OR
 Go to [chadwickbroski.github.io](https://chadwickbroski.github.io) and click on the Generic Clicker Game that is displayed on the page.
 
 ## Upcoming updates (probably)
-### Music
-- Chill background music.
 ### Customization
-- Allow customization like color of the names that is being displayed.
 - Be able to change the style of the button, background, music, themes, etc.
-### Auto Clicker
-- Buy upgrades for auto clickers and get clicks faster.
-- Auto clicks for you as long as you are logged in.
+- Take inspiration from le [MonkeyType](https://monkeytype.com)
