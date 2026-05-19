@@ -179,9 +179,14 @@ async function save() {
     mouseLevel,
     servantLevel,
     robotLevel,
+    teamLevel,
     hackerLevel,
     armyLevel,
     serverLevel,
+    dataCenterLevel,
+    automationLabLevel,
+    cloudRegionLevel,
+    prestigeCount,
     ...getNameStyleSaveData(nameStyle)
   };
 
@@ -224,9 +229,14 @@ function reset() {
     mouseLevel = 0;
     servantLevel = 0;
     robotLevel = 0;
+    teamLevel = 0;
     hackerLevel = 0;
     armyLevel = 0;
     serverLevel = 0;
+    dataCenterLevel = 0;
+    automationLabLevel = 0;
+    cloudRegionLevel = 0;
+    prestigeCount = 0;
     renderScore();
     refreshAutoClickerUi();
     save();
@@ -406,6 +416,12 @@ const normalizeUpgradeLevel = (level, maxLevel) => {
   return Math.min(Math.max(0, Math.floor(parsedLevel)), maxLevel);
 };
 
+const normalizePrestigeCount = (count) => {
+  const parsedCount = Number(count);
+  if (!Number.isFinite(parsedCount)) return 0;
+  return Math.max(0, Math.floor(parsedCount));
+};
+
 // This starts false because the Upgrades menu is locked at first.
 let autoClickerUnlocked = false;
 
@@ -430,13 +446,32 @@ if (savedPlayerData) {
   mouseLevel = normalizeUpgradeLevel(savedPlayerData.mouseLevel, MOUSE_MAX_LEVEL);
   servantLevel = normalizeUpgradeLevel(savedPlayerData.servantLevel, SERVANT_MAX_LEVEL);
   robotLevel = normalizeUpgradeLevel(savedPlayerData.robotLevel, ROBOT_MAX_LEVEL);
+  teamLevel = normalizeUpgradeLevel(savedPlayerData.teamLevel, TEAM_MAX_LEVEL);
   hackerLevel = normalizeUpgradeLevel(savedPlayerData.hackerLevel, HACKER_MAX_LEVEL);
   armyLevel = normalizeUpgradeLevel(savedPlayerData.armyLevel, ARMY_MAX_LEVEL);
   serverLevel = normalizeUpgradeLevel(savedPlayerData.serverLevel, SERVER_MAX_LEVEL);
   dataCenterLevel = normalizeUpgradeLevel(savedPlayerData.dataCenterLevel, DATA_CENTER_MAX_LEVEL);
   automationLabLevel = normalizeUpgradeLevel(savedPlayerData.automationLabLevel, AUTOMATION_LAB_MAX_LEVEL);
   cloudRegionLevel = normalizeUpgradeLevel(savedPlayerData.cloudRegionLevel, CLOUD_REGION_MAX_LEVEL);
+  prestigeCount = normalizePrestigeCount(savedPlayerData.prestigeCount);
 }
+
+const formatCps = (value) => {
+  const parsedValue = Number(value);
+  if (!Number.isFinite(parsedValue)) return "0.0";
+  return parsedValue.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+};
+
+const getMouseCpsGain = () => applyPrestigeMultiplier(MOUSE_CPS_GAIN);
+const getServantCpsGain = () => applyPrestigeMultiplier(SERVANT_CPS_GAIN);
+const getRobotCpsGain = () => applyPrestigeMultiplier(ROBOT_CPS_GAIN);
+const getTeamCpsGain = () => applyPrestigeMultiplier(TEAM_CPS_GAIN);
+const getArmyCpsGain = () => applyPrestigeMultiplier(ARMY_CPS_GAIN);
+const getHackerCpsGain = () => applyPrestigeMultiplier(HACKER_CPS_GAIN);
+const getServerCpsGain = () => applyPrestigeMultiplier(SERVER_CPS_GAIN);
+const getDataCenterCpsGain = () => applyPrestigeMultiplier(DATA_CENTER_CPS_GAIN);
+const getAutomationLabCpsGain = () => applyPrestigeMultiplier(AUTOMATION_LAB_CPS_GAIN);
+const getCloudRegionCpsGain = () => applyPrestigeMultiplier(CLOUD_REGION_CPS_GAIN);
 
 // Mouse CPS depends on how many Mouse upgrades were bought inside the Upgrades menu.
 const getMouseCps = () => mouseLevel * getMouseCpsGain();
@@ -1348,7 +1383,7 @@ onClick("rainbowStyleBtn", () => {
 });
 
 // Customization [BACKGROUND MUSIC]
-const bgmusic = new Audio("ChadwickBroski/generic-clicker-game/assets/Chill-prettyjohn1.mp3"); // replace with your actual file path
+const bgmusic = new Audio("../assets/Chill-prettyjohn1.mp3");
 bgmusic.loop = true;
 let isbgmusicPlaying = false;
 
