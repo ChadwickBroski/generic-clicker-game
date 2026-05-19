@@ -1383,7 +1383,7 @@ onClick("rainbowStyleBtn", () => {
 });
 
 // Customization [BACKGROUND MUSIC]
-const bgmusic = new Audio("../assets/Chill-prettyjohn1.mp3");
+const bgmusic = new Audio("assets/Chill-prettyjohn1.mp3");
 bgmusic.loop = true;
 let isbgmusicPlaying = false;
 
