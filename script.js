@@ -871,7 +871,7 @@ function buyCloudRegionUpgrade() {
   updateUnlockedAutoClicker();
 }
 
-function buyPrestigeUpgrade() {
+async function buyPrestigeUpgrade() {
   const score = getScore();
   const prestigeCost = getPrestigeCost();
 
@@ -901,13 +901,12 @@ function buyPrestigeUpgrade() {
   dataCenterLevel = 0;
   automationLabLevel = 0;
   cloudRegionLevel = 0;
-  autoClickerUnlocked = false;
+  // autoClickerUnlocked stays true after prestige
 
-  setScore(0);
-  const autoclickerBuyBtn = document.getElementById("autoclickerbuyBtn");
-  const upgradesBtn = document.getElementById("upgradesBtn");
-  if (autoclickerBuyBtn) autoclickerBuyBtn.style.display = "block";
-  if (upgradesBtn) upgradesBtn.style.display = "none";
+  setScore(1);
+  nameStyle = 1;
+  applySelectedCard(nameStyle);
+  await saveNameStyle(nameStyle);
   if (typeof prestigeModal !== "undefined" && prestigeModal) prestigeModal.style.display = "none";
   if (typeof upgradesModal !== "undefined" && upgradesModal) upgradesModal.style.display = "none";
 
@@ -1383,7 +1382,7 @@ onClick("rainbowStyleBtn", () => {
 });
 
 // Customization [BACKGROUND MUSIC]
-const bgmusic = new Audio("assets/Chill-prettyjohn1.mp3");
+const bgmusic = new Audio("../assets/Chill-prettyjohn1.mp3");
 bgmusic.loop = true;
 let isbgmusicPlaying = false;
 
