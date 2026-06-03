@@ -392,6 +392,21 @@ h3 {
   margin-top: 2px;
 }
 
+.volume-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+}
+
+.volume-row input {
+  flex: 1;
+  accent-color: rgb(160, 3, 160);
+  cursor: pointer;
+}
+
 .modal-action-row {
   display: flex;
   justify-content: flex-end;

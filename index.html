@@ -15,13 +15,13 @@
     
     <button type="button" class="button" id="clickBtn">CLICK ME</button>
 
-    <button type="button" class="button" id="autoclickerbuyBtn" style="flex-direction: column;top:70%; padding: 17px 11px; --button-color:green;--button-bg:#f0fff0;"><i class="fa-solid fa-arrow-pointer"></i>
+    <button type="button" class="button" id="autoclickerbuyBtn" style="flex-direction: column;top:70%; padding: 17px 11px; --button-color:green;--button-bg:#f0fff0;"><i class="fa-solid fa-arrow-pointer"></i> 
       Unlock Autoclicker Upgrades
       <span style="display:block;font-size:12px;" id="autoclickerbuySublabel">Cost: 1,000 Clicks</span>
     </button>
 
     <!-- Autoclicker Upgrade -->
-    <button type="button" class="button" id="upgradesBtn" style="top:30%; left: 10%; right:auto; padding: 7px 11px; --button-color:green;--button-bg:#f0fff0; display:none;"><i class="fa-solid fa-arrow-pointer"></i>Upgrades</button>
+    <button type="button" class="button" id="upgradesBtn" style="top:30%; left: 10%; right:auto; padding: 7px 11px; --button-color:green;--button-bg:#f0fff0; display:none;"><i class="fa-solid fa-arrow-pointer"></i> Upgrades</button>
 
     <!-- Settings Button -->
     <button type="button" class="button" id="settingsBtn" style="top:6%; left: 90%; right:auto; padding: 7px 11px;--button-color:blue;--button-bg:azure;"><i class="fa-solid fa-gear"></i>Settings</button>
@@ -36,7 +36,7 @@
     <div id="upgradesModal" class="modal">
       <div class="modal-content" style="width: 80%;">
         <span class="close" id="upgradesClose">&times;</span>
-        <h2><i class="fa-solid fa-circle-arrow-up"></i>Upgrades</h2>
+        <h2><i class="fa-solid fa-arrow-pointer"></i> Upgrades</h2>
         <hr class="modal-divider">
         <p class="reset-desc" style="margin-top:8px;">Upgrades are like Autoclickers. They can be bought with clicks.</p>
         <button type="button" class="button reset-btn prestige-btn" id="prestigeBtn" style="--button-color:black;--button-bg:white; padding: 7px 18px;"><i class="fa-solid fa-crown"></i>
@@ -164,7 +164,7 @@
     <div id="prestigeModal" class="modal modal-overlay-top">
       <div class="modal-content prestige-modal-content">
         <span class="close" id="prestigeClose">&times;</span>
-        <h2 class="prestige-title"><i class="fa-solid fa-crown"></i>Prestige</h2>
+        <h2 class="prestige-title"><i class="fa-solid fa-crown"></i> Prestige</h2>
         <hr class="modal-divider">
         <p class="reset-desc" style="margin-top:8px;">Clicking Prestige will reset your progress but permanently multiplies every upgrade by x10.</p>
         <div class="style-card" id="prestige" style="margin-top: 8px;">
@@ -183,9 +183,9 @@
     <div id="customizationModal" class="modal">
       <div class="modal-content">
         <span class="close" id="customizationClose">&times;</span>
-        <h2><i class="fa-solid fa-sliders"></i>Customization</h2>
+        <h2><i class="fa-solid fa-sliders"></i> Customization</h2>
         <hr class="modal-divider">
-        <h3><i class="fa-solid fa-pencil"></i>NAME STYLE</h3>
+        <h3><i class="fa-solid fa-pencil"></i> NAME STYLE</h3>
         <p class="reset-desc" style="margin-top:8px;">Choose how your name appears on the leaderboard. Some styles unlock at score milestones.</p>
 
         <div class="style-grid">
@@ -244,7 +244,7 @@
             <div class="style-sublabel" id="rainbowSublabel">🔒 Unlock at 10,000,000</div>
           </div>
         </div>
-        <h3>BACKGROUND MUSIC</h3>
+        <h3><i class="fa-solid fa-music"></i> BACKGROUND MUSIC</h3>
         <div class="style-grid">
           <div class="style-card" id="music1Card">
             <div class="style-preview">
@@ -260,9 +260,9 @@
     <div id="settingsModal" class="modal">
       <div class="modal-content">
         <span class="close" id="settingsClose">&times;</span>
-        <h2><i class="fa-solid fa-gear"></i>Settings</h2>
+        <h2><i class="fa-solid fa-gear"></i> Settings</h2>
         <hr class="modal-divider">
-        <h3>PLAYER NAME</h3>
+        <h3><i class="fa-solid fa-pencil"></i> PLAYER NAME</h3>
         <div class="reset-row">
           <input
             type="text"
@@ -273,12 +273,12 @@
           >
           <button type="button" class="button reset-btn" id="saveNameBtn" style="--button-color:green;--button-bg:#f0fff0;"><i class="fa-solid fa-pencil"></i>Save name</button>
         </div>
-        <h3>RESET PROGRESS</h3>
+        <h3><i class="fa-solid fa-arrows-rotate"></i> RESET PROGRESS</h3>
         <div class="reset-row">
           <p class="reset-desc">Reset button erases all of your progress. This cannot be undone.</p>
           <button type="button" class="button reset-btn" id="resetBtn"><i class="fa-solid fa-arrows-rotate"></i>Reset</button>
         </div>
-        <h3>BUGS OR IDEAS</h3>
+        <h3><i class="fa-solid fa-lightbulb"></i> BUGS OR IDEAS</h3>
         <p class="reset-desc">
           If you have find any bugs or have ideas, open an issue in the <a href="https://github.com/ChadwickBroski/generic-clicker-game/issues">github</a> repo.
           </br>
@@ -291,7 +291,7 @@
     <div id="leaderboardModal" class="modal">
       <div class="modal-content">
         <span class="close" id="leaderboardClose">&times;</span>
-        <h2>Leaderboard</h2>
+        <h2><i class="fa-solid fa-trophy"></i> Leaderboard</h2>
         <hr class="modal-divider">
         <div class="leaderboard-list">
           <div class="leaderboard-row">
@@ -348,7 +348,7 @@
     </div>
 
     <div>
-      <button type="button" class="button" id="saveBtn" style="top:6%; left:8%; right:auto; padding: 7px 11px;--button-color:orange;--button-bg:lightyellow; z-index: 50;">Save</button>
+      <button type="button" class="button" id="saveBtn" style="top:6%; left:8%; right:auto; padding: 7px 11px;--button-color:orange;--button-bg:lightyellow; z-index: 50;"><i class="fa-solid fa-floppy-disk"></i>Save</button>
       <p class="informer"><i class="fa-solid fa-circle-info"></i>Progress saved!</p>
     </div>
 
