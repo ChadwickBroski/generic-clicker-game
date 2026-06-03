@@ -3,42 +3,43 @@
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
-    <!-- <link rel="icon" type="image/x-icon" href="GenericLogo-removebg-preview__1_-removebg-preview.png"> -->
+    <link rel="icon" type="image/x-icon" href="assets/mainLogo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.2.0/css/all.min.css">
     <title>Generic Clicker Game</title>
   </head>
   <body>
     <h1>Generic Clicker Game</h1>
     <div class="counter" id="counter">Loading...</div>
     <div class="counter" id="totalCps" style="font-size: 20px; top: 35%;">0.0 CPS</div>
-    <div class="informer" id="autoclickerInformer">Autoclicker upgrade bought!</div>
+    <div class="informer" id="autoclickerInformer"><i class="fa-solid fa-circle-info"></i>Autoclicker upgrade bought!</div>
     
     <button type="button" class="button" id="clickBtn">CLICK ME</button>
 
-    <button type="button" class="button" id="autoclickerbuyBtn" style="flex-direction: column;top:70%; padding: 17px 11px; --button-color:green;--button-bg:#f0fff0;">
+    <button type="button" class="button" id="autoclickerbuyBtn" style="flex-direction: column;top:70%; padding: 17px 11px; --button-color:green;--button-bg:#f0fff0;"><i class="fa-solid fa-arrow-pointer"></i>
       Unlock Autoclicker Upgrades
       <span style="display:block;font-size:12px;" id="autoclickerbuySublabel">Cost: 1,000 Clicks</span>
     </button>
 
     <!-- Autoclicker Upgrade -->
-    <button type="button" class="button" id="upgradesBtn" style="top:30%; left: 10%; right:auto; padding: 7px 11px; --button-color:green;--button-bg:#f0fff0; display:none;">Upgrades</button>
+    <button type="button" class="button" id="upgradesBtn" style="top:30%; left: 10%; right:auto; padding: 7px 11px; --button-color:green;--button-bg:#f0fff0; display:none;"><i class="fa-solid fa-arrow-pointer"></i>Upgrades</button>
 
     <!-- Settings Button -->
-    <button type="button" class="button" id="settingsBtn" style="top:6%; left: 90%; right:auto; padding: 7px 11px;--button-color:blue;--button-bg:azure;">Settings</button>
+    <button type="button" class="button" id="settingsBtn" style="top:6%; left: 90%; right:auto; padding: 7px 11px;--button-color:blue;--button-bg:azure;"><i class="fa-solid fa-gear"></i>Settings</button>
 
     <!-- Leaderboard Button -->
-    <button type="button" class="button" id="leaderboardBtn" style="top:20%; left:10%; right:auto; padding: 7px 11px;--button-color:orange;--button-bg:lightyellow;">Leaderboard</button>
+    <button type="button" class="button" id="leaderboardBtn" style="top:20%; left:10%; right:auto; padding: 7px 11px;--button-color:orange;--button-bg:lightyellow;"><i class="fa-solid fa-trophy"></i>Leaderboard</button>
 
     <!-- Customization Button -->
-    <button type="button" class="button" id="customizationBtn" style="top:20%; left: 90%; right:auto; padding: 7px 11px; --button-color:rgb(160, 3, 160);--button-bg:rgb(255, 239, 254);">Customization</button>
+    <button type="button" class="button" id="customizationBtn" style="top:20%; left: 90%; right:auto; padding: 7px 11px; --button-color:rgb(160, 3, 160);--button-bg:rgb(255, 239, 254);"><i class="fa-solid fa-sliders"></i>Customization</button>
 
     <!-- Upgrades Modal -->
     <div id="upgradesModal" class="modal">
       <div class="modal-content" style="width: 80%;">
         <span class="close" id="upgradesClose">&times;</span>
-        <h2>Upgrades</h2>
+        <h2><i class="fa-solid fa-circle-arrow-up"></i>Upgrades</h2>
         <hr class="modal-divider">
         <p class="reset-desc" style="margin-top:8px;">Upgrades are like Autoclickers. They can be bought with clicks.</p>
-        <button type="button" class="button reset-btn prestige-btn" id="prestigeBtn" style="--button-color:black;--button-bg:white; padding: 7px 18px;">
+        <button type="button" class="button reset-btn prestige-btn" id="prestigeBtn" style="--button-color:black;--button-bg:white; padding: 7px 18px;"><i class="fa-solid fa-crown"></i>
             Prestige
         </button>
         
@@ -49,7 +50,7 @@
           <div class="style-card" id="mouse">
             <div class="upgrade-count" id="mouseUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="../assets/lowEndMouse.png" alt="Mouse upgrade" class="upgrade-image">
+              <img src="assets/lowEndMouse.png" alt="Mouse upgrade" class="upgrade-image">
               <span style="color:black;">Low-End Mouse</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
@@ -60,7 +61,7 @@
           <div class="style-card" id="servant">
             <div class="upgrade-count" id="servantUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="../assets/servant.png" alt="Servant upgrade" class="upgrade-image">
+              <img src="assets/servant.png" alt="Servant upgrade" class="upgrade-image">
               <span style="color:black;">Servant</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
@@ -71,7 +72,7 @@
           <div class="style-card" id="robot">
             <div class="upgrade-count" id="robotUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="../assets/robot.png" alt="Robot upgrade" class="upgrade-image">
+              <img src="assets/robot.png" alt="Robot upgrade" class="upgrade-image">
               <span style="color:black;">Robot</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
@@ -82,7 +83,7 @@
           <div class="style-card" id="team">
             <div class="upgrade-count" id="teamUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="../assets/team.png" alt="Team upgrade" class="upgrade-image">
+              <img src="assets/team.png" alt="Team upgrade" class="upgrade-image">
               <span style="color:black;">Team</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
@@ -93,7 +94,7 @@
           <div class="style-card" id="hacker">
             <div class="upgrade-count" id="hackerUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="../assets/hacker.png" alt="Hacker upgrade" class="upgrade-image">
+              <img src="assets/hacker.png" alt="Hacker upgrade" class="upgrade-image">
               <span style="color:black;">Hacker</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
@@ -104,7 +105,7 @@
           <div class="style-card" id="army">
             <div class="upgrade-count" id="armyUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="../assets/army.png" alt="Army upgrade" class="upgrade-image">
+              <img src="assets/army.png" alt="Army upgrade" class="upgrade-image">
               <span style="color:black;">Army</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
@@ -115,7 +116,7 @@
           <div class="style-card" id="server">
             <div class="upgrade-count" id="serverUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="../assets/server.png" alt="Server upgrade" class="upgrade-image">
+              <img src="assets/server.png" alt="Server upgrade" class="upgrade-image">
               <span style="color:black;">Server</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
@@ -126,7 +127,7 @@
           <div class="style-card" id="dataCenter">
             <div class="upgrade-count" id="dataCenterUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="../assets/dataCenter.png" alt="Data Center upgrade" class="upgrade-image">
+              <img src="assets/dataCenter.png" alt="Data Center upgrade" class="upgrade-image">
               <span style="color:black;">Data Center</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
@@ -137,7 +138,7 @@
           <div class="style-card" id="automationLab">
             <div class="upgrade-count" id="automationLabUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="../assets/automationLab.png" alt="Automation Lab upgrade" class="upgrade-image">
+              <img src="assets/automationLab.png" alt="Automation Lab upgrade" class="upgrade-image">
               <span style="color:black;">Automation Lab</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
@@ -148,7 +149,7 @@
           <div class="style-card" id="cloudRegion">
             <div class="upgrade-count" id="cloudRegionUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="../assets/cloudRegion.png" alt="Cloud Region upgrade" class="upgrade-image">
+              <img src="assets/cloudRegion.png" alt="Cloud Region upgrade" class="upgrade-image">
               <span style="color:black;">Cloud Region</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
@@ -163,13 +164,13 @@
     <div id="prestigeModal" class="modal modal-overlay-top">
       <div class="modal-content prestige-modal-content">
         <span class="close" id="prestigeClose">&times;</span>
-        <h2 class="prestige-title">Prestige</h2>
+        <h2 class="prestige-title"><i class="fa-solid fa-crown"></i>Prestige</h2>
         <hr class="modal-divider">
         <p class="reset-desc" style="margin-top:8px;">Clicking Prestige will reset your progress but permanently multiplies every upgrade by x10.</p>
         <div class="style-card" id="prestige" style="margin-top: 8px;">
           <div class="upgrade-count" id="prestigeUpgradeCount">0</div>
           <div class="style-preview upgrade-preview">
-            <img src="../assets/prestige.png" alt="Prestige" class="upgrade-image">
+            <img src="assets/prestige.png" alt="Prestige" class="upgrade-image">
             <span style="color:black;">Prestige</span>
           </div>
           <div class="style-label">Current: x1.0 CPS multiplier</div>
@@ -182,9 +183,9 @@
     <div id="customizationModal" class="modal">
       <div class="modal-content">
         <span class="close" id="customizationClose">&times;</span>
-        <h2>Customization</h2>
+        <h2><i class="fa-solid fa-sliders"></i>Customization</h2>
         <hr class="modal-divider">
-        <h3>NAME STYLE</h3>
+        <h3><i class="fa-solid fa-pencil"></i>NAME STYLE</h3>
         <p class="reset-desc" style="margin-top:8px;">Choose how your name appears on the leaderboard. Some styles unlock at score milestones.</p>
 
         <div class="style-grid">
@@ -259,7 +260,7 @@
     <div id="settingsModal" class="modal">
       <div class="modal-content">
         <span class="close" id="settingsClose">&times;</span>
-        <h2>Settings</h2>
+        <h2><i class="fa-solid fa-gear"></i>Settings</h2>
         <hr class="modal-divider">
         <h3>PLAYER NAME</h3>
         <div class="reset-row">
@@ -270,12 +271,12 @@
             maxlength="20"
             style="font-family:'Nunito',sans-serif; font-size:16px; padding:8px 12px; border:2px solid black; border-radius:8px; flex:1; outline:none;"
           >
-          <button type="button" class="button reset-btn" id="saveNameBtn" style="--button-color:green;--button-bg:#f0fff0;">Save name</button>
+          <button type="button" class="button reset-btn" id="saveNameBtn" style="--button-color:green;--button-bg:#f0fff0;"><i class="fa-solid fa-pencil"></i>Save name</button>
         </div>
         <h3>RESET PROGRESS</h3>
         <div class="reset-row">
           <p class="reset-desc">Reset button erases all of your progress. This cannot be undone.</p>
-          <button type="button" class="button reset-btn" id="resetBtn">Reset</button>
+          <button type="button" class="button reset-btn" id="resetBtn"><i class="fa-solid fa-arrows-rotate"></i>Reset</button>
         </div>
         <h3>BUGS OR IDEAS</h3>
         <p class="reset-desc">
@@ -291,7 +292,6 @@
       <div class="modal-content">
         <span class="close" id="leaderboardClose">&times;</span>
         <h2>Leaderboard</h2>
-        <p class="reset-desc">Currently holding a competition by Abhay. Whoever gets the highest score by sunday midnight wins.</p>
         <hr class="modal-divider">
         <div class="leaderboard-list">
           <div class="leaderboard-row">
@@ -349,10 +349,10 @@
 
     <div>
       <button type="button" class="button" id="saveBtn" style="top:6%; left:8%; right:auto; padding: 7px 11px;--button-color:orange;--button-bg:lightyellow; z-index: 50;">Save</button>
-      <p class="informer">Progress saved!</p>
+      <p class="informer"><i class="fa-solid fa-circle-info"></i>Progress saved!</p>
     </div>
 
-    <a class="auto-save" style="right:auto;left:3%;">v0.5.0 - NEW UPDATES FOR TESTING WILL BE SHOWN HERE.</a>
+    <a class="auto-save" style="right:auto;left:3%;">v0.4.1 - Upgrades and Prestige Update</a>
     <p class="auto-save" style="left: auto; right: 3%;">Made by <a href="chadwickbroski.github.io" style="color:#002CF2;">ChadwickBroski</a>.</p>
 
     <!-- type="module" is required for Firebase imports to work -->
