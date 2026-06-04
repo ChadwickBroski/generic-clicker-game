@@ -435,3 +435,23 @@ h3 {
   margin: 4px 0;
   font-size: 30px;
 }
+
+.click-animation {
+    position: absolute;
+    font-family: "Nunito", sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: black;
+    animation: click-pop 0.6s forwards;
+}
+
+@keyframes click-pop {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+}

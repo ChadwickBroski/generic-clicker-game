@@ -221,6 +221,14 @@ function getClickPower() {
 
 function add() {
   addScore(getClickPower());
+  let x = event.clientX;
+  let y = event.clientY;
+  const clickEffect = document.createElement("span");
+  clickEffect.className = "click-animation";
+  clickEffect.style.left = `${x}px`;
+  clickEffect.style.top = `${y}px`;
+  clickEffect.textContent = `+${getClickPower()}`;
+  setTimeout(() => clickEffect.remove(), 1000);
 }
 
 function reset() {
