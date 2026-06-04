@@ -220,16 +220,21 @@ function getClickPower() {
 }
 
 function add() {
-  addScore(getClickPower());
-  let x = event.clientX;
-  let y = event.clientY;
+  const power = getClickPower();
+  
+  // Create animation immediately
   const clickEffect = document.createElement("span");
   clickEffect.className = "click-animation";
-  clickEffect.style.left = `${x}px`;
-  clickEffect.style.top = `${y}px`;
-  clickEffect.textContent = `+${getClickPower()}`;
+  clickEffect.style.left = `${event.clientX}px`;
+  clickEffect.style.top = `${event.clientY}px`;
+  clickEffect.textContent = `+${power}`;
   document.body.appendChild(clickEffect);
+  
+  // Remove after 1s
   setTimeout(() => clickEffect.remove(), 1000);
+  
+  // Update score
+  addScore(power);
 }
 
 function reset() {
