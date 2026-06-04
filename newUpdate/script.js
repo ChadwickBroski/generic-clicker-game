@@ -233,8 +233,8 @@ function add() {
   // Remove after 1s
   setTimeout(() => clickEffect.remove(), 1000);
   
-  // Update score
-  addScore(power);
+  // Update score on next frame (lets animation render first)
+  requestAnimationFrame(() => addScore(power));
 }
 
 function reset() {
