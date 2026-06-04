@@ -228,6 +228,7 @@ function add() {
   clickEffect.style.left = `${x}px`;
   clickEffect.style.top = `${y}px`;
   clickEffect.textContent = `+${getClickPower()}`;
+  document.body.appendChild(clickEffect);
   setTimeout(() => clickEffect.remove(), 1000);
 }
 
