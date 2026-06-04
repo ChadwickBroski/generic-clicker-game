@@ -215,11 +215,12 @@ async function save() {
   }, 1000);
 }
 
+function getClickPower() {
+  return 10 ** Math.max(0, prestigeCount - 1);
+}
+
 function add() {
-  number++;
-  renderScore();
-  updateUnlockedStyles();
-  updateUnlockedAutoClicker();
+  addScore(getClickPower());
 }
 
 function reset() {
@@ -354,7 +355,7 @@ const addScore = (amount) => {
 
 // Autoclicker settings.
 // CPS means "clicks per second", so 0.1 CPS means 1 click every 10 seconds.
-const AUTOCLICKER_UNLOCK_COST = 1000;
+const AUTOCLICKER_UNLOCK_COST = 100;
 // Mouse
 const MOUSE_BASE_COST = 10;
 const MOUSE_COST_MULTIPLIER = 1.14;

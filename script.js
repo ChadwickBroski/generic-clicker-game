@@ -215,11 +215,12 @@ async function save() {
   }, 1000);
 }
 
+function getClickPower() {
+  return 10 ** Math.max(0, prestigeCount - 1);
+}
+
 function add() {
-  number++;
-  renderScore();
-  updateUnlockedStyles();
-  updateUnlockedAutoClicker();
+  addScore(getClickPower());
 }
 
 function reset() {
