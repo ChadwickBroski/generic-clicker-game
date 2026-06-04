@@ -216,7 +216,7 @@ async function save() {
 }
 
 function getClickPower() {
-  return 10 ** Math.max(0, prestigeCount - 1);
+  return 10 ** Math.max(0, prestigeCount);
 }
 
 function add() {
