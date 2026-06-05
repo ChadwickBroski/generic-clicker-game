@@ -588,6 +588,7 @@ const refreshAutoClickerUi = () => {
 
 const showInformer = (id) => {
   const informer = document.getElementById(id);
+  informer.style.display = "block";
   if (!informer) return;
 
   informer.classList.remove("fade-in-trigger", "fade-out-trigger");
@@ -598,6 +599,7 @@ const showInformer = (id) => {
     informer.classList.remove("fade-in-trigger");
     informer.classList.add("fade-out-trigger");
   }, 1500);
+  informer.style.display = "none";
 };
 
 function showUpgrades() {
