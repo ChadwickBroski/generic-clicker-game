@@ -203,8 +203,6 @@ async function save() {
 
   await setDoc(doc(db, "leaderboard", uid), dataToSave, { merge: true });
 
-  informer.style.display = "block";
-
   // "Progress saved!" animation
   informer.textContent = "Progress saved!";
   informer.classList.remove("fade-in-trigger", "fade-out-trigger");
@@ -215,7 +213,6 @@ async function save() {
     void informer.offsetWidth;
     informer.classList.add("fade-out-trigger");
   }, 1000);
-  informer.style.display = "none";
 }
 
 function getClickPower() {
@@ -591,7 +588,6 @@ const refreshAutoClickerUi = () => {
 
 const showInformer = (id) => {
   const informer = document.getElementById(id);
-  informer.style.display = "block";
   if (!informer) return;
 
   informer.classList.remove("fade-in-trigger", "fade-out-trigger");
@@ -602,7 +598,6 @@ const showInformer = (id) => {
     informer.classList.remove("fade-in-trigger");
     informer.classList.add("fade-out-trigger");
   }, 1500);
-  informer.style.display = "none";
 };
 
 function showUpgrades() {
