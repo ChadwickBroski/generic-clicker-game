@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc, getCountFromServer, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc, getCountFromServer, collection, query, orderBy, limit, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -250,9 +250,12 @@ function reset() {
     automationLabLevel = 0;
     cloudRegionLevel = 0;
     prestigeCount = 0;
+    isNewPlayer = true;
     renderScore();
     refreshAutoClickerUi();
     save();
+    // Delete the player's account document from Firestore
+    deleteDoc(doc(db, "leaderboard", uid));
   }
 }
 
