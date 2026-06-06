@@ -222,18 +222,7 @@ function getClickPower() {
 
 function add() {
   const power = getClickPower();
-  
-  const clickEffect = document.createElement("span");
-  clickEffect.className = "click-animation";
-  // Add random offset so rapid clicks don't stack perfectly
-  clickEffect.style.left = `${event.clientX + (Math.random() * 40 - 20)}px`;
-  clickEffect.style.top  = `${event.clientY + (Math.random() * 20 - 10)}px`;
-  clickEffect.textContent = `+${power}`;
-  document.body.appendChild(clickEffect);
-  
-  setTimeout(() => clickEffect.remove(), 1000);
-  
-  requestAnimationFrame(() => addScore(power));
+  addScore(power);
 }
 
 function reset() {
