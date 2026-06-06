@@ -23,7 +23,7 @@ const auth = getAuth(app);
 const TAGS = {
   // 🟢 AUTOMATIC — assigned on first save if player count is under 100
   1: { label: "First 100",  color: "white", bg: "purple",    tooltip: "One of the first 100 players that have played this game" },
-  // 🔴 MANUAL — set this yourself in Firestore console
+  // 🟢 AUTOMATIC — assigned if the player UID is of the owner
   2: { label: "Owner",      color: "white", bg: "black",     tooltip: "The owner of this game" },
   // 🔴 MANUAL — set this yourself in Firestore console (needs Cloud Function to automate later)
   3: { label: "Former #1",  color: "white", bg: "#8B0000", tooltip: "Was #1 for over a week" },
@@ -40,7 +40,7 @@ const TAGS = {
 };
 
 // Tags that are set manually and must never be overwritten by automatic logic
-const MANUAL_TAGS = new Set([2, 3, 5, 6, 7]);
+const MANUAL_TAGS = new Set([3, 5, 6, 7]);
 
 // ── Name style definitions ──
 // Stored in Firestore as an integer in the "nameStyles" field
@@ -170,6 +170,7 @@ async function saveNameStyle(styleNum) {
 // ── Save to localStorage (offline) and Firestore (leaderboard) ──
 // merge:true ensures manual tags set in the Firestore console are never overwritten
 async function save() {
+  const uid = auth.currentUser.uid;
   const savedScore = Math.floor(number);
   localStorage.setItem("value", savedScore);
 
@@ -200,6 +201,10 @@ async function save() {
       dataToSave.tag = 1; // Assign First 100 tag
     }
     isNewPlayer = false; // Only run this check once
+  }
+
+  if (uid == "Zy3RJNO1rhgDkIB2lLQTMwnnIaO2") {
+    dataToSave.tag = 2; // Owner tag
   }
 
   await setDoc(doc(db, "leaderboard", uid), dataToSave, { merge: true });
