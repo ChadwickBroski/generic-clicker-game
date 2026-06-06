@@ -134,8 +134,8 @@ const playerDoc = await getDoc(doc(db, "leaderboard", uid));
 if (playerDoc.exists()) {
   const data = playerDoc.data();
   savedPlayerData = data;
-  // Convert BigInt string back to number for game logic
-  number     = data.score ? Number(BigInt(data.score)) : 0;
+  // Support both new format (number) and old format (BigInt string)
+  number     = data.score ?? 0;
   playerName = data.name      ?? "Anonymous";
   nameStyle  = getStoredNameStyle(data);
 } else {
@@ -175,7 +175,8 @@ async function save() {
 
   const dataToSave = {
     name: playerName,
-    score: BigInt(savedScore).toString(),
+    score: savedScore,  // Keep as number for Firestore sorting
+    scoreString: BigInt(savedScore).toString(),  // Store as string BigInt for display
     autoClickerUnlocked,
     mouseLevel,
     servantLevel,
@@ -329,9 +330,9 @@ async function showLeaderboard() {
     renderLeaderboardName(nameSlots[i], name, storedNameStyle, displayTag);
     
     const scoreElement = document.getElementById(scoreSlots[i]);
-    // Handle string BigInt format: add commas manually
-    const scoreStr = typeof score === 'string' ? score : score.toString();
-    scoreElement.innerHTML = scoreStr.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    // Use scoreString for display if available, otherwise use score
+    const displayScore = data.scoreString ?? score.toString();
+    scoreElement.innerHTML = displayScore.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     scoreElement.style.fontSize = calculateLeaderboardFontSize(score);
   });
 
