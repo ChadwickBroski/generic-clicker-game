@@ -250,7 +250,6 @@ function reset() {
     save();
   }
 }
-}
 
 // ── Auto-save every 10 seconds only if score changed ──
 let lastSaved = number;
