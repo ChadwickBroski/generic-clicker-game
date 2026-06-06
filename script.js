@@ -298,17 +298,25 @@ async function showLeaderboard() {
   leaderboardModal.style.display = "block";
 
   const q = query(
-    collection(db, "leaderboard"),
-    orderBy("scoreString", "desc"),
-    limit(10)
+    collection(db, "leaderboard")
   );
 
   const snapshot = await getDocs(q);
+  
+  // Convert to array and sort numerically by scoreString
+  const players = snapshot.docs.map(doc => ({
+    ...doc.data(),
+    id: doc.id
+  })).sort((a, b) => {
+    const scoreA = BigInt(a.scoreString ?? "0");
+    const scoreB = BigInt(b.scoreString ?? "0");
+    return scoreB > scoreA ? 1 : scoreB < scoreA ? -1 : 0;
+  }).slice(0, 10); // Take top 10
+
   const scoreSlots = ["score1", "score2", "score3", "score4", "score5", "score6", "score7", "score8", "score9", "score10"];
   const nameSlots  = ["name1",  "name2",  "name3",  "name4",  "name5",  "name6",  "name7",  "name8",  "name9",  "name10"];
 
-  snapshot.docs.forEach((docSnap, i) => {
-    const data = docSnap.data();
+  players.forEach((data, i) => {
     const name  = data.name  ?? "Anonymous";
     const scoreString = data.scoreString ?? "0";
     const storedNameStyle = getStoredNameStyle(data);
@@ -334,7 +342,7 @@ async function showLeaderboard() {
   });
 
   // Fill any empty slots if fewer than 10 players exist yet
-  for (let i = snapshot.docs.length; i < 10; i++) {
+  for (let i = players.length; i < 10; i++) {
     document.getElementById(nameSlots[i]).innerHTML  = "—";
     document.getElementById(scoreSlots[i]).innerHTML = "—";
   }
