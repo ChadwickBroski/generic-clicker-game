@@ -227,7 +227,7 @@ function add() {
 }
 
 function reset() {
-  counter = document.getElementById("counter");
+  const counter = document.getElementById("counter");
   if (confirm("Do you want to reset your progress? (Removes all of your progress)")) {
     number = 0;
     autoClickerUnlocked = false;
