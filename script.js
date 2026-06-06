@@ -134,7 +134,8 @@ const playerDoc = await getDoc(doc(db, "leaderboard", uid));
 if (playerDoc.exists()) {
   const data = playerDoc.data();
   savedPlayerData = data;
-  number     = data.score     ?? 0;
+  // Convert BigInt string back to number for game logic
+  number     = data.score ? Number(BigInt(data.score)) : 0;
   playerName = data.name      ?? "Anonymous";
   nameStyle  = getStoredNameStyle(data);
 } else {
@@ -174,7 +175,7 @@ async function save() {
 
   const dataToSave = {
     name: playerName,
-    score: savedScore,
+    score: BigInt(savedScore).toString(),
     autoClickerUnlocked,
     mouseLevel,
     servantLevel,
@@ -270,9 +271,11 @@ setInterval(() => {
 // ── Dynamic font-size based on digit count ──
 // Reduces font-size when scores reach trillions and above
 function calculateLeaderboardFontSize(score) {
-  const digitCount = Math.floor(score).toString().length;
+  // Handle both string (from BigInt) and number formats
+  const scoreStr = typeof score === 'string' ? score : Math.floor(score).toString();
+  const digitCount = scoreStr.length;
   
-  // Default: 20px for numbers with up to 11 digits
+  // Default: 24px for numbers with up to 11 digits
   if (digitCount <= 11) return "24px"; // Up to 999 billion
   if (digitCount === 12) return "23px"; // Trillions
   if (digitCount === 13) return "22px"; // 10+ Trillions
@@ -337,7 +340,9 @@ async function showLeaderboard() {
     renderLeaderboardName(nameSlots[i], name, storedNameStyle, displayTag);
     
     const scoreElement = document.getElementById(scoreSlots[i]);
-    scoreElement.innerHTML = score.toLocaleString();
+    // Handle string BigInt format: add commas manually
+    const scoreStr = typeof score === 'string' ? score : score.toString();
+    scoreElement.innerHTML = scoreStr.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     scoreElement.style.fontSize = calculateLeaderboardFontSize(score);
   });
 
