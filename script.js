@@ -220,7 +220,19 @@ function getClickPower() {
 }
 
 function add() {
-  addScore(getClickPower());
+  const power = getClickPower();
+  
+  const clickEffect = document.createElement("span");
+  clickEffect.className = "click-animation";
+  // Add random offset so rapid clicks don't stack perfectly
+  clickEffect.style.left = `${event.clientX + (Math.random() * 40 - 20)}px`;
+  clickEffect.style.top  = `${event.clientY + (Math.random() * 20 - 10)}px`;
+  clickEffect.textContent = `+${power}`;
+  document.body.appendChild(clickEffect);
+  
+  setTimeout(() => clickEffect.remove(), 1000);
+  
+  requestAnimationFrame(() => addScore(power));
 }
 
 function reset() {
@@ -238,9 +250,13 @@ function reset() {
     automationLabLevel = 0;
     cloudRegionLevel = 0;
     prestigeCount = 0;
+    isNewPlayer = true;
+    NAME_STYLES = 1;
     renderScore();
     refreshAutoClickerUi();
     save();
+    // Delete the player's account document from Firestore
+    await deleteDoc(doc(db, "leaderboard", uid));
   }
 }
 
@@ -252,6 +268,20 @@ setInterval(() => {
     lastSaved = number;
   }
 }, 10000);
+
+// ── Dynamic font-size based on digit count ──
+// Reduces font-size when scores reach trillions and above
+function calculateLeaderboardFontSize(score) {
+  const digitCount = Math.floor(score).toString().length;
+  
+  // Default: 20px for numbers with up to 11 digits
+  if (digitCount <= 11) return "20px"; // Up to 999 billion
+  if (digitCount === 12) return "18px"; // Trillions
+  if (digitCount === 13) return "16px"; // 10+ Trillions
+  if (digitCount === 14) return "14px"; // 100+ Trillions
+  if (digitCount === 15) return "12px"; // Quadrillions
+  return "10px"; // Quintillions and beyond
+}
 
 // ── Global leaderboard — reads top 10 from Firestore ──
 async function showLeaderboard() {
@@ -307,7 +337,10 @@ async function showLeaderboard() {
     }
 
     renderLeaderboardName(nameSlots[i], name, storedNameStyle, displayTag);
-    document.getElementById(scoreSlots[i]).innerHTML = score.toLocaleString();
+    
+    const scoreElement = document.getElementById(scoreSlots[i]);
+    scoreElement.innerHTML = score.toLocaleString();
+    scoreElement.style.fontSize = calculateLeaderboardFontSize(score);
   });
 
   // Fill any empty slots if fewer than 10 players exist yet

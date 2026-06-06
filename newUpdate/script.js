@@ -270,6 +270,20 @@ setInterval(() => {
   }
 }, 10000);
 
+// ── Dynamic font-size based on digit count ──
+// Reduces font-size when scores reach trillions and above
+function calculateLeaderboardFontSize(score) {
+  const digitCount = Math.floor(score).toString().length;
+  
+  // Default: 20px for numbers with up to 11 digits
+  if (digitCount <= 11) return "20px"; // Up to 999 billion
+  if (digitCount === 12) return "18px"; // Trillions
+  if (digitCount === 13) return "16px"; // 10+ Trillions
+  if (digitCount === 14) return "14px"; // 100+ Trillions
+  if (digitCount === 15) return "12px"; // Quadrillions
+  return "10px"; // Quintillions and beyond
+}
+
 // ── Global leaderboard — reads top 10 from Firestore ──
 async function showLeaderboard() {
   document.getElementById("name1").innerHTML  = "Loading...";
@@ -324,7 +338,10 @@ async function showLeaderboard() {
     }
 
     renderLeaderboardName(nameSlots[i], name, storedNameStyle, displayTag);
-    document.getElementById(scoreSlots[i]).innerHTML = score.toLocaleString();
+    
+    const scoreElement = document.getElementById(scoreSlots[i]);
+    scoreElement.innerHTML = score.toLocaleString();
+    scoreElement.style.fontSize = calculateLeaderboardFontSize(score);
   });
 
   // Fill any empty slots if fewer than 10 players exist yet
