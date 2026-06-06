@@ -255,8 +255,6 @@ function reset() {
     renderScore();
     refreshAutoClickerUi();
     save();
-    // Delete the player's account document from Firestore
-    await deleteDoc(doc(db, "leaderboard", uid));
   }
 }
 

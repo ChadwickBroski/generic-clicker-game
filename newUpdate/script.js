@@ -250,14 +250,11 @@ function reset() {
     automationLabLevel = 0;
     cloudRegionLevel = 0;
     prestigeCount = 0;
-    name
     isNewPlayer = true;
     NAME_STYLES = 1;
     renderScore();
     refreshAutoClickerUi();
     save();
-    // Delete the player's account document from Firestore
-    await deleteDoc(doc(db, "leaderboard", uid));
   }
 }
 
