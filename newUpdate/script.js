@@ -273,12 +273,12 @@ function calculateLeaderboardFontSize(score) {
   const digitCount = Math.floor(score).toString().length;
   
   // Default: 20px for numbers with up to 11 digits
-  if (digitCount <= 11) return "20px"; // Up to 999 billion
-  if (digitCount === 12) return "18px"; // Trillions
-  if (digitCount === 13) return "16px"; // 10+ Trillions
-  if (digitCount === 14) return "14px"; // 100+ Trillions
-  if (digitCount === 15) return "12px"; // Quadrillions
-  return "10px"; // Quintillions and beyond
+  if (digitCount <= 11) return "24px"; // Up to 999 billion
+  if (digitCount === 12) return "23px"; // Trillions
+  if (digitCount === 13) return "22px"; // 10+ Trillions
+  if (digitCount === 14) return "21px"; // 100+ Trillions
+  if (digitCount === 15) return "20px"; // Quadrillions
+  return "15px"; // Quintillions and beyond
 }
 
 // ── Global leaderboard — reads top 10 from Firestore ──
