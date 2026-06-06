@@ -134,8 +134,8 @@ const playerDoc = await getDoc(doc(db, "leaderboard", uid));
 if (playerDoc.exists()) {
   const data = playerDoc.data();
   savedPlayerData = data;
-  // Support both new format (number) and old format (BigInt string)
-  number     = data.score ?? 0;
+  // Convert scoreString BigInt back to number for game logic
+  number     = data.scoreString ? Number(BigInt(data.scoreString)) : 0;
   playerName = data.name      ?? "Anonymous";
   nameStyle  = getStoredNameStyle(data);
 } else {
@@ -175,8 +175,7 @@ async function save() {
 
   const dataToSave = {
     name: playerName,
-    score: savedScore,  // Keep as number for Firestore sorting
-    scoreString: BigInt(savedScore).toString(),  // Store as string BigInt for display
+    scoreString: BigInt(savedScore).toString(),  // Store as string BigInt
     autoClickerUnlocked,
     mouseLevel,
     servantLevel,
@@ -273,10 +272,8 @@ setInterval(() => {
 
 // ── Dynamic font-size based on digit count ──
 // Reduces font-size when scores reach trillions and above
-function calculateLeaderboardFontSize(score) {
-  // Handle both string (from BigInt) and number formats
-  const scoreStr = typeof score === 'string' ? score : Math.floor(score).toString();
-  const digitCount = scoreStr.length;
+function calculateLeaderboardFontSize(scoreString) {
+  const digitCount = scoreString.length;
   
   // Default: 24px for numbers with up to 11 digits
   if (digitCount <= 11) return "24px"; // Up to 999 billion
@@ -313,7 +310,7 @@ async function showLeaderboard() {
 
   const q = query(
     collection(db, "leaderboard"),
-    orderBy("score", "desc"),
+    orderBy("scoreString", "desc"),
     limit(10)
   );
 
@@ -324,7 +321,7 @@ async function showLeaderboard() {
   snapshot.docs.forEach((docSnap, i) => {
     const data = docSnap.data();
     const name  = data.name  ?? "Anonymous";
-    const score = data.score ?? 0;
+    const scoreString = data.scoreString ?? "0";
     const storedNameStyle = getStoredNameStyle(data);
 
     // Treat missing/non-number tag fields as null
@@ -343,10 +340,8 @@ async function showLeaderboard() {
     renderLeaderboardName(nameSlots[i], name, storedNameStyle, displayTag);
     
     const scoreElement = document.getElementById(scoreSlots[i]);
-    // Use scoreString for display if available, otherwise use score
-    const displayScore = data.scoreString ?? score.toString();
-    scoreElement.innerHTML = displayScore.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    scoreElement.style.fontSize = calculateLeaderboardFontSize(score);
+    scoreElement.innerHTML = scoreString.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    scoreElement.style.fontSize = calculateLeaderboardFontSize(scoreString);
   });
 
   // Fill any empty slots if fewer than 10 players exist yet
