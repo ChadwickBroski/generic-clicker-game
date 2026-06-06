@@ -237,7 +237,7 @@ function add() {
 }
 
 function reset() {
-  counter = document.getElementById("counter");
+  let counter = document.getElementById("counter");
   if (confirm("Do you want to reset your progress? (Removes all of your progress)")) {
     number = 0;
     autoClickerUnlocked = false;
@@ -251,7 +251,7 @@ function reset() {
     dataCenterLevel = 0;
     automationLabLevel = 0;
     cloudRegionLevel = 0;
-    counter = 0;
+    counter.textContent = number.toLocaleString();
     prestigeCount = 0;
     isNewPlayer = true;
     NAME_STYLES = 1;

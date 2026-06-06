@@ -240,7 +240,7 @@ function reset() {
     dataCenterLevel = 0;
     automationLabLevel = 0;
     cloudRegionLevel = 0;
-    counter = 0;
+    counter.textContent = number.toLocaleString();
     prestigeCount = 0;
     isNewPlayer = true;
     NAME_STYLES = 1;
