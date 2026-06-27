@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/x-icon" href="assets/mainLogo.png">
+    <link rel="icon" type="image/x-icon" href="../assets/mainLogo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <title>Generic Clicker Game</title>
   </head>
@@ -11,17 +11,17 @@
     <h1>Generic Clicker Game</h1>
     <div class="counter" id="counter">Loading...</div>
     <div class="counter" id="totalCps" style="font-size: 20px; top: 35%;">0.0 CPS</div>
-    <div class="informer" id="autoclickerInformer"><i class="fa-solid fa-circle-info"></i>Autoclicker upgrade bought!</div>
+    <div class="informer" id="autoclickerInformer"><i class="fa-solid fa-circle-info"></i>  Autoclicker upgrade bought!</div>
     
     <button type="button" class="button" id="clickBtn">CLICK ME</button>
 
     <button type="button" class="button" id="autoclickerbuyBtn" style="flex-direction: column;top:70%; padding: 17px 11px; --button-color:green;--button-bg:#f0fff0;"><i class="fa-solid fa-arrow-pointer"></i> 
       Unlock Autoclicker Upgrades
-      <span style="display:block;font-size:12px;" id="autoclickerbuySublabel">Cost: 1,000 Clicks</span>
+      <span style="display:block;font-size:12px;" id="autoclickerbuySublabel">Cost: 20 Clicks</span>
     </button>
 
     <!-- Autoclicker Upgrade -->
-    <button type="button" class="button" id="upgradesBtn" style="top:30%; left: 10%; right:auto; padding: 7px 11px; --button-color:green;--button-bg:#f0fff0; display:none;"><i class="fa-solid fa-arrow-pointer"></i> Upgrades</button>
+    <button type="button" class="button" id="upgradesBtn" style="top:30%; left: 10%; right:auto; padding: 7px 11px; --button-color:green;--button-bg:#f0fff0; display:none;"><i class="fa-solid fa-arrow-trend-up"></i> Upgrades</button>
 
     <!-- Settings Button -->
     <button type="button" class="button" id="settingsBtn" style="top:6%; left: 90%; right:auto; padding: 7px 11px;--button-color:blue;--button-bg:azure;"><i class="fa-solid fa-gear"></i>Settings</button>
@@ -31,12 +31,188 @@
 
     <!-- Customization Button -->
     <button type="button" class="button" id="customizationBtn" style="top:20%; left: 90%; right:auto; padding: 7px 11px; --button-color:rgb(160, 3, 160);--button-bg:rgb(255, 239, 254);"><i class="fa-solid fa-sliders"></i>Customization</button>
+    
+    <!-- Achievements Button-->
+    <button type="button" class="button" id="achievementsBtn" style="top:30%; left: 90%; right:auto; padding: 7px 11px; --button-color:#E91E63;--button-bg:rgb(250, 240, 255);"><i class="fa-solid fa-award"></i> Achievements</button>
+
+    <!-- Achievements Modal -->
+    <div id="achievementsModal" class="modal">
+      <div class="modal-content" style="width: 60%;">
+        <span class="close" id="achievementsClose">&times;</span>
+        <h2><i class="fa-solid fa-award"></i> Achievements</h2>
+        <hr class="modal-divider">
+        <div class="upgrades-top-row">
+          <p class="reset-desc" id="achievementsIntro">Achievements are earned by reaching score milestones. This version currently includes click and prestige achievements.</p>
+        </div>
+        <h3><i class="fa-solid fa-suitcase-rolling"></i> Early Game</h3>
+        <p class="reset-desc">You're getting started with the game.</p>
+        <div class="style-grid wide">
+          <!-- First Click -->
+          <div class="style-card locked" id="firstClick">
+            <div class="achievement-status locked" id="firstClickCompleted"><i class="fa-solid fa-lock"></i></div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/mainLogo.png" alt="First Click" class="upgrade-image">
+              <span style="color:black;">First Click</span>
+            </div>
+            <div class="style-label">Click for the first time</div>
+            <div class="style-sublabel">Beginning of a Journey</div>
+          </div>
+
+          <!-- Century -->
+          <div class="style-card locked" id="century">
+            <div class="achievement-status locked" id="centuryCompleted"><i class="fa-solid fa-lock"></i></div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/mainLogo.png" alt="Century" class="upgrade-image">
+              <span style="color:black">Century</span>
+            </div>
+            <div class="style-label">Get 100 clicks</div>
+            <div class="style-sublabel">Getting started with autoclickers</div>
+          </div>
+
+          <!-- Millennium -->
+          <div class="style-card locked" id="millennium">
+            <div class="achievement-status locked" id="millenniumCompleted"><i class="fa-solid fa-lock"></i></div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/mainLogo.png" alt="Millennium" class="upgrade-image">
+              <span style="color:black;">Millennium</span>
+            </div>
+            <div class="style-label">Get 1,000 clicks</div>
+            <div class="style-sublabel">Growing bigger</div>
+          </div>
+
+          <!-- Millionaire Club -->
+          <div class="style-card locked" id="millionaire">
+            <div class="achievement-status locked" id="millionaireCompleted"><i class="fa-solid fa-lock"></i></div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/mainLogo.png" alt="Millionaire" class="upgrade-image">
+              <span style="color:black;">Millionaire Club</span>
+            </div>
+            <div class="style-label">Get million clicks</div>
+            <div class="style-sublabel">You don't know what's coming</div>
+          </div>
+
+          <!-- Click Mogul -->
+          <div class="style-card locked" id="billionaire">
+            <div class="achievement-status locked" id="billionaireCompleted"><i class="fa-solid fa-lock"></i></div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/mainLogo.png" alt="Billionaire" class="upgrade-image">
+              <span style="color:black;">Click Mogul</span>
+            </div>
+            <div class="style-label">Get 1 billion clicks</div>
+            <div class="style-sublabel">Locking in</div>
+          </div>
+
+          <!-- Melon Musk -->
+          <div class="style-card locked" id="trillionaire">
+            <div class="achievement-status locked" id="trillionaireCompleted"><i class="fa-solid fa-lock"></i></div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/mainLogo.png" alt="Trillionaire" class="upgrade-image">
+              <span style="color:black;">Melon Musk</span>
+            </div>
+            <div class="style-label">Get 1 trillion clicks</div>
+            <div class="style-sublabel">Melon would be proud!</div>
+          </div>
+
+          <!-- Chill Out -->
+          <div class="style-card locked" id="chillOut">
+            <div class="achievement-status locked" id="chillOutCompleted"><i class="fa-solid fa-lock"></i></div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/mainLogo.png" alt="Chill Out" class="upgrade-image">
+              <span style="color:black;">Quadrillionaire? Chill out</span>
+            </div>
+            <div class="style-label">Get 1 quadrillion clicks</div>
+            <div class="style-sublabel">You should really chill out</div>
+          </div>
+
+          <!-- Click Printer go brr -->
+          <div class="style-card locked" id="clickPrinter">
+            <div class="achievement-status locked" id="clickPrinterCompleted"><i class="fa-solid fa-lock"></i></div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/mainLogo.png" alt="Click Printer go brr" class="upgrade-image">
+              <span style="color:black;">Click Printer go brr</span>
+            </div>
+            <div class="style-label">Get 1 quintillion clicks</div>
+            <div class="style-sublabel">Click Printer go brr</div>
+          </div>
+
+          <!-- Click button has left chat -->
+          <div class="style-card locked" id="clickButtonLeftChat">
+            <div class="achievement-status locked" id="clickButtonLeftChatCompleted"><i class="fa-solid fa-lock"></i></div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/mainLogo.png" alt="Click button has left chat" class="upgrade-image">
+              <span style="color:black;">Click button has left the chat</span>
+            </div>
+            <div class="style-label">Get 1 septillion clicks</div>
+            <div class="style-sublabel">Click button is scared of you</div>
+          </div>
+
+          <!-- Son Im crine😭😭 -->
+          <div class="style-card locked" id="sonImCrine">
+            <div class="achievement-status locked" id="sonImCrineCompleted"><i class="fa-solid fa-lock"></i></div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/mainLogo.png" alt="Son Im crine😭😭" class="upgrade-image">
+              <span style="color:black;">Son Im crine😭😭</span>
+            </div>
+            <div class="style-label">Get 1 octillion clicks</div>
+            <div class="style-sublabel">If you know, you know</div>
+          </div>
+
+          <!-- You can stop now -->
+          <div class="style-card locked" id="youCanStopNow">
+            <div class="achievement-status locked" id="youCanStopNowCompleted"><i class="fa-solid fa-lock"></i></div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/mainLogo.png" alt="You can stop now" class="upgrade-image">
+              <span style="color:black;">You can stop now</span>
+            </div>
+            <div class="style-label">Get 1 decillion clicks</div>
+            <div class="style-sublabel">Actually, stop</div>
+          </div>
+
+          <!-- Job Application -->
+          <div class="style-card locked" id="jobApplication">
+            <div class="achievement-status locked" id="jobApplicationCompleted"><i class="fa-solid fa-lock"></i></div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/mainLogo.png" alt="Job Application" class="upgrade-image">
+              <span style="color:black;">Job Application</span>
+            </div>
+            <div class="style-label">Get 1 duodecillion clicks</div>
+            <div class="style-sublabel">get a job</div>
+          </div>
+
+          <!-- Leave some for us ✌️ -->
+          <div class="style-card locked" id="leaveSomeForUs">
+            <div class="achievement-status locked" id="leaveSomeForUsCompleted"><i class="fa-solid fa-lock"></i></div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/mainLogo.png" alt="Leave some for us ✌️" class="upgrade-image">
+              <span style="color:black;">Leave some for us ✌️</span>
+            </div>
+            <div class="style-label">Get 1 septendecillion clicks</div>
+            <div class="style-sublabel">That's 1 followed by 54 zeros</div>
+          </div>
+        </div>
+
+        <!-- Prestige tab content -->
+        <div class="style-grid wide achievement-tab-content hidden" id="achievementsPrestigePane">
+          <!-- First Prestige -->
+          <div class="style-card locked" id="firstPrestige">
+            <div class="achievement-status locked" id="firstPrestigeCompleted"><i class="fa-solid fa-lock"></i></div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/mainLogo.png" alt="First Prestige" class="upgrade-image">
+              <span style="color:black;">First Prestige</span>
+            </div>
+            <div class="style-label">Prestige for the first time</div>
+            <div class="style-sublabel">A whole new grind begins</div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
 
     <!-- Upgrades Modal -->
     <div id="upgradesModal" class="modal">
       <div class="modal-content" style="width: 80%;">
         <span class="close" id="upgradesClose">&times;</span>
-        <h2><i class="fa-solid fa-arrow-pointer"></i> Upgrades</h2>
+        <h2><i class="fa-solid fa-arrow-trend-up"></i> Upgrades</h2>
         <hr class="modal-divider">
         <div class="upgrades-top-row">>
           <p class="reset-desc" style="margin-top:8px;">Upgrades are like Autoclickers. They can be bought with clicks.</p>
@@ -52,7 +228,7 @@
           <div class="style-card" id="mouse">
             <div class="upgrade-count" id="mouseUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="assets/lowEndMouse.png" alt="Mouse upgrade" class="upgrade-image">
+              <img src="../assets/lowEndMouse.png" alt="Mouse upgrade" class="upgrade-image">
               <span style="color:black;">Low-End Mouse</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
@@ -63,7 +239,7 @@
           <div class="style-card" id="servant">
             <div class="upgrade-count" id="servantUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="assets/servant.png" alt="Servant upgrade" class="upgrade-image">
+              <img src="../assets/servant.png" alt="Servant upgrade" class="upgrade-image">
               <span style="color:black;">Servant</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
@@ -74,7 +250,7 @@
           <div class="style-card" id="robot">
             <div class="upgrade-count" id="robotUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="assets/robot.png" alt="Robot upgrade" class="upgrade-image">
+              <img src="../assets/robot.png" alt="Robot upgrade" class="upgrade-image">
               <span style="color:black;">Robot</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
@@ -85,40 +261,40 @@
           <div class="style-card" id="team">
             <div class="upgrade-count" id="teamUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="assets/team.png" alt="Team upgrade" class="upgrade-image">
+              <img src="../assets/team.png" alt="Team upgrade" class="upgrade-image">
               <span style="color:black;">Team</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
             <div class="style-sublabel" id="teamSublabel">Cost: 2,500 Clicks | +20.0 CPS</div>
           </div>
           
-          <!-- Hacker -->
-          <div class="style-card" id="hacker">
-            <div class="upgrade-count" id="hackerUpgradeCount">0</div>
-            <div class="style-preview upgrade-preview">
-              <img src="assets/hacker.png" alt="Hacker upgrade" class="upgrade-image">
-              <span style="color:black;">Hacker</span>
-            </div>
-            <div class="style-label">Current: 0.0 CPS</div>
-            <div class="style-sublabel" id="hackerSublabel">Cost: 1,000 Clicks | +10.0 CPS</div>
-          </div>
-
           <!-- Army -->
           <div class="style-card" id="army">
             <div class="upgrade-count" id="armyUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="assets/army.png" alt="Army upgrade" class="upgrade-image">
+              <img src="../assets/army.png" alt="Army upgrade" class="upgrade-image">
               <span style="color:black;">Army</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
             <div class="style-sublabel" id="armySublabel">Cost: 1,000 Clicks | +10.0 CPS</div>
           </div>
 
+          <!-- Hacker -->
+          <div class="style-card" id="hacker">
+            <div class="upgrade-count" id="hackerUpgradeCount">0</div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/hacker.png" alt="Hacker upgrade" class="upgrade-image">
+              <span style="color:black;">Hacker</span>
+            </div>
+            <div class="style-label">Current: 0.0 CPS</div>
+            <div class="style-sublabel" id="hackerSublabel">Cost: 1,000 Clicks | +10.0 CPS</div>
+          </div>
+
           <!-- Server -->
           <div class="style-card" id="server">
             <div class="upgrade-count" id="serverUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="assets/server.png" alt="Server upgrade" class="upgrade-image">
+              <img src="../assets/server.png" alt="Server upgrade" class="upgrade-image">
               <span style="color:black;">Server</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
@@ -129,7 +305,7 @@
           <div class="style-card" id="dataCenter">
             <div class="upgrade-count" id="dataCenterUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="assets/dataCenter.png" alt="Data Center upgrade" class="upgrade-image">
+              <img src="../assets/dataCenter.png" alt="Data Center upgrade" class="upgrade-image">
               <span style="color:black;">Data Center</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
@@ -140,7 +316,7 @@
           <div class="style-card" id="automationLab">
             <div class="upgrade-count" id="automationLabUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="assets/automationLab.png" alt="Automation Lab upgrade" class="upgrade-image">
+              <img src="../assets/automationLab.png" alt="Automation Lab upgrade" class="upgrade-image">
               <span style="color:black;">Automation Lab</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
@@ -151,11 +327,44 @@
           <div class="style-card" id="cloudRegion">
             <div class="upgrade-count" id="cloudRegionUpgradeCount">0</div>
             <div class="style-preview upgrade-preview">
-              <img src="assets/cloudRegion.png" alt="Cloud Region upgrade" class="upgrade-image">
+              <img src="../assets/cloudRegion.png" alt="Cloud Region upgrade" class="upgrade-image">
               <span style="color:black;">Cloud Region</span>
             </div>
             <div class="style-label">Current: 0.0 CPS</div>
             <div class="style-sublabel" id="cloudRegionSublabel">Cost: 1,000 Clicks | +10.0 CPS</div>
+          </div>
+
+          <!-- Super Computer -->
+          <div class="style-card" id="superComputer">
+            <div class="upgrade-count" id="superComputerUpgradeCount">0</div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/superComputer.png" alt="Super Computer upgrade" class="upgrade-image">
+              <span style="color:black;">Super Computer</span>
+            </div>
+            <div class="style-label">Current: 0.0 CPS</div>
+            <div class="style-sublabel" id="superComputerSublabel">Cost: 1,000 Clicks | +10.0 CPS</div>
+          </div>
+
+          <!-- Quantum Computer -->
+          <div class="style-card" id="quantumComputer">
+            <div class="upgrade-count" id="quantumComputerUpgradeCount">0</div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/quantumComputer.png" alt="Quantum Computer upgrade" class="upgrade-image">
+              <span style="color:black;">Quantum Computer</span>
+            </div>
+            <div class="style-label">Current: 0.0 CPS</div>
+            <div class="style-sublabel" id="quantumComputerSublabel">Cost: 1,000 Clicks | +10.0 CPS</div>
+          </div>
+
+          <!-- Unemployed -->
+          <div class="style-card" id="unemployed">
+            <div class="upgrade-count" id="unemployedUpgradeCount">0</div>
+            <div class="style-preview upgrade-preview">
+              <img src="../assets/unemployed.png" alt="Unemployed upgrade" class="upgrade-image">
+              <span style="color:black;">Unemployed</span>
+            </div>
+            <div class="style-label">Current: 0.0 CPS</div>
+            <div class="style-sublabel" id="unemployedSublabel">Cost: 1,000 Clicks | +10.0 CPS</div>
           </div>
 
         </div>
@@ -172,7 +381,7 @@
         <div class="style-card" id="prestige" style="margin-top: 8px;">
           <div class="upgrade-count" id="prestigeUpgradeCount">0</div>
           <div class="style-preview upgrade-preview">
-            <img src="assets/prestige.png" alt="Prestige" class="upgrade-image">
+            <img src="../assets/prestige.png" alt="Prestige" class="upgrade-image">
             <span style="color:black;">Prestige</span>
           </div>
           <div class="style-label">Current: x1.0 CPS multiplier</div>
@@ -291,58 +500,58 @@
 
     <!-- Leaderboard Modal -->
     <div id="leaderboardModal" class="modal">
-      <div class="modal-content">
+      <div class="modal-content"  style="width: 60%;">
         <span class="close" id="leaderboardClose">&times;</span>
         <h2><i class="fa-solid fa-trophy"></i> Leaderboard</h2>
         <hr class="modal-divider">
         <div class="leaderboard-list">
           <div class="leaderboard-row">
-            <span class="leaderboard-rank">🥇 1st -&nbsp;&nbsp;<span id="name1" style="font-weight:500;">—</span></span>
+            <span class="leaderboard-rank">🥇 1st -&nbsp;&nbsp;<span id="name1" style="font-weight:500;" onclick="profilePage(this)">—</span></span>
             <span class="leaderboard-score" id="score1">—</span>
           </div>
           <hr class="modal-divider">
           <div class="leaderboard-row">
-            <span class="leaderboard-rank">🥈 2nd -&nbsp;&nbsp;<span id="name2" style="font-weight:500;">—</span></span>
+            <span class="leaderboard-rank">🥈 2nd -&nbsp;&nbsp;<span id="name2" style="font-weight:500;" onclick="profilePage(this)">—</span></span>
             <span class="leaderboard-score" id="score2">—</span>
           </div>
           <hr class="modal-divider">
           <div class="leaderboard-row">
-            <span class="leaderboard-rank">🥉 3rd -&nbsp;&nbsp;<span id="name3" style="font-weight:500;">—</span></span>
+            <span class="leaderboard-rank">🥉 3rd -&nbsp;&nbsp;<span id="name3" style="font-weight:500;" onclick="profilePage(this)">—</span></span>
             <span class="leaderboard-score" id="score3">—</span>
           </div>
           <hr class="modal-divider">
           <div class="leaderboard-row">
-            <span class="leaderboard-rank">4️⃣ 4th -&nbsp;&nbsp;<span id="name4" style="font-weight:500;">—</span></span>
+            <span class="leaderboard-rank">4️⃣ 4th -&nbsp;&nbsp;<span id="name4" style="font-weight:500;" onclick="profilePage(this)">—</span></span>
             <span class="leaderboard-score" id="score4">—</span>
           </div>
           <hr class="modal-divider">
           <div class="leaderboard-row">
-            <span class="leaderboard-rank">5️⃣ 5th -&nbsp;&nbsp;<span id="name5" style="font-weight:500;">—</span></span>
+            <span class="leaderboard-rank">5️⃣ 5th -&nbsp;&nbsp;<span id="name5" style="font-weight:500;" onclick="profilePage(this)">—</span></span>
             <span class="leaderboard-score" id="score5">—</span>
           </div>
           <hr class="modal-divider">
           <div class="leaderboard-row">
-            <span class="leaderboard-rank">6️⃣ 6th -&nbsp;&nbsp;<span id="name6" style="font-weight:500;">—</span></span>
+            <span class="leaderboard-rank">6️⃣ 6th -&nbsp;&nbsp;<span id="name6" style="font-weight:500;" onclick="profilePage(this)">—</span></span>
             <span class="leaderboard-score" id="score6">—</span>
           </div>
           <hr class="modal-divider">
           <div class="leaderboard-row">
-            <span class="leaderboard-rank">7️⃣ 7th -&nbsp;&nbsp;<span id="name7" style="font-weight:500;">—</span></span>
+            <span class="leaderboard-rank">7️⃣ 7th -&nbsp;&nbsp;<span id="name7" style="font-weight:500;" onclick="profilePage(this)">—</span></span>
             <span class="leaderboard-score" id="score7">—</span>
           </div>
           <hr class="modal-divider">
           <div class="leaderboard-row">
-            <span class="leaderboard-rank">8️⃣ 8th -&nbsp;&nbsp;<span id="name8" style="font-weight:500;">—</span></span>
+            <span class="leaderboard-rank">8️⃣ 8th -&nbsp;&nbsp;<span id="name8" style="font-weight:500;" onclick="profilePage(this)">—</span></span>
             <span class="leaderboard-score" id="score8">—</span>
           </div>
           <hr class="modal-divider">
           <div class="leaderboard-row">
-            <span class="leaderboard-rank">9️⃣ 9th -&nbsp;&nbsp;<span id="name9" style="font-weight:500;">—</span></span>
+            <span class="leaderboard-rank">9️⃣ 9th -&nbsp;&nbsp;<span id="name9" style="font-weight:500;" onclick="profilePage(this)">—</span></span>
             <span class="leaderboard-score" id="score9">—</span>
           </div>
           <hr class="modal-divider">
           <div class="leaderboard-row">
-            <span class="leaderboard-rank">🔟 10th -&nbsp;&nbsp;<span id="name10" style="font-weight:500;">—</span></span>
+            <span class="leaderboard-rank">🔟 10th -&nbsp;&nbsp;<span id="name10" style="font-weight:500;" onclick="profilePage(this)">—</span></span>
             <span class="leaderboard-score" id="score10">—</span>
           </div>
         </div>
@@ -354,18 +563,9 @@
       <p class="informer"><i class="fa-solid fa-circle-info"></i>Progress saved!</p>
     </div>
 
-    <a class="auto-save" style="right:auto;left:3%;">v0.4.2 - Upgrades and Prestige Update - PREVIEW</a>
-    <p class="auto-save" style="left: auto; right: 3%;">Made by <a href="chadwickbroski.github.io" style="color:#002CF2;">ChadwickBroski</a>.</p>
+    <p class="auto-save" style="white-space: nowrap;position:absolute;top:93%;left:50%;transform:translateX(-50%);">© 2026 Generic Clicker Game 5<code class="new" id="updatesBtn">NEW</code>&bull; Made by <a href="chadwickbroski.github.io" style="color:#002CF2;">ChadwickBroski</a>. &bull; <i class="fa-brands fa-github"></i> Hosted on GITHUB</p>
 
     <!-- type="module" is required for Firebase imports to work -->
     <script type="module" src="script.js"></script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S6553DC8PN"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-    
-      gtag('config', 'G-S6553DC8PN');
-    </script>
   </body>
 </html>

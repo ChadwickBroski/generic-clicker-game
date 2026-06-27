@@ -24,6 +24,58 @@ h3 {
   margin: 24px 0px 0px 0px;
   font-family: "Nunito", sans-serif;
 }
+.new {
+  background: linear-gradient(
+    135deg,
+    #34d058 0%,
+    #2bb34b 45%,
+    #23963e 100%
+  );
+
+  color: white;
+  padding: 4px 7px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.15);
+  margin: 5px;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  font-family: "Nunito", sans-serif;
+
+  position: relative;
+  overflow: hidden;
+
+  box-shadow:
+    0 5px 10px rgba(52, 208, 88, 0.5);
+
+  transition: transform 0.2s ease;
+}
+
+.new::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    120deg,
+    transparent 30%,
+    rgba(255,255,255,0.25) 50%,
+    transparent 70%
+  );
+
+  transform: translateX(100%);
+  transition: transform 0.4s ease;
+}
+
+.new:hover::before {
+  transform: translateX(-100%);
+}
+
+.new:hover {
+  transform: translateY(-1px);
+  cursor: pointer;
+}
 
 .button {
   position: absolute;
@@ -88,8 +140,7 @@ h3 {
 
 .auto-save {
   font-family: "Nunito", sans-serif;
-  position: absolute;
-  top: 92%;
+  text-align: center;
   font-size: 14px;
 }
 
@@ -149,6 +200,12 @@ h3 {
   width: calc(100% + 40px);
 }
 
+.leaderboard-modal-content .modal-divider,
+.achievements-modal-content .modal-divider {
+  margin: 12px -20px;
+  width: calc(100% + 40px);
+}
+
 /* ── Reset row ── */
 .reset-row {
   display: flex;
@@ -177,7 +234,112 @@ h3 {
   --button-bg: #fff0f0;
 }
 
-/* ── Leaderboard ── */
+.hidden {
+  display: none !important;
+}
+
+.achievement-tab-content.hidden {
+  display: none !important;
+}
+
+/* ── Shared side tabs ── */
+.leaderboard-modal-content,
+.achievements-modal-content {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  max-height: 80vh;
+
+  padding: 28px 20px;
+}
+
+.modal-header {
+  position: relative;
+  min-height: 44px;
+  margin-bottom: 8px;
+}
+
+.modal-header h2 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  text-align: center;
+  max-width: calc(100% - 80px);
+  white-space: nowrap;
+}
+
+.modal-header .close {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.modal-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.modal-side-tabs {
+  position: absolute;
+  top: 50%;
+  left: -58px;
+  right: auto;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 5;
+}
+
+.modal-side-tab {
+  width: 58px;
+  height: 58px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: white;
+  color: black;
+  border: 2px solid black;
+  border-radius: 8px;
+  box-shadow: 3px 3px 0 0 black;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  cursor: pointer;
+  transition: 100ms ease;
+  padding: 4px;
+}
+
+.modal-side-tab i {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.modal-side-tab:hover {
+  box-shadow: 1px 1px 0 0 black;
+  transform: translate(2px, 2px);
+}
+
+.modal-side-tab.selected {
+  background: #f0fff0;
+  color: #1f7a3d;
+  border-color: #1f7a3d;
+  box-shadow: 3px 3px 0 0 #1f7a3d;
+}
+
+.modal-side-tab.selected:hover {
+  box-shadow: 1px 1px 0 0 #1f7a3d;
+}
+
 .leaderboard-list {
   margin-top: 12px;
 }
@@ -193,6 +355,7 @@ h3 {
   font-size: 20px;
   font-weight: 700;
   font-family: "Nunito", sans-serif;
+  cursor: pointer;
 }
 
 .leaderboard-score {
@@ -244,6 +407,7 @@ h3 {
   vertical-align: middle;
   position: relative;
   cursor: default;
+  color: white !important;
 }
 
 /* ── Tag tooltip ── */
@@ -298,6 +462,11 @@ h3 {
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   margin-top: 14px;
+  min-width: 0;
+}
+
+.style-grid.wide {
+  grid-template-columns: repeat(1, 1fr);
 }
 
 .style-card {
@@ -310,6 +479,7 @@ h3 {
   text-align: center;
   background: white;
   position: relative;
+  min-width: 0;
 }
 
 .style-card:hover {
@@ -325,6 +495,17 @@ h3 {
 
 .style-card.selected:hover {
   box-shadow: 1px 1px 0 0 rgb(160, 3, 160);
+}
+
+/* Achievements use the same card language as the rest of the game */
+.style-card.unlocked {
+  border-color: #1f7a3d;
+  background: #f4fff4;
+  box-shadow: 3px 3px 0 0 #1f7a3d;
+}
+
+.style-card.unlocked:hover {
+  box-shadow: 1px 1px 0 0 #1f7a3d;
 }
 
 /* Locked cards are dimmed and not clickable */
@@ -374,6 +555,35 @@ h3 {
   text-align: center;
 }
 
+.achievement-status {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: black;
+  box-shadow: none;
+}
+
+.achievement-status i {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.achievement-status.unlocked {
+  color: #1f7a3d;
+}
+
+.achievement-status.locked {
+  color: #c73b3b;
+}
+
 .upgrade-image {
   width: 55px;
   height: 55px;
@@ -385,6 +595,7 @@ h3 {
   font-weight: 700;
   font-size: 13px;
   color: black;
+  overflow-wrap: anywhere;
 }
 
 .style-sublabel {
@@ -392,6 +603,7 @@ h3 {
   font-size: 11px;
   color: #888;
   margin-top: 2px;
+  overflow-wrap: anywhere;
 }
 
 .volume-row {

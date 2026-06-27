@@ -122,6 +122,76 @@ let isNewPlayer = false;
 let nameStyle   = 1; // Default
 let savedPlayerData = null;
 
+const ACHIEVEMENT_IDS = new Set(["firstClick", "century", "millennium", "millionaire", "billionaire", "trillionaire", "chillOut", "clickPrinter", "clickButtonLeftChat", "sonImCrine", "youCanStopNow", "jobApplication", "leaveSomeForUs", "firstPrestige"]);
+let unlockedAchievements = [];
+
+function normalizeAchievementList(values = []) {
+  if (!Array.isArray(values)) return [];
+  return [...new Set(values.filter((achievement) => typeof achievement === "string" && ACHIEVEMENT_IDS.has(achievement)))];
+}
+
+async function saveUnlockedAchievementsToFirebase() {
+  await setDoc(doc(db, "leaderboard", uid), {
+    unlockedAchievements: [...unlockedAchievements]
+  }, { merge: true });
+}
+
+function unlockAchievement(achievementId) {
+  if (!unlockedAchievements.includes(achievementId)) {
+    unlockedAchievements.push(achievementId);
+    void saveUnlockedAchievementsToFirebase();
+  }
+}
+
+function updateUnlockedAchievements(score) {
+  if (score >= 1) unlockAchievement("firstClick");
+  if (score >= 100) unlockAchievement("century");
+  if (score >= 1000) unlockAchievement("millennium");
+  if (score >= 1000000) unlockAchievement("millionaire");
+  if (score >= 1000000000) unlockAchievement("billionaire");
+  if (score >= 1000000000000) unlockAchievement("trillionaire");
+  if (score >= 1000000000000000) unlockAchievement("chillOut");
+  if (score >= 1000000000000000000) unlockAchievement("clickPrinter");
+  if (score >= 1000000000000000000000000) unlockAchievement("clickButtonLeftChat");
+  if (score >= 1000000000000000000000000000) unlockAchievement("sonImCrine");
+  if (score >= 1000000000000000000000000000000000) unlockAchievement("youCanStopNow");
+  if (score >= 1000000000000000000000000000000000000000) unlockAchievement("jobApplication");
+  if (score >= 1000000000000000000000000000000000000000000000000000000) unlockAchievement("leaveSomeForUs");
+  if (prestigeCount >= 1) unlockAchievement("firstPrestige");
+}
+
+function renderAchievementCard(cardId, completedId, unlocked) {
+  const card = document.getElementById(cardId);
+  const completed = document.getElementById(completedId);
+  if (!card || !completed) return;
+
+  card.classList.toggle("locked", !unlocked);
+  card.classList.toggle("unlocked", unlocked);
+  completed.classList.toggle("locked", !unlocked);
+  completed.classList.toggle("unlocked", unlocked);
+  completed.innerHTML = unlocked
+    ? '<i class="fa-solid fa-circle-check"></i>'
+    : '<i class="fa-solid fa-lock"></i>';
+}
+
+function refreshAchievementsUI() {
+  renderAchievementCard("firstClick", "firstClickCompleted", unlockedAchievements.includes("firstClick"));
+  renderAchievementCard("century", "centuryCompleted", unlockedAchievements.includes("century"));
+  renderAchievementCard("millennium", "millenniumCompleted", unlockedAchievements.includes("millennium"));
+  renderAchievementCard("millionaire", "millionaireCompleted", unlockedAchievements.includes("millionaire"));
+  renderAchievementCard("billionaire", "billionaireCompleted", unlockedAchievements.includes("billionaire"));
+  renderAchievementCard("trillionaire", "trillionaireCompleted", unlockedAchievements.includes("trillionaire"));
+  renderAchievementCard("chillOut", "chillOutCompleted", unlockedAchievements.includes("chillOut"));
+  renderAchievementCard("clickPrinter", "clickPrinterCompleted", unlockedAchievements.includes("clickPrinter"));
+  renderAchievementCard("clickButtonLeftChat", "clickButtonLeftChatCompleted", unlockedAchievements.includes("clickButtonLeftChat"));
+  renderAchievementCard("sonImCrine", "sonImCrineCompleted", unlockedAchievements.includes("sonImCrine"));
+  renderAchievementCard("youCanStopNow", "youCanStopNowCompleted", unlockedAchievements.includes("youCanStopNow"));
+  renderAchievementCard("jobApplication", "jobApplicationCompleted", unlockedAchievements.includes("jobApplication"));
+  renderAchievementCard("leaveSomeForUs", "leaveSomeForUsCompleted", unlockedAchievements.includes("leaveSomeForUs"));
+  renderAchievementCard("firstPrestige", "firstPrestigeCompleted", unlockedAchievements.includes("firstPrestige"));
+}
+
+
 const renderScore = () => {
   document.getElementById("counter").textContent = Math.floor(number).toLocaleString();
 };
@@ -138,12 +208,15 @@ if (playerDoc.exists()) {
   number     = data.scoreString ? Number(BigInt(data.scoreString)) : 0;
   playerName = data.name      ?? "Anonymous";
   nameStyle  = getStoredNameStyle(data);
+  unlockedAchievements = normalizeAchievementList(data.unlockedAchievements);
 } else {
   // Player has never saved before — flag them as new for First 100 check
   isNewPlayer = true;
 }
 
 renderScore();
+updateUnlockedAchievements(number);
+refreshAchievementsUI();
 document.getElementById("playerNameInput").value = playerName;
 
 // Highlight the card that matches the player's saved style
@@ -188,7 +261,11 @@ async function save() {
     dataCenterLevel,
     automationLabLevel,
     cloudRegionLevel,
+    superComputerLevel,
+    quantumComputerLevel,
+    unemployedLevel,
     prestigeCount,
+    unlockedAchievements: [...unlockedAchievements],
     ...getNameStyleSaveData(nameStyle)
   };
 
@@ -256,10 +333,13 @@ function reset() {
     dataCenterLevel = 0;
     automationLabLevel = 0;
     cloudRegionLevel = 0;
+    superComputerLevel = 0;
+    quantumComputerLevel = 0;
+    unemployedLevel = 0;
     counter.textContent = number.toLocaleString();
+    unlockedAchievements = [];
     prestigeCount = 0;
     isNewPlayer = true;
-    NAME_STYLES = 1;
     renderScore();
     refreshAutoClickerUi();
     save();
@@ -329,6 +409,36 @@ async function showLeaderboard() {
     return scoreB > scoreA ? 1 : scoreB < scoreA ? -1 : 0;
   }).slice(0, 10); // Take top 10
 
+  document.getElementById("name1").textContent = players[0].username;
+  document.getElementById("name1").dataset.uid = players[0].id;
+
+  document.getElementById("name2").textContent = players[1].username;
+  document.getElementById("name2").dataset.uid = players[1].id;
+
+  document.getElementById("name3").textContent = players[2].username;
+  document.getElementById("name3").dataset.uid = players[2].id;
+
+  document.getElementById("name4").textContent = players[3].username;
+  document.getElementById("name4").dataset.uid = players[3].id;
+
+  document.getElementById("name5").textContent = players[4].username;
+  document.getElementById("name5").dataset.uid = players[4].id;
+
+  document.getElementById("name6").textContent = players[5].username;
+  document.getElementById("name6").dataset.uid = players[5].id;
+
+  document.getElementById("name7").textContent = players[6].username;
+  document.getElementById("name7").dataset.uid = players[6].id;
+
+  document.getElementById("name8").textContent = players[7].username;
+  document.getElementById("name8").dataset.uid = players[7].id;
+
+  document.getElementById("name9").textContent = players[8].username;
+  document.getElementById("name9").dataset.uid = players[8].id;
+
+  document.getElementById("name10").textContent = players[9].username;
+  document.getElementById("name10").dataset.uid = players[9].id;
+
   const scoreSlots = ["score1", "score2", "score3", "score4", "score5", "score6", "score7", "score8", "score9", "score10"];
   const nameSlots  = ["name1",  "name2",  "name3",  "name4",  "name5",  "name6",  "name7",  "name8",  "name9",  "name10"];
 
@@ -357,12 +467,19 @@ async function showLeaderboard() {
     scoreElement.style.fontSize = calculateLeaderboardFontSize(scoreString);
   });
 
-  // Fill any empty slots if fewer than 10 players exist yet
   for (let i = players.length; i < 10; i++) {
     document.getElementById(nameSlots[i]).innerHTML  = "—";
     document.getElementById(scoreSlots[i]).innerHTML = "—";
   }
 }
+
+function profilePage(element) {
+    const uid = element.dataset.uid;
+    const username = element.querySelector(".leaderboard-name").textContent;
+    window.open(`user.html?uid=${uid}`, "_blank");
+}
+
+window.profilePage = profilePage;
 
 async function showCustomization() {
   updateUnlockedStyles();
@@ -391,18 +508,22 @@ const getScore = () => {
 const setScore = (newScore) => {
   number = Math.max(0, Number(newScore) || 0);
   renderScore();
+  updateUnlockedAchievements(number);
+  refreshAchievementsUI();
 };
 
 const addScore = (amount) => {
   number += amount;
   renderScore();
+  updateUnlockedAchievements(number);
+  refreshAchievementsUI();
   updateUnlockedStyles();
   updateUnlockedAutoClicker();
 };
 
 // Autoclicker settings.
 // CPS means "clicks per second", so 0.1 CPS means 1 click every 10 seconds.
-const AUTOCLICKER_UNLOCK_COST = 100;
+const AUTOCLICKER_UNLOCK_COST = 20;
 // Mouse
 const MOUSE_BASE_COST = 10;
 const MOUSE_COST_MULTIPLIER = 1.14;
@@ -453,6 +574,21 @@ const CLOUD_REGION_BASE_COST = 250000;
 const CLOUD_REGION_COST_MULTIPLIER = 1.32;
 const CLOUD_REGION_CPS_GAIN = 2500;
 const CLOUD_REGION_MAX_LEVEL = 99;
+// Super Computer
+const SUPER_COMPUTER_BASE_COST = 600000;
+const SUPER_COMPUTER_COST_MULTIPLIER = 1.34;
+const SUPER_COMPUTER_CPS_GAIN = 7000;
+const SUPER_COMPUTER_MAX_LEVEL = 99;
+// Quantum Computer
+const QUANTUM_COMPUTER_BASE_COST = 115000;
+const QUANTUM_COMPUTER_COST_MULTIPLIER = 1.36;
+const QUANTUM_COMPUTER_CPS_GAIN = 13000;
+const QUANTUM_COMPUTER_MAX_LEVEL = 99;
+// Unemployed
+const UNEMPLOYED_BASE_COST = 160000;
+const UNEMPLOYED_COST_MULTIPLIER = 1.38;
+const UNEMPLOYED_CPS_GAIN = 18000;
+const UNEMPLOYED_MAX_LEVEL = 99;
 
 // Prestige
 const PRESTIGE_BASE_COST = 10000000;
@@ -483,7 +619,10 @@ let serverLevel = 0;
 let dataCenterLevel = 0;
 let automationLabLevel = 0;
 let cloudRegionLevel = 0;
-let prestigeCount = 0;
+let superComputerLevel = 0;
+let quantumComputerLevel = 0;
+let unemployedLevel = 0;
+var prestigeCount = 0;
 
 const getPrestigeMultiplier = () => PRESTIGE_CPS_BOOST_MULTIPLIER ** prestigeCount;
 const getPrestigeCost = () => Math.floor(PRESTIGE_BASE_COST * PRESTIGE_CPS_BOOST_MULTIPLIER ** prestigeCount);
@@ -491,18 +630,25 @@ const applyPrestigeMultiplier = (baseCpsGain) => baseCpsGain * getPrestigeMultip
 
 if (savedPlayerData) {
   autoClickerUnlocked = savedPlayerData.autoClickerUnlocked === true;
-  mouseLevel = normalizeUpgradeLevel(savedPlayerData.mouseLevel, MOUSE_MAX_LEVEL);
-  servantLevel = normalizeUpgradeLevel(savedPlayerData.servantLevel, SERVANT_MAX_LEVEL);
-  robotLevel = normalizeUpgradeLevel(savedPlayerData.robotLevel, ROBOT_MAX_LEVEL);
-  teamLevel = normalizeUpgradeLevel(savedPlayerData.teamLevel, TEAM_MAX_LEVEL);
-  hackerLevel = normalizeUpgradeLevel(savedPlayerData.hackerLevel, HACKER_MAX_LEVEL);
-  armyLevel = normalizeUpgradeLevel(savedPlayerData.armyLevel, ARMY_MAX_LEVEL);
-  serverLevel = normalizeUpgradeLevel(savedPlayerData.serverLevel, SERVER_MAX_LEVEL);
-  dataCenterLevel = normalizeUpgradeLevel(savedPlayerData.dataCenterLevel, DATA_CENTER_MAX_LEVEL);
-  automationLabLevel = normalizeUpgradeLevel(savedPlayerData.automationLabLevel, AUTOMATION_LAB_MAX_LEVEL);
-  cloudRegionLevel = normalizeUpgradeLevel(savedPlayerData.cloudRegionLevel, CLOUD_REGION_MAX_LEVEL);
+  mouseLevel = normalizeUpgradeLevel(savedPlayerData.mouseLevel);
+  servantLevel = normalizeUpgradeLevel(savedPlayerData.servantLevel);
+  robotLevel = normalizeUpgradeLevel(savedPlayerData.robotLevel);
+  teamLevel = normalizeUpgradeLevel(savedPlayerData.teamLevel);
+  hackerLevel = normalizeUpgradeLevel(savedPlayerData.hackerLevel);
+  armyLevel = normalizeUpgradeLevel(savedPlayerData.armyLevel);
+  serverLevel = normalizeUpgradeLevel(savedPlayerData.serverLevel);
+  dataCenterLevel = normalizeUpgradeLevel(savedPlayerData.dataCenterLevel);
+  automationLabLevel = normalizeUpgradeLevel(savedPlayerData.automationLabLevel);
+  cloudRegionLevel = normalizeUpgradeLevel(savedPlayerData.cloudRegionLevel);
+  superComputerLevel = normalizeUpgradeLevel(savedPlayerData.superComputerLevel);
+  quantumComputerLevel = normalizeUpgradeLevel(savedPlayerData.quantumComputerLevel);
+  unemployedLevel = normalizeUpgradeLevel(savedPlayerData.unemployedLevel);
+
   prestigeCount = normalizePrestigeCount(savedPlayerData.prestigeCount);
 }
+
+updateUnlockedAchievements(number);
+refreshAchievementsUI();
 
 const formatCps = (value) => {
   const parsedValue = Number(value);
@@ -520,6 +666,9 @@ const getServerCpsGain = () => applyPrestigeMultiplier(SERVER_CPS_GAIN);
 const getDataCenterCpsGain = () => applyPrestigeMultiplier(DATA_CENTER_CPS_GAIN);
 const getAutomationLabCpsGain = () => applyPrestigeMultiplier(AUTOMATION_LAB_CPS_GAIN);
 const getCloudRegionCpsGain = () => applyPrestigeMultiplier(CLOUD_REGION_CPS_GAIN);
+const getSuperComputerCpsGain = () => applyPrestigeMultiplier(SUPER_COMPUTER_CPS_GAIN);
+const getQuantumComputerCpsGain = () => applyPrestigeMultiplier(QUANTUM_COMPUTER_CPS_GAIN);
+const getUnemployedCpsGain = () => applyPrestigeMultiplier(UNEMPLOYED_CPS_GAIN);
 
 // Mouse CPS depends on how many Mouse upgrades were bought inside the Upgrades menu.
 const getMouseCps = () => mouseLevel * getMouseCpsGain();
@@ -532,9 +681,12 @@ const getServerCps = () => serverLevel * getServerCpsGain();
 const getDataCenterCps = () => dataCenterLevel * getDataCenterCpsGain();
 const getAutomationLabCps = () => automationLabLevel * getAutomationLabCpsGain();
 const getCloudRegionCps = () => cloudRegionLevel * getCloudRegionCpsGain();
+const getSuperComputerCps = () => superComputerLevel * getSuperComputerCpsGain();
+const getQuantumComputerCps = () => quantumComputerLevel * getQuantumComputerCpsGain();
+const getUnemployedCps = () => unemployedLevel * getUnemployedCpsGain();
 
 // Total CPS is the sum of all upgrade CPS.
-const getTotalAutoClickerCps = () => getMouseCps() + getServantCps() + getRobotCps() + getTeamCps() + getHackerCps() + getArmyCps() + getServerCps() + getDataCenterCps() + getAutomationLabCps() + getCloudRegionCps();
+const getTotalAutoClickerCps = () => getMouseCps() + getServantCps() + getRobotCps() + getTeamCps() + getHackerCps() + getArmyCps() + getServerCps() + getDataCenterCps() + getAutomationLabCps() + getCloudRegionCps() + getSuperComputerCps() + getQuantumComputerCps() + getUnemployedCps();
 
 // Each bought upgrade makes the next one cost more.
 const getMouseCost = () => {
@@ -567,6 +719,15 @@ const getAutomationLabCost = () => {
 const getCloudRegionCost = () => {
   return Math.floor(CLOUD_REGION_BASE_COST * CLOUD_REGION_COST_MULTIPLIER ** cloudRegionLevel);
 };
+const getSuperComputerCost = () => {
+  return Math.floor(SUPER_COMPUTER_BASE_COST * SUPER_COMPUTER_COST_MULTIPLIER ** superComputerLevel);
+};
+const getQuantumComputerCost = () => {
+  return Math.floor(QUANTUM_COMPUTER_BASE_COST * QUANTUM_COMPUTER_COST_MULTIPLIER ** quantumComputerLevel);
+};
+const getUnemployedCost = () => {
+  return Math.floor(UNEMPLOYED_BASE_COST * UNEMPLOYED_COST_MULTIPLIER ** unemployedLevel);
+}
 
 // ── Smooth rAF-based autoclicker ───────────────────────────────────────────
 // Instead of a 1-second setInterval that adds large chunks at once, we use
@@ -919,6 +1080,78 @@ function buyCloudRegionUpgrade() {
   updateUnlockedAutoClicker();
 }
 
+function buySuperComputerUpgrade() {
+  const score = getScore();
+  const superComputerCost = getSuperComputerCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (superComputerLevel >= SUPER_COMPUTER_MAX_LEVEL) {
+    alert("Super Computer is already maxed out!");
+  }
+
+  if (score < superComputerCost) {
+    alert(`Not enough clicks to purchase the Super Computer upgrade! You need ${superComputerCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - superComputerCost);
+  superComputerLevel++;
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+}
+
+function buyQuantumComputerUpgrade() {
+  const score = getScore();
+  const quantumComputerCost = getQuantumComputerCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (quantumComputerLevel >= QUANTUM_COMPUTER_MAX_LEVEL) {
+    alert("Quantum Computer is already maxed out!");
+  }
+
+  if (score < quantumComputerCost) {
+    alert(`Not enough clicks to purchase the Quantum Computer upgrade! You need ${quantumComputerCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - quantumComputerCost);
+  quantumComputerLevel++;
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+}
+
+function buyUnemployedUpgrade() {
+  const score = getScore();
+  const unemployedCost = getUnemployedCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (unemployedLevel >= UNEMPLOYED_MAX_LEVEL) {
+    alert("Unemployed Upgrade is already maxed out!");
+  }
+
+  if (score < unemployedCost) {
+    alert(`Not enough clicks to purchase the Unemployed upgrade! You need ${unemployedCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - unemployedCost);
+  unemployedLevel++;
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+}
+
 async function buyPrestigeUpgrade() {
   const score = getScore();
   const prestigeCost = getPrestigeCost();
@@ -949,6 +1182,9 @@ async function buyPrestigeUpgrade() {
   dataCenterLevel = 0;
   automationLabLevel = 0;
   cloudRegionLevel = 0;
+  superComputerLevel = 0;
+  quantumComputerLevel = 0;
+  unemployedLevel = 0;
   // autoClickerUnlocked stays true after prestige
 
   setScore(1);
@@ -980,6 +1216,9 @@ const updateUnlockedAutoClicker = () => {
   const dataCenterCpsGain = getDataCenterCpsGain();
   const automationLabCpsGain = getAutomationLabCpsGain();
   const cloudRegionCpsGain = getCloudRegionCpsGain();
+  const superComputerCpsGain = getSuperComputerCpsGain();
+  const quantumComputerCpsGain = getQuantumComputerCpsGain();
+  const unemployedCpsGain = getUnemployedCpsGain();
 
   const mouseCps = getMouseCps();
   const mouseCost = getMouseCost();
@@ -1020,6 +1259,18 @@ const updateUnlockedAutoClicker = () => {
   const cloudRegionCps = getCloudRegionCps();
   const cloudRegionCost = getCloudRegionCost();
   const cloudRegionMaxed = cloudRegionLevel >= CLOUD_REGION_MAX_LEVEL;
+
+  const superComputerCps = getSuperComputerCps();
+  const superComputerCost = getSuperComputerCost();
+  const superComputerMaxed = superComputerLevel >= SUPER_COMPUTER_MAX_LEVEL;
+
+  const quantumComputerCps = getQuantumComputerCps();
+  const quantumComputerCost = getQuantumComputerCost();
+  const quantumComputerMaxed = quantumComputerLevel >= QUANTUM_COMPUTER_MAX_LEVEL;
+
+  const unemployedCps = getUnemployedCps();
+  const unemployedCost = getUnemployedCost();
+  const unemployedMaxed = unemployedLevel >= UNEMPLOYED_MAX_LEVEL;
 
   const autoclickerSublabel = document.getElementById("autoclickerbuySublabel");
   // Low-end mouse
@@ -1072,6 +1323,21 @@ const updateUnlockedAutoClicker = () => {
   const cloudRegionLabel = cloudRegion?.querySelector(".style-label");
   const cloudRegionSublabel = document.getElementById("cloudRegionSublabel");
   const cloudRegionUpgradeCount = document.getElementById("cloudRegionUpgradeCount");
+  // Super Computer
+  const superComputer = document.getElementById("superComputer");
+  const superComputerLabel = superComputer?.querySelector(".style-label");
+  const superComputerSublabel = document.getElementById("superComputerSublabel");
+  const superComputerUpgradeCount = document.getElementById("superComputerUpgradeCount");
+  // Quantum Computer
+  const quantumComputer = document.getElementById("quantumComputer");
+  const quantumComputerLabel = quantumComputer?.querySelector(".style-label");
+  const quantumComputerSublabel = document.getElementById("quantumComputerSublabel");
+  const quantumComputerUpgradeCount = document.getElementById("quantumComputerUpgradeCount");
+  // Unemployed
+  const unemployed = document.getElementById("unemployed");
+  const unemployedLabel = unemployed?.querySelector(".style-label");
+  const unemployedSublabel = document.getElementById("unemployedSublabel");
+  const unemployedUpgradeCount = document.getElementById("unemployedUpgradeCount");
   
   // Prestige
   const prestige = document.getElementById("prestige");
@@ -1117,6 +1383,15 @@ const updateUnlockedAutoClicker = () => {
   }
   if (cloudRegion) {
     cloudRegion.classList.toggle("locked", !autoClickerUnlocked || score < cloudRegionCost || cloudRegionMaxed);
+  }
+  if (superComputer) {
+    superComputer.classList.toggle("locked", !autoClickerUnlocked || score < superComputerCost || superComputerMaxed);
+  }
+  if (quantumComputer) {
+    quantumComputer.classList.toggle("locked", !autoClickerUnlocked || score < quantumComputerCost || quantumComputerMaxed);
+  }
+  if (unemployed) {
+    unemployed.classList.toggle("locked", !autoClickerUnlocked || score < unemployedCost || unemployedMaxed);
   }
 
   // Show the current CPS inside the Upgrades menu.
@@ -1242,6 +1517,42 @@ const updateUnlockedAutoClicker = () => {
       : `Cost: ${cloudRegionCost.toLocaleString()} Clicks | +${formatCps(cloudRegionCpsGain)} CPS`;
   }
 
+  if (superComputerLabel) {
+    superComputerLabel.textContent = `Current: ${formatCps(superComputerCps)} CPS`;
+  }
+  if (superComputerUpgradeCount) {
+    superComputerUpgradeCount.textContent = superComputerLevel.toLocaleString();
+  }
+  if (superComputerSublabel) {
+    superComputerSublabel.textContent = superComputerMaxed
+      ? `Maxed out at ${SUPER_COMPUTER_MAX_LEVEL} upgrades`
+      : `Cost: ${superComputerCost.toLocaleString()} Clicks | +${formatCps(superComputerCpsGain)} CPS`;
+  }
+
+  if (quantumComputerLabel) {
+    quantumComputerLabel.textContent = `Current: ${formatCps(quantumComputerCps)} CPS`;
+  }
+  if (quantumComputerUpgradeCount) {
+    quantumComputerUpgradeCount.textContent = quantumComputerLevel.toLocaleString();
+  }
+  if (quantumComputerSublabel) {
+    quantumComputerSublabel.textContent = quantumComputerMaxed
+      ? `Maxed out at ${QUANTUM_COMPUTER_MAX_LEVEL} upgrades`
+      : `Cost: ${quantumComputerCost.toLocaleString()} Clicks | +${formatCps(quantumComputerCpsGain)} CPS`;
+  }
+
+  if (unemployedLabel) {
+    unemployedLabel.textContent = `Current: ${formatCps(unemployedCps)} CPS`;
+  }
+  if (unemployedUpgradeCount) {
+    unemployedUpgradeCount.textContent = unemployedLevel.toLocaleString();
+  }
+  if (unemployedSublabel) {
+    unemployedSublabel.textContent = unemployedMaxed
+      ? `Maxed out at ${UNEMPLOYED_MAX_LEVEL} upgrades`
+      : `Cost: ${unemployedCost.toLocaleString()} Clicks | +${formatCps(unemployedCpsGain)} CPS`;
+  }
+
   if (prestigeLabel) {
     prestigeLabel.textContent = `Current: x${formatCps(prestigeMultiplier)} CPS multiplier`;
   }
@@ -1332,6 +1643,9 @@ onClick("server", buyServerUpgrade);
 onClick("dataCenter", buyDataCenterUpgrade);
 onClick("automationLab", buyAutomationLabUpgrade);
 onClick("cloudRegion", buyCloudRegionUpgrade);
+onClick("superComputer", buySuperComputerUpgrade);
+onClick("quantumComputer", buyQuantumComputerUpgrade);
+onClick("unemployed", buyUnemployedUpgrade);
 onClick("prestige", buyPrestigeUpgrade);
 
 // Customization modal
@@ -1458,12 +1772,21 @@ onClick("music1Card", () => {
   }
 });
 
+function showAchievements() {
+  updateAchievementsTabUI();
+  updateUnlockedAchievements(getScore());
+  refreshAchievementsUI();
+}
+
 // Wire up buttons that exist on the current page.
 if (typeof add === "function") onClick("clickBtn", add);
 if (typeof save === "function") onClick("saveBtn", save);
 if (typeof reset === "function") onClick("resetBtn", reset);
-if (typeof showLeaderboard === "function") onClick("leaderboardBtn", showLeaderboard);
+if (typeof showLeaderboard === "function") onClick("leaderboardBtn", () => showLeaderboard());
 if (typeof unlockAutoClickerUpgrades === "function") onClick("autoclickerbuyBtn", unlockAutoClickerUpgrades);
+if (typeof showAchievements === "function") onClick("achievementsBtn", () => showAchievements());
+onClick("leaderboardClicksTab", () => showLeaderboard("clicks"));
+onClick("achievementsClicksTab", () => showAchievements("clicks"));
 
 // Settings modal
 const settingsModal = document.getElementById("settingsModal");
@@ -1474,8 +1797,14 @@ document.getElementById("settingsClose").addEventListener("click", () => setting
 const leaderboardModal = document.getElementById("leaderboardModal");
 document.getElementById("leaderboardClose").addEventListener("click", () => leaderboardModal.style.display = "none");
 
+// Achievements modal
+const achievementsModal = document.getElementById("achievementsModal");
+document.getElementById("achievementsBtn").addEventListener("click", () => achievementsModal.style.display = "block");
+document.getElementById("achievementsClose").addEventListener("click", () => achievementsModal.style.display = "none");
+
 window.addEventListener("click", (event) => {
   if (event.target === settingsModal)    settingsModal.style.display   = "none";
   if (event.target === leaderboardModal) leaderboardModal.style.display = "none";
   if (event.target === customizationModal) customizationModal.style.display = "none";
+  if (event.target === achievementsModal) achievementsModal.style.display = "none";
 });
