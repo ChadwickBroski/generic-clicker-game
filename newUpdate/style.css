@@ -371,8 +371,11 @@ h3 {
 
 .name-style-default { color: black; }
 .name-style-blue { color: #1a6fcf; }
+.name-style-green { color: #32CD32; }
 .name-style-gold { color: #B8860B; }
 .name-style-purple { color: #7B2FBE; }
+.name-style-cyan { color: #00CED1; }
+.name-style-crimson { color: #8B0000; }
 
 .name-style-gradient {
   display: inline-block;
@@ -382,12 +385,69 @@ h3 {
   -webkit-text-fill-color: transparent;
 }
 
-.name-style-crimson-fade {
-  background-image: linear-gradient(90deg, #e8000d, #ff69b4);
+.name-style-silver {
+  background-image: linear-gradient(90deg, #f5f5f5, #c0c0c0, #e8e8e8);
+}
+
+.name-style-emerald {
+  background-image: linear-gradient(90deg, #50C878, #2E8B57);
+}
+
+.name-style-sapphire {
+  background-image: linear-gradient(90deg, #0F52BA, #5B79D2);
+}
+
+.name-style-ruby {
+  background-image: linear-gradient(90deg, #8B0000, #FF4500);
+}
+
+.name-style-amethyst {
+  background-image: linear-gradient(90deg, #9B59B6, #D291BC);
+}
+
+.name-style-plasma {
+  background-image: linear-gradient(90deg, #8A2BE2, #00FFFF, #FF1493);
+}
+
+.name-style-galaxy {
+  background-image: linear-gradient(90deg, #120136, #4A00E0, #2A2A72);
+}
+
+.name-style-void {
+  background-image: linear-gradient(90deg, #0d0d0d, #330033, #0d0d0d);
 }
 
 .name-style-rainbow {
   background-image: linear-gradient(90deg, #e8000d, #ff8c00, #FFD700, #1a6fcf, #7B2FBE);
+}
+
+.name-style-solar-flare {
+  background-image: linear-gradient(90deg, #ff8c00, #ffd700, #ffea00);
+}
+
+.name-style-nebula {
+  background-image: linear-gradient(90deg, #ff6ec7, #7c70ff, #4de0ff);
+}
+
+.name-style-cosmic {
+  background-image: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00);
+}
+
+.name-style-celestial {
+  background-image: linear-gradient(90deg, #ffffff, #ffd700, #fffacd);
+}
+
+.name-style-infinite {
+  background-image: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ffffff);
+}
+
+.name-style-animated {
+  animation: name-style-pulse 3s linear infinite;
+}
+
+@keyframes name-style-pulse {
+  0%, 100% { filter: hue-rotate(0deg); }
+  50% { filter: hue-rotate(180deg); }
 }
 
 /* ── Tag badge ── */

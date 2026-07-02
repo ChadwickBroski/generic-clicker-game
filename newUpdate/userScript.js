@@ -95,41 +95,88 @@ if (uid) {
         const nameStyle = userData.nameStyles;
         //const tag = userData.tag;
 
-        let fontSize = Math.max(1, Math.min(48, 60 - prestige.length * 1.15));
-        document.getElementById("prestige").style.fontSize = fontSize;
+        let fontSize = Math.max(1, Math.min(48, 60 - String(prestige).length * 1.15));
+        document.getElementById("prestige").style.fontSize = `${fontSize}px`;
         document.getElementById("prestige").textContent = `x${prestige}`;
 
-        fontSize = Math.max(1, Math.min(48, 60 - score.length * 1.15));
+        fontSize = Math.max(1, Math.min(48, 60 - String(score).length * 1.15));
         document.getElementById("score").style.fontSize = `${fontSize}px`;
         document.getElementById("score").textContent = score;
 
-        fontSize = Math.max(1, Math.min(48, 60 - rank.length * 1.15));
+        fontSize = Math.max(1, Math.min(48, 60 - String(rank).length * 1.15));
         document.getElementById("rank").style.fontSize = `${fontSize}px`;
         document.getElementById("rank").textContent = rank;
         document.getElementById("title").textContent = `Generic Clicker Game - ${userData.name}`;
         
-        if (nameStyle === 1) {
-            document.getElementById("username").classList.add("name-style-default");
-            document.getElementById("username").classList.remove("name-style-gradient");
-        } else if (nameStyle === 2) {
-            document.getElementById("username").classList.add("name-style-blue");
-            document.getElementById("username").classList.remove("name-style-gradient");
-        } else if (nameStyle === 3) {
-            document.getElementById("username").classList.add("name-style-gold");
-            document.getElementById("username").classList.remove("name-style-gradient");
-        } else if (nameStyle === 4) {
-            document.getElementById("username").classList.add("name-style-purple");
-            document.getElementById("username").classList.remove("name-style-gradient");
-        } else if (nameStyle === 5) {
-            document.getElementById("username").classList.add("name-style-crimson-fade");
-            document.getElementById("username").classList.add("name-style-gradient");
-        } else if (nameStyle === 6) {
-            document.getElementById("username").classList.add("name-style-rainbow");
-            document.getElementById("username").classList.add("name-style-gradient");
-            console.log(document.getElementById("username").innerHTML);
-        } else {
-            document.getElementById("username").classList.add("name-style-default");
-            document.getElementById("username").classList.remove("name-style-gradient");
+        const usernameElement = document.getElementById("username");
+        const allNameStyleClasses = [
+            "name-style-default",
+            "name-style-blue",
+            "name-style-green",
+            "name-style-gold",
+            "name-style-purple",
+            "name-style-cyan",
+            "name-style-crimson",
+            "name-style-crimson-fade",
+            "name-style-silver",
+            "name-style-emerald",
+            "name-style-sapphire",
+            "name-style-ruby",
+            "name-style-amethyst",
+            "name-style-plasma",
+            "name-style-galaxy",
+            "name-style-void",
+            "name-style-rainbow",
+            "name-style-solar-flare",
+            "name-style-nebula",
+            "name-style-cosmic",
+            "name-style-celestial",
+            "name-style-infinite",
+            "name-style-gradient",
+            "name-style-animated",
+        ];
+
+        allNameStyleClasses.forEach((styleClass) => usernameElement.classList.remove(styleClass));
+
+        const styleMap = {
+            1: "name-style-default",
+            2: "name-style-blue",
+            3: "name-style-gold",
+            4: "name-style-purple",
+            5: "name-style-crimson-fade",
+            6: "name-style-rainbow",
+            7: "name-style-green",
+            8: "name-style-cyan",
+            9: "name-style-crimson",
+            10: "name-style-silver",
+            11: "name-style-emerald",
+            12: "name-style-sapphire",
+            13: "name-style-ruby",
+            14: "name-style-amethyst",
+            15: "name-style-plasma",
+            16: "name-style-galaxy",
+            17: "name-style-void",
+            18: "name-style-solar-flare",
+            19: "name-style-nebula",
+            20: "name-style-cosmic",
+            21: "name-style-celestial",
+            22: "name-style-infinite",
+        };
+
+        const styleClass = styleMap[nameStyle] || styleMap[1];
+        usernameElement.classList.add(styleClass);
+
+        const gradientStyles = new Set([7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]);
+        if (gradientStyles.has(nameStyle)) {
+            usernameElement.classList.add("name-style-gradient");
+        }
+
+        const animatedStyles = new Set([15, 21]);
+        if (animatedStyles.has(nameStyle)) {
+            usernameElement.classList.add("name-style-animated");
+        }
+        if ([17, 22].includes(nameStyle)) {
+            usernameElement.classList.add("name-style-animated");
         }
         //renderUsername(userData.name, userData.tag);
         renderUsername(userData.name);

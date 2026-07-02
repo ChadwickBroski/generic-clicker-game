@@ -49,12 +49,27 @@ const NAME_STYLE_FIELD = "nameStyles";
 const LEGACY_NAME_STYLE_FIELD = "nameStyle";
 const DEFAULT_NAME_STYLE = 1;
 const NAME_STYLES = {
-  1: { id: "blackStyleBtn",   className: "name-style-default" },
-  2: { id: "blueStyleBtn",    className: "name-style-blue" },
-  3: { id: "goldStyleBtn",    className: "name-style-gold" },
-  4: { id: "purpleStyleBtn",  className: "name-style-purple" },
-  5: { id: "redPinkStyleBtn", className: "name-style-crimson-fade", gradient: true },
-  6: { id: "rainbowStyleBtn", className: "name-style-rainbow", gradient: true },
+  1:  { id: "blackStyleBtn",      className: "name-style-default",   label: "Default",      unlock: 0 },
+  2:  { id: "blueStyleBtn",       className: "name-style-blue",      label: "Blue",         unlock: 1000 },
+  3:  { id: "greenStyleBtn",      className: "name-style-green",     label: "Green",        unlock: 5000 },
+  4:  { id: "purpleStyleBtn",     className: "name-style-purple",    label: "Purple",       unlock: 25000 },
+  5:  { id: "cyanStyleBtn",       className: "name-style-cyan",      label: "Cyan",         unlock: 100000 },
+  6:  { id: "crimsonStyleBtn",    className: "name-style-crimson",   label: "Crimson",      unlock: 500000 },
+  7:  { id: "silverStyleBtn",     className: "name-style-silver",    label: "Silver",       unlock: 1000000, gradient: true },
+  8:  { id: "goldStyleBtn",       className: "name-style-gold",      label: "Gold",         unlock: 5000000 },
+  9:  { id: "emeraldStyleBtn",    className: "name-style-emerald",   label: "Emerald",      unlock: 10000000, gradient: true },
+  10: { id: "sapphireStyleBtn",   className: "name-style-sapphire",  label: "Sapphire",     unlock: 25000000, gradient: true },
+  11: { id: "rubyStyleBtn",       className: "name-style-ruby",      label: "Ruby",         unlock: 50000000, gradient: true },
+  12: { id: "amethystStyleBtn",   className: "name-style-amethyst",  label: "Amethyst",     unlock: 100000000, gradient: true },
+  13: { id: "plasmaStyleBtn",     className: "name-style-plasma",    label: "Plasma",       unlock: 250000000, gradient: true },
+  14: { id: "galaxyStyleBtn",     className: "name-style-galaxy",    label: "Galaxy",       unlock: 500000000, gradient: true },
+  15: { id: "voidStyleBtn",       className: "name-style-void",      label: "Void",         unlock: 1000000000, gradient: true, animated: true },
+  16: { id: "rainbowStyleBtn",    className: "name-style-rainbow",   label: "Rainbow",      unlock: 5000000000, gradient: true },
+  17: { id: "solarFlareStyleBtn", className: "name-style-solar-flare", label: "Solar Flare", unlock: 10000000000, gradient: true },
+  18: { id: "nebulaStyleBtn",     className: "name-style-nebula",     label: "Nebula",       unlock: 25000000000, gradient: true },
+  19: { id: "cosmicStyleBtn",     className: "name-style-cosmic",     label: "Cosmic",       unlock: 50000000000, gradient: true },
+  20: { id: "celestialStyleBtn",  className: "name-style-celestial",  label: "Celestial",    unlock: 100000000000, gradient: true },
+  21: { id: "infiniteStyleBtn",   className: "name-style-infinite",   label: "Infinite",     unlock: 1000000000000, gradient: true, animated: true },
 };
 
 function normalizeNameStyle(styleNum) {
@@ -93,6 +108,7 @@ function applyNameStyle(element, styleNum) {
   element.className = "leaderboard-name";
   element.classList.add(style.className);
   if (style.gradient) element.classList.add("name-style-gradient");
+  if (style.animated) element.classList.add("name-style-animated");
 }
 
 function renderLeaderboardName(slotId, name, styleNum, tagNumber) {
@@ -340,6 +356,7 @@ function reset() {
     unlockedAchievements = [];
     prestigeCount = 0;
     isNewPlayer = true;
+    nameStyle = 1;
     renderScore();
     refreshAutoClickerUi();
     save();
@@ -523,7 +540,7 @@ const addScore = (amount) => {
 
 // Autoclicker settings.
 // CPS means "clicks per second", so 0.1 CPS means 1 click every 10 seconds.
-const AUTOCLICKER_UNLOCK_COST = 20;
+const AUTOCLICKER_UNLOCK_COST = 100;
 // Mouse
 const MOUSE_BASE_COST = 10;
 const MOUSE_COST_MULTIPLIER = 1.14;
@@ -577,17 +594,17 @@ const CLOUD_REGION_MAX_LEVEL = 99;
 // Super Computer
 const SUPER_COMPUTER_BASE_COST = 600000;
 const SUPER_COMPUTER_COST_MULTIPLIER = 1.34;
-const SUPER_COMPUTER_CPS_GAIN = 7000;
+const SUPER_COMPUTER_CPS_GAIN = 12000;
 const SUPER_COMPUTER_MAX_LEVEL = 99;
 // Quantum Computer
-const QUANTUM_COMPUTER_BASE_COST = 115000;
+const QUANTUM_COMPUTER_BASE_COST = 1100000;
 const QUANTUM_COMPUTER_COST_MULTIPLIER = 1.36;
-const QUANTUM_COMPUTER_CPS_GAIN = 13000;
+const QUANTUM_COMPUTER_CPS_GAIN = 20000;
 const QUANTUM_COMPUTER_MAX_LEVEL = 99;
 // Unemployed
-const UNEMPLOYED_BASE_COST = 160000;
+const UNEMPLOYED_BASE_COST = 2200000;
 const UNEMPLOYED_COST_MULTIPLIER = 1.38;
-const UNEMPLOYED_CPS_GAIN = 18000;
+const UNEMPLOYED_CPS_GAIN = 40000;
 const UNEMPLOYED_MAX_LEVEL = 99;
 
 // Prestige
@@ -630,20 +647,19 @@ const applyPrestigeMultiplier = (baseCpsGain) => baseCpsGain * getPrestigeMultip
 
 if (savedPlayerData) {
   autoClickerUnlocked = savedPlayerData.autoClickerUnlocked === true;
-  mouseLevel = normalizeUpgradeLevel(savedPlayerData.mouseLevel);
-  servantLevel = normalizeUpgradeLevel(savedPlayerData.servantLevel);
-  robotLevel = normalizeUpgradeLevel(savedPlayerData.robotLevel);
-  teamLevel = normalizeUpgradeLevel(savedPlayerData.teamLevel);
-  hackerLevel = normalizeUpgradeLevel(savedPlayerData.hackerLevel);
-  armyLevel = normalizeUpgradeLevel(savedPlayerData.armyLevel);
-  serverLevel = normalizeUpgradeLevel(savedPlayerData.serverLevel);
-  dataCenterLevel = normalizeUpgradeLevel(savedPlayerData.dataCenterLevel);
-  automationLabLevel = normalizeUpgradeLevel(savedPlayerData.automationLabLevel);
-  cloudRegionLevel = normalizeUpgradeLevel(savedPlayerData.cloudRegionLevel);
-  superComputerLevel = normalizeUpgradeLevel(savedPlayerData.superComputerLevel);
-  quantumComputerLevel = normalizeUpgradeLevel(savedPlayerData.quantumComputerLevel);
-  unemployedLevel = normalizeUpgradeLevel(savedPlayerData.unemployedLevel);
-
+  mouseLevel = normalizeUpgradeLevel(savedPlayerData.mouseLevel, MOUSE_MAX_LEVEL);
+  servantLevel = normalizeUpgradeLevel(savedPlayerData.servantLevel, SERVANT_MAX_LEVEL);
+  robotLevel = normalizeUpgradeLevel(savedPlayerData.robotLevel, ROBOT_MAX_LEVEL);
+  teamLevel = normalizeUpgradeLevel(savedPlayerData.teamLevel, TEAM_MAX_LEVEL);
+  hackerLevel = normalizeUpgradeLevel(savedPlayerData.hackerLevel, HACKER_MAX_LEVEL);
+  armyLevel = normalizeUpgradeLevel(savedPlayerData.armyLevel, ARMY_MAX_LEVEL);
+  serverLevel = normalizeUpgradeLevel(savedPlayerData.serverLevel, SERVER_MAX_LEVEL);
+  dataCenterLevel = normalizeUpgradeLevel(savedPlayerData.dataCenterLevel, DATA_CENTER_MAX_LEVEL);
+  automationLabLevel = normalizeUpgradeLevel(savedPlayerData.automationLabLevel, AUTOMATION_LAB_MAX_LEVEL);
+  cloudRegionLevel = normalizeUpgradeLevel(savedPlayerData.cloudRegionLevel, CLOUD_REGION_MAX_LEVEL);
+  superComputerLevel = normalizeUpgradeLevel(savedPlayerData.superComputerLevel, SUPER_COMPUTER_MAX_LEVEL);
+  quantumComputerLevel = normalizeUpgradeLevel(savedPlayerData.quantumComputerLevel, QUANTUM_COMPUTER_MAX_LEVEL);
+  unemployedLevel = normalizeUpgradeLevel(savedPlayerData.unemployedLevel, UNEMPLOYED_MAX_LEVEL);
   prestigeCount = normalizePrestigeCount(savedPlayerData.prestigeCount);
 }
 
@@ -727,7 +743,7 @@ const getQuantumComputerCost = () => {
 };
 const getUnemployedCost = () => {
   return Math.floor(UNEMPLOYED_BASE_COST * UNEMPLOYED_COST_MULTIPLIER ** unemployedLevel);
-}
+};
 
 // ── Smooth rAF-based autoclicker ───────────────────────────────────────────
 // Instead of a 1-second setInterval that adds large chunks at once, we use
@@ -1079,7 +1095,6 @@ function buyCloudRegionUpgrade() {
   updateUnlockedStyles();
   updateUnlockedAutoClicker();
 }
-
 function buySuperComputerUpgrade() {
   const score = getScore();
   const superComputerCost = getSuperComputerCost();
@@ -1091,6 +1106,7 @@ function buySuperComputerUpgrade() {
 
   if (superComputerLevel >= SUPER_COMPUTER_MAX_LEVEL) {
     alert("Super Computer is already maxed out!");
+    return;
   }
 
   if (score < superComputerCost) {
@@ -1115,6 +1131,7 @@ function buyQuantumComputerUpgrade() {
 
   if (quantumComputerLevel >= QUANTUM_COMPUTER_MAX_LEVEL) {
     alert("Quantum Computer is already maxed out!");
+    return;
   }
 
   if (score < quantumComputerCost) {
@@ -1138,7 +1155,8 @@ function buyUnemployedUpgrade() {
   }
 
   if (unemployedLevel >= UNEMPLOYED_MAX_LEVEL) {
-    alert("Unemployed Upgrade is already maxed out!");
+    alert("Unemployed is already maxed out!");
+    return;
   }
 
   if (score < unemployedCost) {
@@ -1338,7 +1356,7 @@ const updateUnlockedAutoClicker = () => {
   const unemployedLabel = unemployed?.querySelector(".style-label");
   const unemployedSublabel = document.getElementById("unemployedSublabel");
   const unemployedUpgradeCount = document.getElementById("unemployedUpgradeCount");
-  
+
   // Prestige
   const prestige = document.getElementById("prestige");
   const prestigeLabel = prestige?.querySelector(".style-label");
@@ -1520,37 +1538,37 @@ const updateUnlockedAutoClicker = () => {
   if (superComputerLabel) {
     superComputerLabel.textContent = `Current: ${formatCps(superComputerCps)} CPS`;
   }
-  if (superComputerUpgradeCount) {
-    superComputerUpgradeCount.textContent = superComputerLevel.toLocaleString();
-  }
   if (superComputerSublabel) {
     superComputerSublabel.textContent = superComputerMaxed
       ? `Maxed out at ${SUPER_COMPUTER_MAX_LEVEL} upgrades`
       : `Cost: ${superComputerCost.toLocaleString()} Clicks | +${formatCps(superComputerCpsGain)} CPS`;
   }
+  if (superComputerUpgradeCount) {
+    superComputerUpgradeCount.textContent = superComputerLevel.toLocaleString();
+  }
 
   if (quantumComputerLabel) {
     quantumComputerLabel.textContent = `Current: ${formatCps(quantumComputerCps)} CPS`;
-  }
-  if (quantumComputerUpgradeCount) {
-    quantumComputerUpgradeCount.textContent = quantumComputerLevel.toLocaleString();
   }
   if (quantumComputerSublabel) {
     quantumComputerSublabel.textContent = quantumComputerMaxed
       ? `Maxed out at ${QUANTUM_COMPUTER_MAX_LEVEL} upgrades`
       : `Cost: ${quantumComputerCost.toLocaleString()} Clicks | +${formatCps(quantumComputerCpsGain)} CPS`;
   }
+  if (quantumComputerUpgradeCount) {
+    quantumComputerUpgradeCount.textContent = quantumComputerLevel.toLocaleString();
+  }
 
   if (unemployedLabel) {
     unemployedLabel.textContent = `Current: ${formatCps(unemployedCps)} CPS`;
-  }
-  if (unemployedUpgradeCount) {
-    unemployedUpgradeCount.textContent = unemployedLevel.toLocaleString();
   }
   if (unemployedSublabel) {
     unemployedSublabel.textContent = unemployedMaxed
       ? `Maxed out at ${UNEMPLOYED_MAX_LEVEL} upgrades`
       : `Cost: ${unemployedCost.toLocaleString()} Clicks | +${formatCps(unemployedCpsGain)} CPS`;
+  }
+  if (unemployedUpgradeCount) {
+    unemployedUpgradeCount.textContent = unemployedLevel.toLocaleString();
   }
 
   if (prestigeLabel) {
@@ -1567,50 +1585,22 @@ const updateUnlockedAutoClicker = () => {
 const updateUnlockedStyles = () => {
   const score = getScore();
 
-  const blackStyleCard = document.getElementById("blackStyleBtn");
-  const blueStyleCard = document.getElementById("blueStyleBtn");
-  const goldStyleCard = document.getElementById("goldStyleBtn");
-  const purpleStyleCard = document.getElementById("purpleStyleBtn");
-  const redPinkStyleCard = document.getElementById("redPinkStyleBtn");
-  const rainbowStyleCard = document.getElementById("rainbowStyleBtn");
+  Object.values(NAME_STYLES).forEach((style) => {
+    const card = document.getElementById(style.id);
+    const sublabel = document.getElementById(style.id.replace("StyleBtn", "Sublabel"));
+    if (!card || !sublabel) return;
 
-  blackStyleCard.classList.add("locked");
-  blueStyleCard.classList.add("locked");
-  goldStyleCard.classList.add("locked");
-  purpleStyleCard.classList.add("locked");
-  redPinkStyleCard.classList.add("locked");
-  rainbowStyleCard.classList.add("locked");
+    const isUnlocked = score >= style.unlock;
+    card.classList.toggle("locked", !isUnlocked);
 
-  document.getElementById("blackSublabel").textContent = "Always unlocked";
-  document.getElementById("blueSublabel").textContent = "🔒 Unlock at 1,000";
-  document.getElementById("goldSublabel").textContent = "🔒 Unlock at 10,000";
-  document.getElementById("purpleSublabel").textContent = "🔒 Unlock at 100,000";
-  document.getElementById("redPinkSublabel").textContent = "🔒 Unlock at 1,000,000";
-  document.getElementById("rainbowSublabel").textContent = "🔒 Unlock at 10,000,000";
-
-  if (score >= 0) {
-    blackStyleCard.classList.remove("locked");
-  }
-  if (score >= 1000) {
-    blueStyleCard.classList.remove("locked");
-    document.getElementById("blueSublabel").textContent = "Unlocked at 1,000";
-  }
-  if (score >= 10000) {
-    goldStyleCard.classList.remove("locked");
-    document.getElementById("goldSublabel").textContent = "Unlocked at 10,000";
-  }
-  if (score >= 100000) {
-    purpleStyleCard.classList.remove("locked");
-    document.getElementById("purpleSublabel").textContent = "Unlocked at 100,000";
-  }
-  if (score >= 1000000) {
-    redPinkStyleCard.classList.remove("locked");
-    document.getElementById("redPinkSublabel").textContent = "Unlocked at 1,000,000";
-  }
-  if (score >= 10000000) {
-    rainbowStyleCard.classList.remove("locked");
-    document.getElementById("rainbowSublabel").textContent = "Unlocked at 10,000,000";
-  }
+    if (style.unlock === 0) {
+      sublabel.textContent = "Always unlocked";
+    } else if (isUnlocked) {
+      sublabel.textContent = `Unlocked at ${style.unlock.toLocaleString()}`;
+    } else {
+      sublabel.textContent = `🔒 Unlock at ${style.unlock.toLocaleString()}`;
+    }
+  });
 };
 
 const initializeGameLoop = () => {
@@ -1657,90 +1647,22 @@ onClick("customizationBtn", () => {
 onClick("customizationClose", () => customizationModal.style.display = "none");
 
 // Customization [NAME STYLES]
-const blackStyleCard = document.getElementById("blackStyleBtn");
-onClick("blackStyleBtn", () => {
-  blackStyleCard.classList.add("selected");
-  blueStyleCard.classList.remove("selected");
-  goldStyleCard.classList.remove("selected");
-  purpleStyleCard.classList.remove("selected");
-  redPinkStyleCard.classList.remove("selected");
-  rainbowStyleCard.classList.remove("selected");
-  saveNameStyle(1);
-});
+Object.entries(NAME_STYLES).forEach(([styleNum, style]) => {
+  const card = document.getElementById(style.id);
+  if (!card) return;
 
-const blueStyleCard = document.getElementById("blueStyleBtn");
-onClick("blueStyleBtn", () => {
-  if (blueStyleCard.classList.contains("locked")) {
-    return alert("This style is locked! Reach 1,000 points to unlock it.");
-  } else {
-    blackStyleCard.classList.remove("selected");
-    blueStyleCard.classList.add("selected");
-    goldStyleCard.classList.remove("selected");
-    purpleStyleCard.classList.remove("selected");
-    redPinkStyleCard.classList.remove("selected");
-    rainbowStyleCard.classList.remove("selected");
-    saveNameStyle(2);
-  }
-});
+  onClick(style.id, () => {
+    if (card.classList.contains("locked")) {
+      return alert(`This style is locked! Reach ${style.unlock.toLocaleString()} points to unlock it.`);
+    }
 
-const goldStyleCard = document.getElementById("goldStyleBtn");
-onClick("goldStyleBtn", () => {
-  if (goldStyleCard.classList.contains("locked")) {
-    return alert("This style is locked! Reach 10,000 points to unlock it.");
-  } else {
-    blackStyleCard.classList.remove("selected");
-    blueStyleCard.classList.remove("selected");
-    goldStyleCard.classList.add("selected");
-    purpleStyleCard.classList.remove("selected");
-    redPinkStyleCard.classList.remove("selected");
-    rainbowStyleCard.classList.remove("selected");
-    saveNameStyle(3);
-  }
-});
+    Object.values(NAME_STYLES).forEach((candidate) => {
+      document.getElementById(candidate.id)?.classList.remove("selected");
+    });
 
-const purpleStyleCard = document.getElementById("purpleStyleBtn");
-onClick("purpleStyleBtn", () => {
-  if (purpleStyleCard.classList.contains("locked")) {
-    return alert("This style is locked! Reach 100,000 points to unlock it.");
-  } else {
-    blackStyleCard.classList.remove("selected");
-    blueStyleCard.classList.remove("selected");
-    goldStyleCard.classList.remove("selected");
-    purpleStyleCard.classList.add("selected");
-    redPinkStyleCard.classList.remove("selected");
-    rainbowStyleCard.classList.remove("selected");
-    saveNameStyle(4);
-  }
-});
-
-const redPinkStyleCard = document.getElementById("redPinkStyleBtn");
-onClick("redPinkStyleBtn", () => {
-  if (redPinkStyleCard.classList.contains("locked")) {
-    return alert("This style is locked! Reach 1,000,000 points to unlock it.");
-  } else {
-    blackStyleCard.classList.remove("selected");
-    blueStyleCard.classList.remove("selected");
-    goldStyleCard.classList.remove("selected");
-    purpleStyleCard.classList.remove("selected");
-    redPinkStyleCard.classList.add("selected");
-    rainbowStyleCard.classList.remove("selected");
-    saveNameStyle(5);
-  }
-});
-
-const rainbowStyleCard = document.getElementById("rainbowStyleBtn");
-onClick("rainbowStyleBtn", () => {
-  if (rainbowStyleCard.classList.contains("locked")) {
-    return alert("This style is locked! Reach 10,000,000 points to unlock it.");
-  } else {
-    blackStyleCard.classList.remove("selected");
-    blueStyleCard.classList.remove("selected");
-    goldStyleCard.classList.remove("selected");
-    purpleStyleCard.classList.remove("selected");
-    redPinkStyleCard.classList.remove("selected");
-    rainbowStyleCard.classList.add("selected");
-    saveNameStyle(6);
-  }
+    card.classList.add("selected");
+    saveNameStyle(Number(styleNum));
+  });
 });
 
 // Customization [BACKGROUND MUSIC]
