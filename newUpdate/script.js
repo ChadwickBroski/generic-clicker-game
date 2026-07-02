@@ -61,14 +61,14 @@ const NAME_STYLES = {
   10: { id: "sapphireStyleBtn",   className: "name-style-sapphire",  label: "Sapphire",     unlock: 25000000, gradient: true },
   11: { id: "rubyStyleBtn",       className: "name-style-ruby",      label: "Ruby",         unlock: 50000000, gradient: true },
   12: { id: "amethystStyleBtn",   className: "name-style-amethyst",  label: "Amethyst",     unlock: 100000000, gradient: true },
-  13: { id: "plasmaStyleBtn",     className: "name-style-plasma",    label: "Plasma",       unlock: 250000000, gradient: true },
-  14: { id: "galaxyStyleBtn",     className: "name-style-galaxy",    label: "Galaxy",       unlock: 500000000, gradient: true },
+  13: { id: "plasmaStyleBtn",     className: "name-style-plasma",    label: "Plasma",       unlock: 250000000, gradient: true, animated: true },
+  14: { id: "galaxyStyleBtn",     className: "name-style-galaxy",    label: "Galaxy",       unlock: 500000000, gradient: true, animated: true },
   15: { id: "voidStyleBtn",       className: "name-style-void",      label: "Void",         unlock: 1000000000, gradient: true, animated: true },
-  16: { id: "rainbowStyleBtn",    className: "name-style-rainbow",   label: "Rainbow",      unlock: 5000000000, gradient: true },
-  17: { id: "solarFlareStyleBtn", className: "name-style-solar-flare", label: "Solar Flare", unlock: 10000000000, gradient: true },
-  18: { id: "nebulaStyleBtn",     className: "name-style-nebula",     label: "Nebula",       unlock: 25000000000, gradient: true },
-  19: { id: "cosmicStyleBtn",     className: "name-style-cosmic",     label: "Cosmic",       unlock: 50000000000, gradient: true },
-  20: { id: "celestialStyleBtn",  className: "name-style-celestial",  label: "Celestial",    unlock: 100000000000, gradient: true },
+  16: { id: "rainbowStyleBtn",    className: "name-style-rainbow",   label: "Rainbow",      unlock: 5000000000, gradient: true, animated: true },
+  17: { id: "solarFlareStyleBtn", className: "name-style-solar-flare", label: "Solar Flare", unlock: 10000000000, gradient: true, animated: true },
+  18: { id: "nebulaStyleBtn",     className: "name-style-nebula",     label: "Nebula",       unlock: 25000000000, gradient: true, animated: true },
+  19: { id: "cosmicStyleBtn",     className: "name-style-cosmic",     label: "Cosmic",       unlock: 50000000000, gradient: true, animated: true },
+  20: { id: "celestialStyleBtn",  className: "name-style-celestial",  label: "Celestial",    unlock: 100000000000, gradient: true, animated: true },
   21: { id: "infiniteStyleBtn",   className: "name-style-infinite",   label: "Infinite",     unlock: 1000000000000, gradient: true, animated: true },
 };
 
@@ -1206,9 +1206,7 @@ async function buyPrestigeUpgrade() {
   // autoClickerUnlocked stays true after prestige
 
   setScore(1);
-  nameStyle = 1;
-  applySelectedCard(nameStyle);
-  await saveNameStyle(nameStyle);
+
   if (typeof prestigeModal !== "undefined" && prestigeModal) prestigeModal.style.display = "none";
   if (typeof upgradesModal !== "undefined" && upgradesModal) upgradesModal.style.display = "none";
 

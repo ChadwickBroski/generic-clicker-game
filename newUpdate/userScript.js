@@ -141,26 +141,25 @@ if (uid) {
         const styleMap = {
             1: "name-style-default",
             2: "name-style-blue",
-            3: "name-style-gold",
+            3: "name-style-green",
             4: "name-style-purple",
-            5: "name-style-crimson-fade",
-            6: "name-style-rainbow",
-            7: "name-style-green",
-            8: "name-style-cyan",
-            9: "name-style-crimson",
-            10: "name-style-silver",
-            11: "name-style-emerald",
-            12: "name-style-sapphire",
-            13: "name-style-ruby",
-            14: "name-style-amethyst",
-            15: "name-style-plasma",
-            16: "name-style-galaxy",
-            17: "name-style-void",
-            18: "name-style-solar-flare",
-            19: "name-style-nebula",
-            20: "name-style-cosmic",
-            21: "name-style-celestial",
-            22: "name-style-infinite",
+            5: "name-style-cyan",
+            6: "name-style-crimson",
+            7: "name-style-silver",
+            8: "name-style-gold",
+            9: "name-style-emerald",
+            10: "name-style-sapphire",
+            11: "name-style-ruby",
+            12: "name-style-amethyst",
+            13: "name-style-plasma",
+            14: "name-style-galaxy",
+            15: "name-style-void",
+            16: "name-style-rainbow",
+            17: "name-style-solar-flare",
+            18: "name-style-nebula",
+            19: "name-style-cosmic",
+            20: "name-style-celestial",
+            21: "name-style-infinite",
         };
 
         const styleClass = styleMap[nameStyle] || styleMap[1];
@@ -171,11 +170,8 @@ if (uid) {
             usernameElement.classList.add("name-style-gradient");
         }
 
-        const animatedStyles = new Set([15, 21]);
+        const animatedStyles = new Set([13, 14, 15, 16, 17, 18, 19, 20, 21]);
         if (animatedStyles.has(nameStyle)) {
-            usernameElement.classList.add("name-style-animated");
-        }
-        if ([17, 22].includes(nameStyle)) {
             usernameElement.classList.add("name-style-animated");
         }
         //renderUsername(userData.name, userData.tag);
