@@ -356,6 +356,10 @@ function reset() {
     superComputerLevel = 0;
     quantumComputerLevel = 0;
     unemployedLevel = 0;
+    clickAngelLevel = 0;
+    clickArchangelLevel = 0;
+    clickDemigodLevel = 0;
+    clickGodLevel = 0;
     counter.textContent = number.toLocaleString();
     unlockedAchievements = [];
     prestigeCount = 0;
@@ -544,7 +548,7 @@ const addScore = (amount) => {
 
 // Autoclicker settings.
 // CPS means "clicks per second", so 0.1 CPS means 1 click every 10 seconds.
-const AUTOCLICKER_UNLOCK_COST = 100;
+const AUTOCLICKER_UNLOCK_COST = 20;
 // Mouse
 const MOUSE_BASE_COST = 10;
 const MOUSE_COST_MULTIPLIER = 1.14;
@@ -746,7 +750,7 @@ const getClickDemigodCps = () => clickDemigodLevel * getClickDemigodCpsGain();
 const getClickGodCps = () => clickGodLevel * getClickGodCpsGain();
 
 // Total CPS is the sum of all upgrade CPS.
-const getTotalAutoClickerCps = () => getMouseCps() + getServantCps() + getRobotCps() + getTeamCps() + getHackerCps() + getArmyCps() + getServerCps() + getDataCenterCps() + getAutomationLabCps() + getCloudRegionCps() + getSuperComputerCps() + getQuantumComputerCps() + getUnemployedCps();
+const getTotalAutoClickerCps = () => getMouseCps() + getServantCps() + getRobotCps() + getTeamCps() + getHackerCps() + getArmyCps() + getServerCps() + getDataCenterCps() + getAutomationLabCps() + getCloudRegionCps() + getSuperComputerCps() + getQuantumComputerCps() + getUnemployedCps() + getClickAngelCps() + getClickArchangelCps() + getClickDemigodCps() + getClickGodCps();
 
 // Each bought upgrade makes the next one cost more.
 const getMouseCost = () => {
@@ -1391,6 +1395,10 @@ const updateUnlockedAutoClicker = () => {
   const superComputerCpsGain = getSuperComputerCpsGain();
   const quantumComputerCpsGain = getQuantumComputerCpsGain();
   const unemployedCpsGain = getUnemployedCpsGain();
+  const clickAngelCpsGain = getClickAngelCpsGain();
+  const clickArchangelCpsGain = getClickArchangelCpsGain();
+  const clickDemigodCpsGain = getClickDemigodCpsGain();
+  const clickGodCpsGain = getClickGodCpsGain();
 
   const mouseCps = getMouseCps();
   const mouseCost = getMouseCost();
@@ -1526,25 +1534,21 @@ const updateUnlockedAutoClicker = () => {
   const unemployedLabel = unemployed?.querySelector(".style-label");
   const unemployedSublabel = document.getElementById("unemployedSublabel");
   const unemployedUpgradeCount = document.getElementById("unemployedUpgradeCount");
-
   // Click Angel
   const clickAngel = document.getElementById("clickAngel");
   const clickAngelLabel = clickAngel?.querySelector(".style-label");
   const clickAngelSublabel = document.getElementById("clickAngelSublabel");
   const clickAngelUpgradeCount = document.getElementById("clickAngelUpgradeCount");
-
   // Click Archangel
   const clickArchangel = document.getElementById("clickArchangel");
   const clickArchangelLabel = clickArchangel?.querySelector(".style-label");
   const clickArchangelSublabel = document.getElementById("clickArchangelSublabel");
   const clickArchangelUpgradeCount = document.getElementById("clickArchangelUpgradeCount");
-
   // Click Demigod
   const clickDemigod = document.getElementById("clickDemigod");
   const clickDemigodLabel = clickDemigod?.querySelector(".style-label");
   const clickDemigodSublabel = document.getElementById("clickDemigodSublabel");
   const clickDemigodUpgradeCount = document.getElementById("clickDemigodUpgradeCount");
-
   // Click God
   const clickGod = document.getElementById("clickGod");
   const clickGodLabel = clickGod?.querySelector(".style-label");
@@ -1779,6 +1783,54 @@ const updateUnlockedAutoClicker = () => {
   }
   if (unemployedUpgradeCount) {
     unemployedUpgradeCount.textContent = unemployedLevel.toLocaleString();
+  }
+
+  if (clickAngelLabel) {
+    clickAngelLabel.textContent = `Current: ${formatCps(clickAngelCps)} CPS`;
+  }
+  if (clickAngelSublabel) {
+    clickAngelSublabel.textContent = clickAngelMaxed
+      ? `Maxed out at ${CLICK_ANGEL_MAX_LEVEL} upgrades`
+      : `Cost: ${clickAngelCost.toLocaleString()} Clicks | +${formatCps(clickAngelCpsGain)} CPS`;
+  }
+  if (clickAngelUpgradeCount) {
+    clickAngelUpgradeCount.textContent = clickAngelLevel.toLocaleString();
+  }
+
+  if (clickArchangelLabel) {
+    clickArchangelLabel.textContent = `Current: ${formatCps(clickArchangelCps)} CPS`;
+  }
+  if (clickArchangelSublabel) {
+    clickArchangelSublabel.textContent = clickArchangelMaxed
+      ? `Maxed out at ${CLICK_ARCHANGEL_MAX_LEVEL} upgrades`
+      : `Cost: ${clickArchangelCost.toLocaleString()} Clicks | +${formatCps(clickArchangelCpsGain)} CPS`;
+  }
+  if (clickArchangelUpgradeCount) {
+    clickArchangelUpgradeCount.textContent = clickArchangelLevel.toLocaleString();
+  }
+
+  if (clickDemigodLabel) {
+    clickDemigodLabel.textContent = `Current: ${formatCps(clickDemigodCps)} CPS`;
+  }
+  if (clickDemigodSublabel) {
+    clickDemigodSublabel.textContent = clickDemigodMaxed
+      ? `Maxed out at ${CLICK_DEMIGOD_MAX_LEVEL} upgrades`
+      : `Cost: ${clickDemigodCost.toLocaleString()} Clicks | +${formatCps(clickDemigodCpsGain)} CPS`;
+  }
+  if (clickDemigodUpgradeCount) {
+    clickDemigodUpgradeCount.textContent = clickDemigodLevel.toLocaleString();
+  }
+
+  if (clickGodLabel) {
+    clickGodLabel.textContent = `Current: ${formatCps(clickGodCps)} CPS`;
+  }
+  if (clickGodSublabel) {
+    clickGodSublabel.textContent = clickGodMaxed
+      ? `Maxed out at ${CLICK_GOD_MAX_LEVEL} upgrades`
+      : `Cost: ${clickGodCost.toLocaleString()} Clicks | +${formatCps(clickGodCpsGain)} CPS`;
+  }
+  if (clickGodUpgradeCount) {
+    clickGodUpgradeCount.textContent = clickGodLevel.toLocaleString();
   }
 
   if (prestigeLabel) {
