@@ -280,6 +280,10 @@ async function save() {
     superComputerLevel,
     quantumComputerLevel,
     unemployedLevel,
+    clickAngelLevel,
+    clickArchangelLevel,
+    clickDemigodLevel,
+    clickGodLevel,
     prestigeCount,
     unlockedAchievements: [...unlockedAchievements],
     ...getNameStyleSaveData(nameStyle)
@@ -545,70 +549,94 @@ const AUTOCLICKER_UNLOCK_COST = 100;
 const MOUSE_BASE_COST = 10;
 const MOUSE_COST_MULTIPLIER = 1.14;
 const MOUSE_CPS_GAIN = 0.1;
-const MOUSE_MAX_LEVEL = 99;
+const MOUSE_MAX_LEVEL = 1000;
 // Servant
 const SERVANT_BASE_COST = 250;
 const SERVANT_COST_MULTIPLIER = 1.16;
 const SERVANT_CPS_GAIN = 2;
-const SERVANT_MAX_LEVEL = 99;
+const SERVANT_MAX_LEVEL = 1000;
 // Robot
 const ROBOT_BASE_COST = 1000;
 const ROBOT_COST_MULTIPLIER = 1.18;
 const ROBOT_CPS_GAIN = 10;
-const ROBOT_MAX_LEVEL = 99;
+const ROBOT_MAX_LEVEL = 1000;
 // Team
 const TEAM_BASE_COST = 2500;
 const TEAM_COST_MULTIPLIER = 1.2;
 const TEAM_CPS_GAIN = 20;
-const TEAM_MAX_LEVEL = 99;
+const TEAM_MAX_LEVEL = 1000;
 // Army
 const ARMY_BASE_COST = 4000;
 const ARMY_COST_MULTIPLIER = 1.22;
 const ARMY_CPS_GAIN = 40;
-const ARMY_MAX_LEVEL = 99;
+const ARMY_MAX_LEVEL = 1000;
 // Hacker
 const HACKER_BASE_COST = 8000;
 const HACKER_COST_MULTIPLIER = 1.24;
 const HACKER_CPS_GAIN = 100;
-const HACKER_MAX_LEVEL = 99;
+const HACKER_MAX_LEVEL = 1000;
 // Server
 const SERVER_BASE_COST = 25000;
 const SERVER_COST_MULTIPLIER = 1.26;
 const SERVER_CPS_GAIN = 175;
-const SERVER_MAX_LEVEL = 99;
+const SERVER_MAX_LEVEL = 1000;
 // Data Center
 const DATA_CENTER_BASE_COST = 65000;
 const DATA_CENTER_COST_MULTIPLIER = 1.28;
 const DATA_CENTER_CPS_GAIN = 500;
-const DATA_CENTER_MAX_LEVEL = 99;
+const DATA_CENTER_MAX_LEVEL = 1000;
 // Automation Lab
 const AUTOMATION_LAB_BASE_COST = 100000;
 const AUTOMATION_LAB_COST_MULTIPLIER = 1.3;
 const AUTOMATION_LAB_CPS_GAIN = 1000;
-const AUTOMATION_LAB_MAX_LEVEL = 99;
+const AUTOMATION_LAB_MAX_LEVEL = 1000;
 // Cloud Region
 const CLOUD_REGION_BASE_COST = 250000;
 const CLOUD_REGION_COST_MULTIPLIER = 1.32;
 const CLOUD_REGION_CPS_GAIN = 2500;
-const CLOUD_REGION_MAX_LEVEL = 99;
+const CLOUD_REGION_MAX_LEVEL = 1000;
 // Super Computer
 const SUPER_COMPUTER_BASE_COST = 600000;
 const SUPER_COMPUTER_COST_MULTIPLIER = 1.34;
 const SUPER_COMPUTER_CPS_GAIN = 12000;
-const SUPER_COMPUTER_MAX_LEVEL = 99;
+const SUPER_COMPUTER_MAX_LEVEL = 1000;
 // Quantum Computer
 const QUANTUM_COMPUTER_BASE_COST = 1100000;
 const QUANTUM_COMPUTER_COST_MULTIPLIER = 1.36;
 const QUANTUM_COMPUTER_CPS_GAIN = 20000;
-const QUANTUM_COMPUTER_MAX_LEVEL = 99;
+const QUANTUM_COMPUTER_MAX_LEVEL = 1000;
 // Unemployed
 const UNEMPLOYED_BASE_COST = 2200000;
 const UNEMPLOYED_COST_MULTIPLIER = 1.38;
 const UNEMPLOYED_CPS_GAIN = 40000;
-const UNEMPLOYED_MAX_LEVEL = 99;
+const UNEMPLOYED_MAX_LEVEL = 1000;
+
+// Click Angel
+const CLICK_ANGEL_BASE_COST = 5000000;
+const CLICK_ANGEL_COST_MULTIPLIER = 1.4;
+const CLICK_ANGEL_CPS_GAIN = 100000;
+const CLICK_ANGEL_MAX_LEVEL = 1000;
+
+// Click Archangel
+const CLICK_ARCHANGEL_BASE_COST = 15000000;
+const CLICK_ARCHANGEL_COST_MULTIPLIER = 1.42;
+const CLICK_ARCHANGEL_CPS_GAIN = 300000;
+const CLICK_ARCHANGEL_MAX_LEVEL = 1000;
+
+// Click Demigod
+const CLICK_DEMIGOD_BASE_COST = 50000000;
+const CLICK_DEMIGOD_COST_MULTIPLIER = 1.45;
+const CLICK_DEMIGOD_CPS_GAIN = 1000000;
+const CLICK_DEMIGOD_MAX_LEVEL = 1000;
+
+// Click God
+const CLICK_GOD_BASE_COST = 150000000;
+const CLICK_GOD_COST_MULTIPLIER = 1.5;
+const CLICK_GOD_CPS_GAIN = 3000000;
+const CLICK_GOD_MAX_LEVEL = 1000;
 
 // Prestige
-const PRESTIGE_BASE_COST = 10000000;
+const PRESTIGE_BASE_COST = 20000000;
 const PRESTIGE_CPS_BOOST_MULTIPLIER = 10; // 10x CPS multiplier per prestige
 
 const normalizeUpgradeLevel = (level, maxLevel) => {
@@ -639,6 +667,10 @@ let cloudRegionLevel = 0;
 let superComputerLevel = 0;
 let quantumComputerLevel = 0;
 let unemployedLevel = 0;
+let clickAngelLevel = 0;
+let clickArchangelLevel = 0;
+let clickDemigodLevel = 0;
+let clickGodLevel = 0;
 var prestigeCount = 0;
 
 const getPrestigeMultiplier = () => PRESTIGE_CPS_BOOST_MULTIPLIER ** prestigeCount;
@@ -660,6 +692,10 @@ if (savedPlayerData) {
   superComputerLevel = normalizeUpgradeLevel(savedPlayerData.superComputerLevel, SUPER_COMPUTER_MAX_LEVEL);
   quantumComputerLevel = normalizeUpgradeLevel(savedPlayerData.quantumComputerLevel, QUANTUM_COMPUTER_MAX_LEVEL);
   unemployedLevel = normalizeUpgradeLevel(savedPlayerData.unemployedLevel, UNEMPLOYED_MAX_LEVEL);
+  clickAngelLevel = normalizeUpgradeLevel(savedPlayerData.clickAngelLevel, CLICK_ANGEL_MAX_LEVEL);
+  clickArchangelLevel = normalizeUpgradeLevel(savedPlayerData.clickArchangelLevel, CLICK_ARCHANGEL_MAX_LEVEL);
+  clickDemigodLevel = normalizeUpgradeLevel(savedPlayerData.clickDemigodLevel, CLICK_DEMIGOD_MAX_LEVEL);
+  clickGodLevel = normalizeUpgradeLevel(savedPlayerData.clickGodLevel, CLICK_GOD_MAX_LEVEL);
   prestigeCount = normalizePrestigeCount(savedPlayerData.prestigeCount);
 }
 
@@ -685,6 +721,10 @@ const getCloudRegionCpsGain = () => applyPrestigeMultiplier(CLOUD_REGION_CPS_GAI
 const getSuperComputerCpsGain = () => applyPrestigeMultiplier(SUPER_COMPUTER_CPS_GAIN);
 const getQuantumComputerCpsGain = () => applyPrestigeMultiplier(QUANTUM_COMPUTER_CPS_GAIN);
 const getUnemployedCpsGain = () => applyPrestigeMultiplier(UNEMPLOYED_CPS_GAIN);
+const getClickAngelCpsGain = () => applyPrestigeMultiplier(CLICK_ANGEL_CPS_GAIN);
+const getClickArchangelCpsGain = () => applyPrestigeMultiplier(CLICK_ARCHANGEL_CPS_GAIN);
+const getClickDemigodCpsGain = () => applyPrestigeMultiplier(CLICK_DEMIGOD_CPS_GAIN);
+const getClickGodCpsGain = () => applyPrestigeMultiplier(CLICK_GOD_CPS_GAIN);
 
 // Mouse CPS depends on how many Mouse upgrades were bought inside the Upgrades menu.
 const getMouseCps = () => mouseLevel * getMouseCpsGain();
@@ -700,6 +740,10 @@ const getCloudRegionCps = () => cloudRegionLevel * getCloudRegionCpsGain();
 const getSuperComputerCps = () => superComputerLevel * getSuperComputerCpsGain();
 const getQuantumComputerCps = () => quantumComputerLevel * getQuantumComputerCpsGain();
 const getUnemployedCps = () => unemployedLevel * getUnemployedCpsGain();
+const getClickAngelCps = () => clickAngelLevel * getClickAngelCpsGain();
+const getClickArchangelCps = () => clickArchangelLevel * getClickArchangelCpsGain();
+const getClickDemigodCps = () => clickDemigodLevel * getClickDemigodCpsGain();
+const getClickGodCps = () => clickGodLevel * getClickGodCpsGain();
 
 // Total CPS is the sum of all upgrade CPS.
 const getTotalAutoClickerCps = () => getMouseCps() + getServantCps() + getRobotCps() + getTeamCps() + getHackerCps() + getArmyCps() + getServerCps() + getDataCenterCps() + getAutomationLabCps() + getCloudRegionCps() + getSuperComputerCps() + getQuantumComputerCps() + getUnemployedCps();
@@ -743,6 +787,18 @@ const getQuantumComputerCost = () => {
 };
 const getUnemployedCost = () => {
   return Math.floor(UNEMPLOYED_BASE_COST * UNEMPLOYED_COST_MULTIPLIER ** unemployedLevel);
+};
+const getClickAngelCost = () => {
+  return Math.floor(CLICK_ANGEL_BASE_COST * CLICK_ANGEL_COST_MULTIPLIER ** clickAngelLevel);
+};
+const getClickArchangelCost = () => {
+  return Math.floor(CLICK_ARCHANGEL_BASE_COST * CLICK_ARCHANGEL_COST_MULTIPLIER ** clickArchangelLevel);
+};
+const getClickDemigodCost = () => {
+  return Math.floor(CLICK_DEMIGOD_BASE_COST * CLICK_DEMIGOD_COST_MULTIPLIER ** clickDemigodLevel);
+};
+const getClickGodCost = () => {
+  return Math.floor(CLICK_GOD_BASE_COST * CLICK_GOD_COST_MULTIPLIER ** clickGodLevel);
 };
 
 // ── Smooth rAF-based autoclicker ───────────────────────────────────────────
@@ -1170,6 +1226,106 @@ function buyUnemployedUpgrade() {
   updateUnlockedAutoClicker();
 }
 
+function buyClickAngelUpgrade() {
+  const score = getScore();
+  const clickAngelCost = getClickAngelCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (clickAngelLevel >= CLICK_ANGEL_MAX_LEVEL) {
+    alert("Click Angel is already maxed out!");
+    return;
+  }
+
+  if (score < clickAngelCost) {
+    alert(`Not enough clicks to purchase the Click Angel upgrade! You need ${clickAngelCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - clickAngelCost);
+  clickAngelLevel++;
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+}
+
+function buyClickArchangelUpgrade() {
+  const score = getScore();
+  const clickArchangelCost = getClickArchangelCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (clickArchangelLevel >= CLICK_ARCHANGEL_MAX_LEVEL) {
+    alert("Click Archangel is already maxed out!");
+    return;
+  }
+
+  if (score < clickArchangelCost) {
+    alert(`Not enough clicks to purchase the Click Archangel upgrade! You need ${clickArchangelCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - clickArchangelCost);
+  clickArchangelLevel++;
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+}
+
+function buyClickDemigodUpgrade() {
+  const score = getScore();
+  const clickDemigodCost = getClickDemigodCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (clickDemigodLevel >= CLICK_DEMIGOD_MAX_LEVEL) {
+    alert("Click Demigod is already maxed out!");
+    return;
+  }
+
+  if (score < clickDemigodCost) {
+    alert(`Not enough clicks to purchase the Click Demigod upgrade! You need ${clickDemigodCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - clickDemigodCost);
+  clickDemigodLevel++;
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+}
+
+function buyClickGodUpgrade() {
+  const score = getScore();
+  const clickGodCost = getClickGodCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (clickGodLevel >= CLICK_GOD_MAX_LEVEL) {
+    alert("Click God is already maxed out!");
+    return;
+  }
+
+  if (score < clickGodCost) {
+    alert(`Not enough clicks to purchase the Click God upgrade! You need ${clickGodCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - clickGodCost);
+  clickGodLevel++;
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+}
+
 async function buyPrestigeUpgrade() {
   const score = getScore();
   const prestigeCost = getPrestigeCost();
@@ -1288,6 +1444,22 @@ const updateUnlockedAutoClicker = () => {
   const unemployedCost = getUnemployedCost();
   const unemployedMaxed = unemployedLevel >= UNEMPLOYED_MAX_LEVEL;
 
+  const clickAngelCps = getClickAngelCps();
+  const clickAngelCost = getClickAngelCost();
+  const clickAngelMaxed = clickAngelLevel >= CLICK_ANGEL_MAX_LEVEL;
+
+  const clickArchangelCps = getClickArchangelCps();
+  const clickArchangelCost = getClickArchangelCost();
+  const clickArchangelMaxed = clickArchangelLevel >= CLICK_ARCHANGEL_MAX_LEVEL;
+
+  const clickDemigodCps = getClickDemigodCps();
+  const clickDemigodCost = getClickDemigodCost();
+  const clickDemigodMaxed = clickDemigodLevel >= CLICK_DEMIGOD_MAX_LEVEL;
+
+  const clickGodCps = getClickGodCps();
+  const clickGodCost = getClickGodCost();
+  const clickGodMaxed = clickGodLevel >= CLICK_GOD_MAX_LEVEL;
+
   const autoclickerSublabel = document.getElementById("autoclickerbuySublabel");
   // Low-end mouse
   const mouse = document.getElementById("mouse");
@@ -1355,6 +1527,30 @@ const updateUnlockedAutoClicker = () => {
   const unemployedSublabel = document.getElementById("unemployedSublabel");
   const unemployedUpgradeCount = document.getElementById("unemployedUpgradeCount");
 
+  // Click Angel
+  const clickAngel = document.getElementById("clickAngel");
+  const clickAngelLabel = clickAngel?.querySelector(".style-label");
+  const clickAngelSublabel = document.getElementById("clickAngelSublabel");
+  const clickAngelUpgradeCount = document.getElementById("clickAngelUpgradeCount");
+
+  // Click Archangel
+  const clickArchangel = document.getElementById("clickArchangel");
+  const clickArchangelLabel = clickArchangel?.querySelector(".style-label");
+  const clickArchangelSublabel = document.getElementById("clickArchangelSublabel");
+  const clickArchangelUpgradeCount = document.getElementById("clickArchangelUpgradeCount");
+
+  // Click Demigod
+  const clickDemigod = document.getElementById("clickDemigod");
+  const clickDemigodLabel = clickDemigod?.querySelector(".style-label");
+  const clickDemigodSublabel = document.getElementById("clickDemigodSublabel");
+  const clickDemigodUpgradeCount = document.getElementById("clickDemigodUpgradeCount");
+
+  // Click God
+  const clickGod = document.getElementById("clickGod");
+  const clickGodLabel = clickGod?.querySelector(".style-label");
+  const clickGodSublabel = document.getElementById("clickGodSublabel");
+  const clickGodUpgradeCount = document.getElementById("clickGodUpgradeCount");
+
   // Prestige
   const prestige = document.getElementById("prestige");
   const prestigeLabel = prestige?.querySelector(".style-label");
@@ -1408,6 +1604,22 @@ const updateUnlockedAutoClicker = () => {
   }
   if (unemployed) {
     unemployed.classList.toggle("locked", !autoClickerUnlocked || score < unemployedCost || unemployedMaxed);
+  }
+
+  if (clickAngel) {
+    clickAngel.classList.toggle("locked", !autoClickerUnlocked || score < clickAngelCost || clickAngelMaxed);
+  }
+
+  if (clickArchangel) {
+    clickArchangel.classList.toggle("locked", !autoClickerUnlocked || score < clickArchangelCost || clickArchangelMaxed);
+  }
+
+  if (clickDemigod) {
+    clickDemigod.classList.toggle("locked", !autoClickerUnlocked || score < clickDemigodCost || clickDemigodMaxed);
+  }
+
+  if (clickGod) {
+    clickGod.classList.toggle("locked", !autoClickerUnlocked || score < clickGodCost || clickGodMaxed);
   }
 
   // Show the current CPS inside the Upgrades menu.
@@ -1634,6 +1846,10 @@ onClick("cloudRegion", buyCloudRegionUpgrade);
 onClick("superComputer", buySuperComputerUpgrade);
 onClick("quantumComputer", buyQuantumComputerUpgrade);
 onClick("unemployed", buyUnemployedUpgrade);
+onClick("clickAngel", buyClickAngelUpgrade);
+onClick("clickArchangel", buyClickArchangelUpgrade);
+onClick("clickDemigod", buyClickDemigodUpgrade);
+onClick("clickGod", buyClickGodUpgrade);
 onClick("prestige", buyPrestigeUpgrade);
 
 // Customization modal
