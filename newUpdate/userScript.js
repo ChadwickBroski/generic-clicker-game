@@ -232,7 +232,42 @@ if (uid) {
             {
                 name: "Cloud Region",
                 image: "assets/cloudRegion.png",
-                amount: userData.cloudRegionLevel,
+                amount: userData.cloudRegionLevel ?? 0,
+            },
+            {
+                name: "Super Computer",
+                image: "assets/superComputer.png",
+                amount: userData.superComputerLevel ?? 0,
+            },
+            {
+                name: "Quantum Computer",
+                image: "assets/quantumComputer.png",
+                amount: userData.quantumComputerLevel ?? 0,
+            },
+            {
+                name: "Unemployed",
+                image: "assets/unemployed.png",
+                amount: userData.unemployedLevel ?? 0,
+            },
+            {
+                name: "Click Angel",
+                image: "assets/clickAngel.png",
+                amount: userData.clickAngelLevel ?? 0,
+            },
+            {
+                name: "Click Archangel",
+                image: "assets/clickArchangel.png",
+                amount: userData.clickArchangelLevel ?? 0,
+            },
+            {
+                name: "Click Demigod",
+                image: "assets/clickDemigod.png",
+                amount: userData.clickDemigodLevel ?? 0,
+            },
+            {
+                name: "Click God",
+                image: "assets/clickGod.png",
+                amount: userData.clickGodLevel ?? 0,
             }
         ];
 
@@ -265,7 +300,7 @@ if (uid) {
             {
                 name: "Melon Musk",
                 image: "assets/mainLogo.png",
-                achieved: userData.unlockedAchievements?.includes("trilllionaire") || false
+                achieved: userData.unlockedAchievements?.includes("trillionaire") || false
             },
             {
                 name: "Chill Out",
