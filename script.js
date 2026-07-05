@@ -49,12 +49,27 @@ const NAME_STYLE_FIELD = "nameStyles";
 const LEGACY_NAME_STYLE_FIELD = "nameStyle";
 const DEFAULT_NAME_STYLE = 1;
 const NAME_STYLES = {
-  1: { id: "blackStyleBtn",   className: "name-style-default" },
-  2: { id: "blueStyleBtn",    className: "name-style-blue" },
-  3: { id: "goldStyleBtn",    className: "name-style-gold" },
-  4: { id: "purpleStyleBtn",  className: "name-style-purple" },
-  5: { id: "redPinkStyleBtn", className: "name-style-crimson-fade", gradient: true },
-  6: { id: "rainbowStyleBtn", className: "name-style-rainbow", gradient: true },
+  1:  { id: "blackStyleBtn",      className: "name-style-default",   label: "Default",      unlock: 0 },
+  2:  { id: "blueStyleBtn",       className: "name-style-blue",      label: "Blue",         unlock: 1000 },
+  3:  { id: "greenStyleBtn",      className: "name-style-green",     label: "Green",        unlock: 5000 },
+  4:  { id: "purpleStyleBtn",     className: "name-style-purple",    label: "Purple",       unlock: 25000 },
+  5:  { id: "cyanStyleBtn",       className: "name-style-cyan",      label: "Cyan",         unlock: 100000 },
+  6:  { id: "crimsonStyleBtn",    className: "name-style-crimson",   label: "Crimson",      unlock: 500000 },
+  7:  { id: "silverStyleBtn",     className: "name-style-silver",    label: "Silver",       unlock: 1000000, gradient: true },
+  8:  { id: "goldStyleBtn",       className: "name-style-gold",      label: "Gold",         unlock: 5000000 },
+  9:  { id: "emeraldStyleBtn",    className: "name-style-emerald",   label: "Emerald",      unlock: 10000000, gradient: true },
+  10: { id: "sapphireStyleBtn",   className: "name-style-sapphire",  label: "Sapphire",     unlock: 25000000, gradient: true },
+  11: { id: "rubyStyleBtn",       className: "name-style-ruby",      label: "Ruby",         unlock: 50000000, gradient: true },
+  12: { id: "amethystStyleBtn",   className: "name-style-amethyst",  label: "Amethyst",     unlock: 100000000, gradient: true },
+  13: { id: "plasmaStyleBtn",     className: "name-style-plasma",    label: "Plasma",       unlock: 250000000, gradient: true, animated: true },
+  14: { id: "galaxyStyleBtn",     className: "name-style-galaxy",    label: "Galaxy",       unlock: 500000000, gradient: true, animated: true },
+  15: { id: "voidStyleBtn",       className: "name-style-void",      label: "Void",         unlock: 1000000000, gradient: true, animated: true },
+  16: { id: "rainbowStyleBtn",    className: "name-style-rainbow",   label: "Rainbow",      unlock: 5000000000, gradient: true, animated: true },
+  17: { id: "solarFlareStyleBtn", className: "name-style-solar-flare", label: "Solar Flare", unlock: 10000000000, gradient: true, animated: true },
+  18: { id: "nebulaStyleBtn",     className: "name-style-nebula",     label: "Nebula",       unlock: 25000000000, gradient: true, animated: true },
+  19: { id: "cosmicStyleBtn",     className: "name-style-cosmic",     label: "Cosmic",       unlock: 50000000000, gradient: true, animated: true },
+  20: { id: "celestialStyleBtn",  className: "name-style-celestial",  label: "Celestial",    unlock: 100000000000, gradient: true, animated: true },
+  21: { id: "infiniteStyleBtn",   className: "name-style-infinite",   label: "Infinite",     unlock: 1000000000000, gradient: true, animated: true },
 };
 
 function normalizeNameStyle(styleNum) {
@@ -93,6 +108,7 @@ function applyNameStyle(element, styleNum) {
   element.className = "leaderboard-name";
   element.classList.add(style.className);
   if (style.gradient) element.classList.add("name-style-gradient");
+  if (style.animated) element.classList.add("name-style-animated");
 }
 
 function renderLeaderboardName(slotId, name, styleNum, tagNumber) {
@@ -122,6 +138,76 @@ let isNewPlayer = false;
 let nameStyle   = 1; // Default
 let savedPlayerData = null;
 
+const ACHIEVEMENT_IDS = new Set(["firstClick", "century", "millennium", "millionaire", "billionaire", "trillionaire", "chillOut", "clickPrinter", "clickButtonLeftChat", "sonImCrine", "youCanStopNow", "jobApplication", "leaveSomeForUs", "firstPrestige"]);
+let unlockedAchievements = [];
+
+function normalizeAchievementList(values = []) {
+  if (!Array.isArray(values)) return [];
+  return [...new Set(values.filter((achievement) => typeof achievement === "string" && ACHIEVEMENT_IDS.has(achievement)))];
+}
+
+async function saveUnlockedAchievementsToFirebase() {
+  await setDoc(doc(db, "leaderboard", uid), {
+    unlockedAchievements: [...unlockedAchievements]
+  }, { merge: true });
+}
+
+function unlockAchievement(achievementId) {
+  if (!unlockedAchievements.includes(achievementId)) {
+    unlockedAchievements.push(achievementId);
+    void saveUnlockedAchievementsToFirebase();
+  }
+}
+
+function updateUnlockedAchievements(score) {
+  if (score >= 1) unlockAchievement("firstClick");
+  if (score >= 100) unlockAchievement("century");
+  if (score >= 1000) unlockAchievement("millennium");
+  if (score >= 1000000) unlockAchievement("millionaire");
+  if (score >= 1000000000) unlockAchievement("billionaire");
+  if (score >= 1000000000000) unlockAchievement("trillionaire");
+  if (score >= 1000000000000000) unlockAchievement("chillOut");
+  if (score >= 1000000000000000000) unlockAchievement("clickPrinter");
+  if (score >= 1000000000000000000000000) unlockAchievement("clickButtonLeftChat");
+  if (score >= 1000000000000000000000000000) unlockAchievement("sonImCrine");
+  if (score >= 1000000000000000000000000000000000) unlockAchievement("youCanStopNow");
+  if (score >= 1000000000000000000000000000000000000000) unlockAchievement("jobApplication");
+  if (score >= 1000000000000000000000000000000000000000000000000000000) unlockAchievement("leaveSomeForUs");
+  if (prestigeCount >= 1) unlockAchievement("firstPrestige");
+}
+
+function renderAchievementCard(cardId, completedId, unlocked) {
+  const card = document.getElementById(cardId);
+  const completed = document.getElementById(completedId);
+  if (!card || !completed) return;
+
+  card.classList.toggle("locked", !unlocked);
+  card.classList.toggle("unlocked", unlocked);
+  completed.classList.toggle("locked", !unlocked);
+  completed.classList.toggle("unlocked", unlocked);
+  completed.innerHTML = unlocked
+    ? '<i class="fa-solid fa-circle-check"></i>'
+    : '<i class="fa-solid fa-lock"></i>';
+}
+
+function refreshAchievementsUI() {
+  renderAchievementCard("firstClick", "firstClickCompleted", unlockedAchievements.includes("firstClick"));
+  renderAchievementCard("century", "centuryCompleted", unlockedAchievements.includes("century"));
+  renderAchievementCard("millennium", "millenniumCompleted", unlockedAchievements.includes("millennium"));
+  renderAchievementCard("millionaire", "millionaireCompleted", unlockedAchievements.includes("millionaire"));
+  renderAchievementCard("billionaire", "billionaireCompleted", unlockedAchievements.includes("billionaire"));
+  renderAchievementCard("trillionaire", "trillionaireCompleted", unlockedAchievements.includes("trillionaire"));
+  renderAchievementCard("chillOut", "chillOutCompleted", unlockedAchievements.includes("chillOut"));
+  renderAchievementCard("clickPrinter", "clickPrinterCompleted", unlockedAchievements.includes("clickPrinter"));
+  renderAchievementCard("clickButtonLeftChat", "clickButtonLeftChatCompleted", unlockedAchievements.includes("clickButtonLeftChat"));
+  renderAchievementCard("sonImCrine", "sonImCrineCompleted", unlockedAchievements.includes("sonImCrine"));
+  renderAchievementCard("youCanStopNow", "youCanStopNowCompleted", unlockedAchievements.includes("youCanStopNow"));
+  renderAchievementCard("jobApplication", "jobApplicationCompleted", unlockedAchievements.includes("jobApplication"));
+  renderAchievementCard("leaveSomeForUs", "leaveSomeForUsCompleted", unlockedAchievements.includes("leaveSomeForUs"));
+  renderAchievementCard("firstPrestige", "firstPrestigeCompleted", unlockedAchievements.includes("firstPrestige"));
+}
+
+
 const renderScore = () => {
   document.getElementById("counter").textContent = Math.floor(number).toLocaleString();
 };
@@ -138,12 +224,15 @@ if (playerDoc.exists()) {
   number     = data.scoreString ? Number(BigInt(data.scoreString)) : 0;
   playerName = data.name      ?? "Anonymous";
   nameStyle  = getStoredNameStyle(data);
+  unlockedAchievements = normalizeAchievementList(data.unlockedAchievements);
 } else {
   // Player has never saved before — flag them as new for First 100 check
   isNewPlayer = true;
 }
 
 renderScore();
+updateUnlockedAchievements(number);
+refreshAchievementsUI();
 document.getElementById("playerNameInput").value = playerName;
 
 // Highlight the card that matches the player's saved style
@@ -188,7 +277,15 @@ async function save() {
     dataCenterLevel,
     automationLabLevel,
     cloudRegionLevel,
+    superComputerLevel,
+    quantumComputerLevel,
+    unemployedLevel,
+    clickAngelLevel,
+    clickArchangelLevel,
+    clickDemigodLevel,
+    clickGodLevel,
     prestigeCount,
+    unlockedAchievements: [...unlockedAchievements],
     ...getNameStyleSaveData(nameStyle)
   };
 
@@ -227,7 +324,18 @@ function getClickPower() {
 
 function add() {
   const power = getClickPower();
-  addScore(power);
+  
+  const clickEffect = document.createElement("span");
+  clickEffect.className = "click-animation";
+  // Add random offset so rapid clicks don't stack perfectly
+  clickEffect.style.left = `${event.clientX + (Math.random() * 40 - 20)}px`;
+  clickEffect.style.top  = `${event.clientY + (Math.random() * 20 - 10)}px`;
+  clickEffect.textContent = `+${power}`;
+  document.body.appendChild(clickEffect);
+  
+  setTimeout(() => clickEffect.remove(), 1000);
+  
+  requestAnimationFrame(() => addScore(power));
 }
 
 function reset() {
@@ -245,10 +353,18 @@ function reset() {
     dataCenterLevel = 0;
     automationLabLevel = 0;
     cloudRegionLevel = 0;
+    superComputerLevel = 0;
+    quantumComputerLevel = 0;
+    unemployedLevel = 0;
+    clickAngelLevel = 0;
+    clickArchangelLevel = 0;
+    clickDemigodLevel = 0;
+    clickGodLevel = 0;
     counter.textContent = number.toLocaleString();
+    unlockedAchievements = [];
     prestigeCount = 0;
     isNewPlayer = true;
-    NAME_STYLES = 1;
+    nameStyle = 1;
     renderScore();
     refreshAutoClickerUi();
     save();
@@ -318,6 +434,36 @@ async function showLeaderboard() {
     return scoreB > scoreA ? 1 : scoreB < scoreA ? -1 : 0;
   }).slice(0, 10); // Take top 10
 
+  document.getElementById("name1").textContent = players[0].username;
+  document.getElementById("name1").dataset.uid = players[0].id;
+
+  document.getElementById("name2").textContent = players[1].username;
+  document.getElementById("name2").dataset.uid = players[1].id;
+
+  document.getElementById("name3").textContent = players[2].username;
+  document.getElementById("name3").dataset.uid = players[2].id;
+
+  document.getElementById("name4").textContent = players[3].username;
+  document.getElementById("name4").dataset.uid = players[3].id;
+
+  document.getElementById("name5").textContent = players[4].username;
+  document.getElementById("name5").dataset.uid = players[4].id;
+
+  document.getElementById("name6").textContent = players[5].username;
+  document.getElementById("name6").dataset.uid = players[5].id;
+
+  document.getElementById("name7").textContent = players[6].username;
+  document.getElementById("name7").dataset.uid = players[6].id;
+
+  document.getElementById("name8").textContent = players[7].username;
+  document.getElementById("name8").dataset.uid = players[7].id;
+
+  document.getElementById("name9").textContent = players[8].username;
+  document.getElementById("name9").dataset.uid = players[8].id;
+
+  document.getElementById("name10").textContent = players[9].username;
+  document.getElementById("name10").dataset.uid = players[9].id;
+
   const scoreSlots = ["score1", "score2", "score3", "score4", "score5", "score6", "score7", "score8", "score9", "score10"];
   const nameSlots  = ["name1",  "name2",  "name3",  "name4",  "name5",  "name6",  "name7",  "name8",  "name9",  "name10"];
 
@@ -346,12 +492,19 @@ async function showLeaderboard() {
     scoreElement.style.fontSize = calculateLeaderboardFontSize(scoreString);
   });
 
-  // Fill any empty slots if fewer than 10 players exist yet
   for (let i = players.length; i < 10; i++) {
     document.getElementById(nameSlots[i]).innerHTML  = "—";
     document.getElementById(scoreSlots[i]).innerHTML = "—";
   }
 }
+
+function profilePage(element) {
+    const uid = element.dataset.uid;
+    const username = element.querySelector(".leaderboard-name").textContent;
+    window.open(`user.html?uid=${uid}`, "_blank");
+}
+
+window.profilePage = profilePage;
 
 async function showCustomization() {
   updateUnlockedStyles();
@@ -380,71 +533,114 @@ const getScore = () => {
 const setScore = (newScore) => {
   number = Math.max(0, Number(newScore) || 0);
   renderScore();
+  updateUnlockedAchievements(number);
+  refreshAchievementsUI();
 };
 
 const addScore = (amount) => {
   number += amount;
   renderScore();
+  updateUnlockedAchievements(number);
+  refreshAchievementsUI();
   updateUnlockedStyles();
   updateUnlockedAutoClicker();
 };
 
 // Autoclicker settings.
 // CPS means "clicks per second", so 0.1 CPS means 1 click every 10 seconds.
-const AUTOCLICKER_UNLOCK_COST = 100;
+const AUTOCLICKER_UNLOCK_COST = 20;
 // Mouse
 const MOUSE_BASE_COST = 10;
 const MOUSE_COST_MULTIPLIER = 1.14;
 const MOUSE_CPS_GAIN = 0.1;
-const MOUSE_MAX_LEVEL = 99;
+const MOUSE_MAX_LEVEL = 1000;
 // Servant
 const SERVANT_BASE_COST = 250;
 const SERVANT_COST_MULTIPLIER = 1.16;
 const SERVANT_CPS_GAIN = 2;
-const SERVANT_MAX_LEVEL = 99;
+const SERVANT_MAX_LEVEL = 1000;
 // Robot
 const ROBOT_BASE_COST = 1000;
 const ROBOT_COST_MULTIPLIER = 1.18;
 const ROBOT_CPS_GAIN = 10;
-const ROBOT_MAX_LEVEL = 99;
+const ROBOT_MAX_LEVEL = 1000;
 // Team
 const TEAM_BASE_COST = 2500;
 const TEAM_COST_MULTIPLIER = 1.2;
 const TEAM_CPS_GAIN = 20;
-const TEAM_MAX_LEVEL = 99;
+const TEAM_MAX_LEVEL = 1000;
 // Army
 const ARMY_BASE_COST = 4000;
 const ARMY_COST_MULTIPLIER = 1.22;
 const ARMY_CPS_GAIN = 40;
-const ARMY_MAX_LEVEL = 99;
+const ARMY_MAX_LEVEL = 1000;
 // Hacker
 const HACKER_BASE_COST = 8000;
 const HACKER_COST_MULTIPLIER = 1.24;
 const HACKER_CPS_GAIN = 100;
-const HACKER_MAX_LEVEL = 99;
+const HACKER_MAX_LEVEL = 1000;
 // Server
 const SERVER_BASE_COST = 25000;
 const SERVER_COST_MULTIPLIER = 1.26;
 const SERVER_CPS_GAIN = 175;
-const SERVER_MAX_LEVEL = 99;
+const SERVER_MAX_LEVEL = 1000;
 // Data Center
 const DATA_CENTER_BASE_COST = 65000;
 const DATA_CENTER_COST_MULTIPLIER = 1.28;
 const DATA_CENTER_CPS_GAIN = 500;
-const DATA_CENTER_MAX_LEVEL = 99;
+const DATA_CENTER_MAX_LEVEL = 1000;
 // Automation Lab
 const AUTOMATION_LAB_BASE_COST = 100000;
 const AUTOMATION_LAB_COST_MULTIPLIER = 1.3;
 const AUTOMATION_LAB_CPS_GAIN = 1000;
-const AUTOMATION_LAB_MAX_LEVEL = 99;
+const AUTOMATION_LAB_MAX_LEVEL = 1000;
 // Cloud Region
 const CLOUD_REGION_BASE_COST = 250000;
 const CLOUD_REGION_COST_MULTIPLIER = 1.32;
 const CLOUD_REGION_CPS_GAIN = 2500;
-const CLOUD_REGION_MAX_LEVEL = 99;
+const CLOUD_REGION_MAX_LEVEL = 1000;
+// Super Computer
+const SUPER_COMPUTER_BASE_COST = 600000;
+const SUPER_COMPUTER_COST_MULTIPLIER = 1.34;
+const SUPER_COMPUTER_CPS_GAIN = 12000;
+const SUPER_COMPUTER_MAX_LEVEL = 1000;
+// Quantum Computer
+const QUANTUM_COMPUTER_BASE_COST = 1100000;
+const QUANTUM_COMPUTER_COST_MULTIPLIER = 1.36;
+const QUANTUM_COMPUTER_CPS_GAIN = 20000;
+const QUANTUM_COMPUTER_MAX_LEVEL = 1000;
+// Unemployed
+const UNEMPLOYED_BASE_COST = 2200000;
+const UNEMPLOYED_COST_MULTIPLIER = 1.38;
+const UNEMPLOYED_CPS_GAIN = 40000;
+const UNEMPLOYED_MAX_LEVEL = 1000;
+
+// Click Angel
+const CLICK_ANGEL_BASE_COST = 5000000;
+const CLICK_ANGEL_COST_MULTIPLIER = 1.4;
+const CLICK_ANGEL_CPS_GAIN = 100000;
+const CLICK_ANGEL_MAX_LEVEL = 1000;
+
+// Click Archangel
+const CLICK_ARCHANGEL_BASE_COST = 15000000;
+const CLICK_ARCHANGEL_COST_MULTIPLIER = 1.42;
+const CLICK_ARCHANGEL_CPS_GAIN = 300000;
+const CLICK_ARCHANGEL_MAX_LEVEL = 1000;
+
+// Click Demigod
+const CLICK_DEMIGOD_BASE_COST = 50000000;
+const CLICK_DEMIGOD_COST_MULTIPLIER = 1.45;
+const CLICK_DEMIGOD_CPS_GAIN = 1000000;
+const CLICK_DEMIGOD_MAX_LEVEL = 1000;
+
+// Click God
+const CLICK_GOD_BASE_COST = 150000000;
+const CLICK_GOD_COST_MULTIPLIER = 1.5;
+const CLICK_GOD_CPS_GAIN = 3000000;
+const CLICK_GOD_MAX_LEVEL = 1000;
 
 // Prestige
-const PRESTIGE_BASE_COST = 10000000;
+const PRESTIGE_BASE_COST = 100000000;
 const PRESTIGE_CPS_BOOST_MULTIPLIER = 10; // 10x CPS multiplier per prestige
 
 const normalizeUpgradeLevel = (level, maxLevel) => {
@@ -472,7 +668,14 @@ let serverLevel = 0;
 let dataCenterLevel = 0;
 let automationLabLevel = 0;
 let cloudRegionLevel = 0;
-let prestigeCount = 0;
+let superComputerLevel = 0;
+let quantumComputerLevel = 0;
+let unemployedLevel = 0;
+let clickAngelLevel = 0;
+let clickArchangelLevel = 0;
+let clickDemigodLevel = 0;
+let clickGodLevel = 0;
+var prestigeCount = 0;
 
 const getPrestigeMultiplier = () => PRESTIGE_CPS_BOOST_MULTIPLIER ** prestigeCount;
 const getPrestigeCost = () => Math.floor(PRESTIGE_BASE_COST * PRESTIGE_CPS_BOOST_MULTIPLIER ** prestigeCount);
@@ -490,8 +693,18 @@ if (savedPlayerData) {
   dataCenterLevel = normalizeUpgradeLevel(savedPlayerData.dataCenterLevel, DATA_CENTER_MAX_LEVEL);
   automationLabLevel = normalizeUpgradeLevel(savedPlayerData.automationLabLevel, AUTOMATION_LAB_MAX_LEVEL);
   cloudRegionLevel = normalizeUpgradeLevel(savedPlayerData.cloudRegionLevel, CLOUD_REGION_MAX_LEVEL);
+  superComputerLevel = normalizeUpgradeLevel(savedPlayerData.superComputerLevel, SUPER_COMPUTER_MAX_LEVEL);
+  quantumComputerLevel = normalizeUpgradeLevel(savedPlayerData.quantumComputerLevel, QUANTUM_COMPUTER_MAX_LEVEL);
+  unemployedLevel = normalizeUpgradeLevel(savedPlayerData.unemployedLevel, UNEMPLOYED_MAX_LEVEL);
+  clickAngelLevel = normalizeUpgradeLevel(savedPlayerData.clickAngelLevel, CLICK_ANGEL_MAX_LEVEL);
+  clickArchangelLevel = normalizeUpgradeLevel(savedPlayerData.clickArchangelLevel, CLICK_ARCHANGEL_MAX_LEVEL);
+  clickDemigodLevel = normalizeUpgradeLevel(savedPlayerData.clickDemigodLevel, CLICK_DEMIGOD_MAX_LEVEL);
+  clickGodLevel = normalizeUpgradeLevel(savedPlayerData.clickGodLevel, CLICK_GOD_MAX_LEVEL);
   prestigeCount = normalizePrestigeCount(savedPlayerData.prestigeCount);
 }
+
+updateUnlockedAchievements(number);
+refreshAchievementsUI();
 
 const formatCps = (value) => {
   const parsedValue = Number(value);
@@ -509,6 +722,13 @@ const getServerCpsGain = () => applyPrestigeMultiplier(SERVER_CPS_GAIN);
 const getDataCenterCpsGain = () => applyPrestigeMultiplier(DATA_CENTER_CPS_GAIN);
 const getAutomationLabCpsGain = () => applyPrestigeMultiplier(AUTOMATION_LAB_CPS_GAIN);
 const getCloudRegionCpsGain = () => applyPrestigeMultiplier(CLOUD_REGION_CPS_GAIN);
+const getSuperComputerCpsGain = () => applyPrestigeMultiplier(SUPER_COMPUTER_CPS_GAIN);
+const getQuantumComputerCpsGain = () => applyPrestigeMultiplier(QUANTUM_COMPUTER_CPS_GAIN);
+const getUnemployedCpsGain = () => applyPrestigeMultiplier(UNEMPLOYED_CPS_GAIN);
+const getClickAngelCpsGain = () => applyPrestigeMultiplier(CLICK_ANGEL_CPS_GAIN);
+const getClickArchangelCpsGain = () => applyPrestigeMultiplier(CLICK_ARCHANGEL_CPS_GAIN);
+const getClickDemigodCpsGain = () => applyPrestigeMultiplier(CLICK_DEMIGOD_CPS_GAIN);
+const getClickGodCpsGain = () => applyPrestigeMultiplier(CLICK_GOD_CPS_GAIN);
 
 // Mouse CPS depends on how many Mouse upgrades were bought inside the Upgrades menu.
 const getMouseCps = () => mouseLevel * getMouseCpsGain();
@@ -521,9 +741,16 @@ const getServerCps = () => serverLevel * getServerCpsGain();
 const getDataCenterCps = () => dataCenterLevel * getDataCenterCpsGain();
 const getAutomationLabCps = () => automationLabLevel * getAutomationLabCpsGain();
 const getCloudRegionCps = () => cloudRegionLevel * getCloudRegionCpsGain();
+const getSuperComputerCps = () => superComputerLevel * getSuperComputerCpsGain();
+const getQuantumComputerCps = () => quantumComputerLevel * getQuantumComputerCpsGain();
+const getUnemployedCps = () => unemployedLevel * getUnemployedCpsGain();
+const getClickAngelCps = () => clickAngelLevel * getClickAngelCpsGain();
+const getClickArchangelCps = () => clickArchangelLevel * getClickArchangelCpsGain();
+const getClickDemigodCps = () => clickDemigodLevel * getClickDemigodCpsGain();
+const getClickGodCps = () => clickGodLevel * getClickGodCpsGain();
 
 // Total CPS is the sum of all upgrade CPS.
-const getTotalAutoClickerCps = () => getMouseCps() + getServantCps() + getRobotCps() + getTeamCps() + getHackerCps() + getArmyCps() + getServerCps() + getDataCenterCps() + getAutomationLabCps() + getCloudRegionCps();
+const getTotalAutoClickerCps = () => getMouseCps() + getServantCps() + getRobotCps() + getTeamCps() + getHackerCps() + getArmyCps() + getServerCps() + getDataCenterCps() + getAutomationLabCps() + getCloudRegionCps() + getSuperComputerCps() + getQuantumComputerCps() + getUnemployedCps() + getClickAngelCps() + getClickArchangelCps() + getClickDemigodCps() + getClickGodCps();
 
 // Each bought upgrade makes the next one cost more.
 const getMouseCost = () => {
@@ -555,6 +782,27 @@ const getAutomationLabCost = () => {
 };
 const getCloudRegionCost = () => {
   return Math.floor(CLOUD_REGION_BASE_COST * CLOUD_REGION_COST_MULTIPLIER ** cloudRegionLevel);
+};
+const getSuperComputerCost = () => {
+  return Math.floor(SUPER_COMPUTER_BASE_COST * SUPER_COMPUTER_COST_MULTIPLIER ** superComputerLevel);
+};
+const getQuantumComputerCost = () => {
+  return Math.floor(QUANTUM_COMPUTER_BASE_COST * QUANTUM_COMPUTER_COST_MULTIPLIER ** quantumComputerLevel);
+};
+const getUnemployedCost = () => {
+  return Math.floor(UNEMPLOYED_BASE_COST * UNEMPLOYED_COST_MULTIPLIER ** unemployedLevel);
+};
+const getClickAngelCost = () => {
+  return Math.floor(CLICK_ANGEL_BASE_COST * CLICK_ANGEL_COST_MULTIPLIER ** clickAngelLevel);
+};
+const getClickArchangelCost = () => {
+  return Math.floor(CLICK_ARCHANGEL_BASE_COST * CLICK_ARCHANGEL_COST_MULTIPLIER ** clickArchangelLevel);
+};
+const getClickDemigodCost = () => {
+  return Math.floor(CLICK_DEMIGOD_BASE_COST * CLICK_DEMIGOD_COST_MULTIPLIER ** clickDemigodLevel);
+};
+const getClickGodCost = () => {
+  return Math.floor(CLICK_GOD_BASE_COST * CLICK_GOD_COST_MULTIPLIER ** clickGodLevel);
 };
 
 // ── Smooth rAF-based autoclicker ───────────────────────────────────────────
@@ -907,6 +1155,180 @@ function buyCloudRegionUpgrade() {
   updateUnlockedStyles();
   updateUnlockedAutoClicker();
 }
+function buySuperComputerUpgrade() {
+  const score = getScore();
+  const superComputerCost = getSuperComputerCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (superComputerLevel >= SUPER_COMPUTER_MAX_LEVEL) {
+    alert("Super Computer is already maxed out!");
+    return;
+  }
+
+  if (score < superComputerCost) {
+    alert(`Not enough clicks to purchase the Super Computer upgrade! You need ${superComputerCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - superComputerCost);
+  superComputerLevel++;
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+}
+
+function buyQuantumComputerUpgrade() {
+  const score = getScore();
+  const quantumComputerCost = getQuantumComputerCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (quantumComputerLevel >= QUANTUM_COMPUTER_MAX_LEVEL) {
+    alert("Quantum Computer is already maxed out!");
+    return;
+  }
+
+  if (score < quantumComputerCost) {
+    alert(`Not enough clicks to purchase the Quantum Computer upgrade! You need ${quantumComputerCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - quantumComputerCost);
+  quantumComputerLevel++;
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+}
+
+function buyUnemployedUpgrade() {
+  const score = getScore();
+  const unemployedCost = getUnemployedCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (unemployedLevel >= UNEMPLOYED_MAX_LEVEL) {
+    alert("Unemployed is already maxed out!");
+    return;
+  }
+
+  if (score < unemployedCost) {
+    alert(`Not enough clicks to purchase the Unemployed upgrade! You need ${unemployedCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - unemployedCost);
+  unemployedLevel++;
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+}
+
+function buyClickAngelUpgrade() {
+  const score = getScore();
+  const clickAngelCost = getClickAngelCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (clickAngelLevel >= CLICK_ANGEL_MAX_LEVEL) {
+    alert("Click Angel is already maxed out!");
+    return;
+  }
+
+  if (score < clickAngelCost) {
+    alert(`Not enough clicks to purchase the Click Angel upgrade! You need ${clickAngelCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - clickAngelCost);
+  clickAngelLevel++;
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+}
+
+function buyClickArchangelUpgrade() {
+  const score = getScore();
+  const clickArchangelCost = getClickArchangelCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (clickArchangelLevel >= CLICK_ARCHANGEL_MAX_LEVEL) {
+    alert("Click Archangel is already maxed out!");
+    return;
+  }
+
+  if (score < clickArchangelCost) {
+    alert(`Not enough clicks to purchase the Click Archangel upgrade! You need ${clickArchangelCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - clickArchangelCost);
+  clickArchangelLevel++;
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+}
+
+function buyClickDemigodUpgrade() {
+  const score = getScore();
+  const clickDemigodCost = getClickDemigodCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (clickDemigodLevel >= CLICK_DEMIGOD_MAX_LEVEL) {
+    alert("Click Demigod is already maxed out!");
+    return;
+  }
+
+  if (score < clickDemigodCost) {
+    alert(`Not enough clicks to purchase the Click Demigod upgrade! You need ${clickDemigodCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - clickDemigodCost);
+  clickDemigodLevel++;
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+}
+
+function buyClickGodUpgrade() {
+  const score = getScore();
+  const clickGodCost = getClickGodCost();
+
+  if (!autoClickerUnlocked) {
+    alert("Unlock autoclicker upgrades first!");
+    return;
+  }
+
+  if (clickGodLevel >= CLICK_GOD_MAX_LEVEL) {
+    alert("Click God is already maxed out!");
+    return;
+  }
+
+  if (score < clickGodCost) {
+    alert(`Not enough clicks to purchase the Click God upgrade! You need ${clickGodCost.toLocaleString()} clicks.`);
+    return;
+  }
+
+  setScore(score - clickGodCost);
+  clickGodLevel++;
+  updateUnlockedStyles();
+  updateUnlockedAutoClicker();
+}
 
 async function buyPrestigeUpgrade() {
   const score = getScore();
@@ -938,12 +1360,17 @@ async function buyPrestigeUpgrade() {
   dataCenterLevel = 0;
   automationLabLevel = 0;
   cloudRegionLevel = 0;
+  superComputerLevel = 0;
+  quantumComputerLevel = 0;
+  unemployedLevel = 0;
+  clickAngelLevel = 0;
+  clickArchangelLevel = 0;
+  clickDemigodLevel = 0;
+  clickGodLevel = 0;
   // autoClickerUnlocked stays true after prestige
 
   setScore(1);
-  nameStyle = 1;
-  applySelectedCard(nameStyle);
-  await saveNameStyle(nameStyle);
+
   if (typeof prestigeModal !== "undefined" && prestigeModal) prestigeModal.style.display = "none";
   if (typeof upgradesModal !== "undefined" && upgradesModal) upgradesModal.style.display = "none";
 
@@ -969,6 +1396,13 @@ const updateUnlockedAutoClicker = () => {
   const dataCenterCpsGain = getDataCenterCpsGain();
   const automationLabCpsGain = getAutomationLabCpsGain();
   const cloudRegionCpsGain = getCloudRegionCpsGain();
+  const superComputerCpsGain = getSuperComputerCpsGain();
+  const quantumComputerCpsGain = getQuantumComputerCpsGain();
+  const unemployedCpsGain = getUnemployedCpsGain();
+  const clickAngelCpsGain = getClickAngelCpsGain();
+  const clickArchangelCpsGain = getClickArchangelCpsGain();
+  const clickDemigodCpsGain = getClickDemigodCpsGain();
+  const clickGodCpsGain = getClickGodCpsGain();
 
   const mouseCps = getMouseCps();
   const mouseCost = getMouseCost();
@@ -1009,6 +1443,34 @@ const updateUnlockedAutoClicker = () => {
   const cloudRegionCps = getCloudRegionCps();
   const cloudRegionCost = getCloudRegionCost();
   const cloudRegionMaxed = cloudRegionLevel >= CLOUD_REGION_MAX_LEVEL;
+
+  const superComputerCps = getSuperComputerCps();
+  const superComputerCost = getSuperComputerCost();
+  const superComputerMaxed = superComputerLevel >= SUPER_COMPUTER_MAX_LEVEL;
+
+  const quantumComputerCps = getQuantumComputerCps();
+  const quantumComputerCost = getQuantumComputerCost();
+  const quantumComputerMaxed = quantumComputerLevel >= QUANTUM_COMPUTER_MAX_LEVEL;
+
+  const unemployedCps = getUnemployedCps();
+  const unemployedCost = getUnemployedCost();
+  const unemployedMaxed = unemployedLevel >= UNEMPLOYED_MAX_LEVEL;
+
+  const clickAngelCps = getClickAngelCps();
+  const clickAngelCost = getClickAngelCost();
+  const clickAngelMaxed = clickAngelLevel >= CLICK_ANGEL_MAX_LEVEL;
+
+  const clickArchangelCps = getClickArchangelCps();
+  const clickArchangelCost = getClickArchangelCost();
+  const clickArchangelMaxed = clickArchangelLevel >= CLICK_ARCHANGEL_MAX_LEVEL;
+
+  const clickDemigodCps = getClickDemigodCps();
+  const clickDemigodCost = getClickDemigodCost();
+  const clickDemigodMaxed = clickDemigodLevel >= CLICK_DEMIGOD_MAX_LEVEL;
+
+  const clickGodCps = getClickGodCps();
+  const clickGodCost = getClickGodCost();
+  const clickGodMaxed = clickGodLevel >= CLICK_GOD_MAX_LEVEL;
 
   const autoclickerSublabel = document.getElementById("autoclickerbuySublabel");
   // Low-end mouse
@@ -1061,7 +1523,42 @@ const updateUnlockedAutoClicker = () => {
   const cloudRegionLabel = cloudRegion?.querySelector(".style-label");
   const cloudRegionSublabel = document.getElementById("cloudRegionSublabel");
   const cloudRegionUpgradeCount = document.getElementById("cloudRegionUpgradeCount");
-  
+  // Super Computer
+  const superComputer = document.getElementById("superComputer");
+  const superComputerLabel = superComputer?.querySelector(".style-label");
+  const superComputerSublabel = document.getElementById("superComputerSublabel");
+  const superComputerUpgradeCount = document.getElementById("superComputerUpgradeCount");
+  // Quantum Computer
+  const quantumComputer = document.getElementById("quantumComputer");
+  const quantumComputerLabel = quantumComputer?.querySelector(".style-label");
+  const quantumComputerSublabel = document.getElementById("quantumComputerSublabel");
+  const quantumComputerUpgradeCount = document.getElementById("quantumComputerUpgradeCount");
+  // Unemployed
+  const unemployed = document.getElementById("unemployed");
+  const unemployedLabel = unemployed?.querySelector(".style-label");
+  const unemployedSublabel = document.getElementById("unemployedSublabel");
+  const unemployedUpgradeCount = document.getElementById("unemployedUpgradeCount");
+  // Click Angel
+  const clickAngel = document.getElementById("clickAngel");
+  const clickAngelLabel = clickAngel?.querySelector(".style-label");
+  const clickAngelSublabel = document.getElementById("clickAngelSublabel");
+  const clickAngelUpgradeCount = document.getElementById("clickAngelUpgradeCount");
+  // Click Archangel
+  const clickArchangel = document.getElementById("clickArchangel");
+  const clickArchangelLabel = clickArchangel?.querySelector(".style-label");
+  const clickArchangelSublabel = document.getElementById("clickArchangelSublabel");
+  const clickArchangelUpgradeCount = document.getElementById("clickArchangelUpgradeCount");
+  // Click Demigod
+  const clickDemigod = document.getElementById("clickDemigod");
+  const clickDemigodLabel = clickDemigod?.querySelector(".style-label");
+  const clickDemigodSublabel = document.getElementById("clickDemigodSublabel");
+  const clickDemigodUpgradeCount = document.getElementById("clickDemigodUpgradeCount");
+  // Click God
+  const clickGod = document.getElementById("clickGod");
+  const clickGodLabel = clickGod?.querySelector(".style-label");
+  const clickGodSublabel = document.getElementById("clickGodSublabel");
+  const clickGodUpgradeCount = document.getElementById("clickGodUpgradeCount");
+
   // Prestige
   const prestige = document.getElementById("prestige");
   const prestigeLabel = prestige?.querySelector(".style-label");
@@ -1106,6 +1603,31 @@ const updateUnlockedAutoClicker = () => {
   }
   if (cloudRegion) {
     cloudRegion.classList.toggle("locked", !autoClickerUnlocked || score < cloudRegionCost || cloudRegionMaxed);
+  }
+  if (superComputer) {
+    superComputer.classList.toggle("locked", !autoClickerUnlocked || score < superComputerCost || superComputerMaxed);
+  }
+  if (quantumComputer) {
+    quantumComputer.classList.toggle("locked", !autoClickerUnlocked || score < quantumComputerCost || quantumComputerMaxed);
+  }
+  if (unemployed) {
+    unemployed.classList.toggle("locked", !autoClickerUnlocked || score < unemployedCost || unemployedMaxed);
+  }
+
+  if (clickAngel) {
+    clickAngel.classList.toggle("locked", !autoClickerUnlocked || score < clickAngelCost || clickAngelMaxed);
+  }
+
+  if (clickArchangel) {
+    clickArchangel.classList.toggle("locked", !autoClickerUnlocked || score < clickArchangelCost || clickArchangelMaxed);
+  }
+
+  if (clickDemigod) {
+    clickDemigod.classList.toggle("locked", !autoClickerUnlocked || score < clickDemigodCost || clickDemigodMaxed);
+  }
+
+  if (clickGod) {
+    clickGod.classList.toggle("locked", !autoClickerUnlocked || score < clickGodCost || clickGodMaxed);
   }
 
   // Show the current CPS inside the Upgrades menu.
@@ -1231,6 +1753,90 @@ const updateUnlockedAutoClicker = () => {
       : `Cost: ${cloudRegionCost.toLocaleString()} Clicks | +${formatCps(cloudRegionCpsGain)} CPS`;
   }
 
+  if (superComputerLabel) {
+    superComputerLabel.textContent = `Current: ${formatCps(superComputerCps)} CPS`;
+  }
+  if (superComputerSublabel) {
+    superComputerSublabel.textContent = superComputerMaxed
+      ? `Maxed out at ${SUPER_COMPUTER_MAX_LEVEL} upgrades`
+      : `Cost: ${superComputerCost.toLocaleString()} Clicks | +${formatCps(superComputerCpsGain)} CPS`;
+  }
+  if (superComputerUpgradeCount) {
+    superComputerUpgradeCount.textContent = superComputerLevel.toLocaleString();
+  }
+
+  if (quantumComputerLabel) {
+    quantumComputerLabel.textContent = `Current: ${formatCps(quantumComputerCps)} CPS`;
+  }
+  if (quantumComputerSublabel) {
+    quantumComputerSublabel.textContent = quantumComputerMaxed
+      ? `Maxed out at ${QUANTUM_COMPUTER_MAX_LEVEL} upgrades`
+      : `Cost: ${quantumComputerCost.toLocaleString()} Clicks | +${formatCps(quantumComputerCpsGain)} CPS`;
+  }
+  if (quantumComputerUpgradeCount) {
+    quantumComputerUpgradeCount.textContent = quantumComputerLevel.toLocaleString();
+  }
+
+  if (unemployedLabel) {
+    unemployedLabel.textContent = `Current: ${formatCps(unemployedCps)} CPS`;
+  }
+  if (unemployedSublabel) {
+    unemployedSublabel.textContent = unemployedMaxed
+      ? `Maxed out at ${UNEMPLOYED_MAX_LEVEL} upgrades`
+      : `Cost: ${unemployedCost.toLocaleString()} Clicks | +${formatCps(unemployedCpsGain)} CPS`;
+  }
+  if (unemployedUpgradeCount) {
+    unemployedUpgradeCount.textContent = unemployedLevel.toLocaleString();
+  }
+
+  if (clickAngelLabel) {
+    clickAngelLabel.textContent = `Current: ${formatCps(clickAngelCps)} CPS`;
+  }
+  if (clickAngelSublabel) {
+    clickAngelSublabel.textContent = clickAngelMaxed
+      ? `Maxed out at ${CLICK_ANGEL_MAX_LEVEL} upgrades`
+      : `Cost: ${clickAngelCost.toLocaleString()} Clicks | +${formatCps(clickAngelCpsGain)} CPS`;
+  }
+  if (clickAngelUpgradeCount) {
+    clickAngelUpgradeCount.textContent = clickAngelLevel.toLocaleString();
+  }
+
+  if (clickArchangelLabel) {
+    clickArchangelLabel.textContent = `Current: ${formatCps(clickArchangelCps)} CPS`;
+  }
+  if (clickArchangelSublabel) {
+    clickArchangelSublabel.textContent = clickArchangelMaxed
+      ? `Maxed out at ${CLICK_ARCHANGEL_MAX_LEVEL} upgrades`
+      : `Cost: ${clickArchangelCost.toLocaleString()} Clicks | +${formatCps(clickArchangelCpsGain)} CPS`;
+  }
+  if (clickArchangelUpgradeCount) {
+    clickArchangelUpgradeCount.textContent = clickArchangelLevel.toLocaleString();
+  }
+
+  if (clickDemigodLabel) {
+    clickDemigodLabel.textContent = `Current: ${formatCps(clickDemigodCps)} CPS`;
+  }
+  if (clickDemigodSublabel) {
+    clickDemigodSublabel.textContent = clickDemigodMaxed
+      ? `Maxed out at ${CLICK_DEMIGOD_MAX_LEVEL} upgrades`
+      : `Cost: ${clickDemigodCost.toLocaleString()} Clicks | +${formatCps(clickDemigodCpsGain)} CPS`;
+  }
+  if (clickDemigodUpgradeCount) {
+    clickDemigodUpgradeCount.textContent = clickDemigodLevel.toLocaleString();
+  }
+
+  if (clickGodLabel) {
+    clickGodLabel.textContent = `Current: ${formatCps(clickGodCps)} CPS`;
+  }
+  if (clickGodSublabel) {
+    clickGodSublabel.textContent = clickGodMaxed
+      ? `Maxed out at ${CLICK_GOD_MAX_LEVEL} upgrades`
+      : `Cost: ${clickGodCost.toLocaleString()} Clicks | +${formatCps(clickGodCpsGain)} CPS`;
+  }
+  if (clickGodUpgradeCount) {
+    clickGodUpgradeCount.textContent = clickGodLevel.toLocaleString();
+  }
+
   if (prestigeLabel) {
     prestigeLabel.textContent = `Current: x${formatCps(prestigeMultiplier)} CPS multiplier`;
   }
@@ -1245,50 +1851,22 @@ const updateUnlockedAutoClicker = () => {
 const updateUnlockedStyles = () => {
   const score = getScore();
 
-  const blackStyleCard = document.getElementById("blackStyleBtn");
-  const blueStyleCard = document.getElementById("blueStyleBtn");
-  const goldStyleCard = document.getElementById("goldStyleBtn");
-  const purpleStyleCard = document.getElementById("purpleStyleBtn");
-  const redPinkStyleCard = document.getElementById("redPinkStyleBtn");
-  const rainbowStyleCard = document.getElementById("rainbowStyleBtn");
+  Object.values(NAME_STYLES).forEach((style) => {
+    const card = document.getElementById(style.id);
+    const sublabel = document.getElementById(style.id.replace("StyleBtn", "Sublabel"));
+    if (!card || !sublabel) return;
 
-  blackStyleCard.classList.add("locked");
-  blueStyleCard.classList.add("locked");
-  goldStyleCard.classList.add("locked");
-  purpleStyleCard.classList.add("locked");
-  redPinkStyleCard.classList.add("locked");
-  rainbowStyleCard.classList.add("locked");
+    const isUnlocked = score >= style.unlock;
+    card.classList.toggle("locked", !isUnlocked);
 
-  document.getElementById("blackSublabel").textContent = "Always unlocked";
-  document.getElementById("blueSublabel").textContent = "🔒 Unlock at 1,000";
-  document.getElementById("goldSublabel").textContent = "🔒 Unlock at 10,000";
-  document.getElementById("purpleSublabel").textContent = "🔒 Unlock at 100,000";
-  document.getElementById("redPinkSublabel").textContent = "🔒 Unlock at 1,000,000";
-  document.getElementById("rainbowSublabel").textContent = "🔒 Unlock at 10,000,000";
-
-  if (score >= 0) {
-    blackStyleCard.classList.remove("locked");
-  }
-  if (score >= 1000) {
-    blueStyleCard.classList.remove("locked");
-    document.getElementById("blueSublabel").textContent = "Unlocked at 1,000";
-  }
-  if (score >= 10000) {
-    goldStyleCard.classList.remove("locked");
-    document.getElementById("goldSublabel").textContent = "Unlocked at 10,000";
-  }
-  if (score >= 100000) {
-    purpleStyleCard.classList.remove("locked");
-    document.getElementById("purpleSublabel").textContent = "Unlocked at 100,000";
-  }
-  if (score >= 1000000) {
-    redPinkStyleCard.classList.remove("locked");
-    document.getElementById("redPinkSublabel").textContent = "Unlocked at 1,000,000";
-  }
-  if (score >= 10000000) {
-    rainbowStyleCard.classList.remove("locked");
-    document.getElementById("rainbowSublabel").textContent = "Unlocked at 10,000,000";
-  }
+    if (style.unlock === 0) {
+      sublabel.textContent = "Always unlocked";
+    } else if (isUnlocked) {
+      sublabel.textContent = `Unlocked at ${style.unlock.toLocaleString()}`;
+    } else {
+      sublabel.textContent = `🔒 Unlock at ${style.unlock.toLocaleString()}`;
+    }
+  });
 };
 
 const initializeGameLoop = () => {
@@ -1321,6 +1899,13 @@ onClick("server", buyServerUpgrade);
 onClick("dataCenter", buyDataCenterUpgrade);
 onClick("automationLab", buyAutomationLabUpgrade);
 onClick("cloudRegion", buyCloudRegionUpgrade);
+onClick("superComputer", buySuperComputerUpgrade);
+onClick("quantumComputer", buyQuantumComputerUpgrade);
+onClick("unemployed", buyUnemployedUpgrade);
+onClick("clickAngel", buyClickAngelUpgrade);
+onClick("clickArchangel", buyClickArchangelUpgrade);
+onClick("clickDemigod", buyClickDemigodUpgrade);
+onClick("clickGod", buyClickGodUpgrade);
 onClick("prestige", buyPrestigeUpgrade);
 
 // Customization modal
@@ -1332,90 +1917,22 @@ onClick("customizationBtn", () => {
 onClick("customizationClose", () => customizationModal.style.display = "none");
 
 // Customization [NAME STYLES]
-const blackStyleCard = document.getElementById("blackStyleBtn");
-onClick("blackStyleBtn", () => {
-  blackStyleCard.classList.add("selected");
-  blueStyleCard.classList.remove("selected");
-  goldStyleCard.classList.remove("selected");
-  purpleStyleCard.classList.remove("selected");
-  redPinkStyleCard.classList.remove("selected");
-  rainbowStyleCard.classList.remove("selected");
-  saveNameStyle(1);
-});
+Object.entries(NAME_STYLES).forEach(([styleNum, style]) => {
+  const card = document.getElementById(style.id);
+  if (!card) return;
 
-const blueStyleCard = document.getElementById("blueStyleBtn");
-onClick("blueStyleBtn", () => {
-  if (blueStyleCard.classList.contains("locked")) {
-    return alert("This style is locked! Reach 1,000 points to unlock it.");
-  } else {
-    blackStyleCard.classList.remove("selected");
-    blueStyleCard.classList.add("selected");
-    goldStyleCard.classList.remove("selected");
-    purpleStyleCard.classList.remove("selected");
-    redPinkStyleCard.classList.remove("selected");
-    rainbowStyleCard.classList.remove("selected");
-    saveNameStyle(2);
-  }
-});
+  onClick(style.id, () => {
+    if (card.classList.contains("locked")) {
+      return alert(`This style is locked! Reach ${style.unlock.toLocaleString()} points to unlock it.`);
+    }
 
-const goldStyleCard = document.getElementById("goldStyleBtn");
-onClick("goldStyleBtn", () => {
-  if (goldStyleCard.classList.contains("locked")) {
-    return alert("This style is locked! Reach 10,000 points to unlock it.");
-  } else {
-    blackStyleCard.classList.remove("selected");
-    blueStyleCard.classList.remove("selected");
-    goldStyleCard.classList.add("selected");
-    purpleStyleCard.classList.remove("selected");
-    redPinkStyleCard.classList.remove("selected");
-    rainbowStyleCard.classList.remove("selected");
-    saveNameStyle(3);
-  }
-});
+    Object.values(NAME_STYLES).forEach((candidate) => {
+      document.getElementById(candidate.id)?.classList.remove("selected");
+    });
 
-const purpleStyleCard = document.getElementById("purpleStyleBtn");
-onClick("purpleStyleBtn", () => {
-  if (purpleStyleCard.classList.contains("locked")) {
-    return alert("This style is locked! Reach 100,000 points to unlock it.");
-  } else {
-    blackStyleCard.classList.remove("selected");
-    blueStyleCard.classList.remove("selected");
-    goldStyleCard.classList.remove("selected");
-    purpleStyleCard.classList.add("selected");
-    redPinkStyleCard.classList.remove("selected");
-    rainbowStyleCard.classList.remove("selected");
-    saveNameStyle(4);
-  }
-});
-
-const redPinkStyleCard = document.getElementById("redPinkStyleBtn");
-onClick("redPinkStyleBtn", () => {
-  if (redPinkStyleCard.classList.contains("locked")) {
-    return alert("This style is locked! Reach 1,000,000 points to unlock it.");
-  } else {
-    blackStyleCard.classList.remove("selected");
-    blueStyleCard.classList.remove("selected");
-    goldStyleCard.classList.remove("selected");
-    purpleStyleCard.classList.remove("selected");
-    redPinkStyleCard.classList.add("selected");
-    rainbowStyleCard.classList.remove("selected");
-    saveNameStyle(5);
-  }
-});
-
-const rainbowStyleCard = document.getElementById("rainbowStyleBtn");
-onClick("rainbowStyleBtn", () => {
-  if (rainbowStyleCard.classList.contains("locked")) {
-    return alert("This style is locked! Reach 10,000,000 points to unlock it.");
-  } else {
-    blackStyleCard.classList.remove("selected");
-    blueStyleCard.classList.remove("selected");
-    goldStyleCard.classList.remove("selected");
-    purpleStyleCard.classList.remove("selected");
-    redPinkStyleCard.classList.remove("selected");
-    rainbowStyleCard.classList.add("selected");
-    saveNameStyle(6);
-  }
+    card.classList.add("selected");
+    saveNameStyle(Number(styleNum));
+  });
 });
 
 // Customization [BACKGROUND MUSIC]
@@ -1447,12 +1964,21 @@ onClick("music1Card", () => {
   }
 });
 
+function showAchievements() {
+  updateAchievementsTabUI();
+  updateUnlockedAchievements(getScore());
+  refreshAchievementsUI();
+}
+
 // Wire up buttons that exist on the current page.
 if (typeof add === "function") onClick("clickBtn", add);
 if (typeof save === "function") onClick("saveBtn", save);
 if (typeof reset === "function") onClick("resetBtn", reset);
-if (typeof showLeaderboard === "function") onClick("leaderboardBtn", showLeaderboard);
+if (typeof showLeaderboard === "function") onClick("leaderboardBtn", () => showLeaderboard());
 if (typeof unlockAutoClickerUpgrades === "function") onClick("autoclickerbuyBtn", unlockAutoClickerUpgrades);
+if (typeof showAchievements === "function") onClick("achievementsBtn", () => showAchievements());
+onClick("leaderboardClicksTab", () => showLeaderboard("clicks"));
+onClick("achievementsClicksTab", () => showAchievements("clicks"));
 
 // Settings modal
 const settingsModal = document.getElementById("settingsModal");
@@ -1463,8 +1989,14 @@ document.getElementById("settingsClose").addEventListener("click", () => setting
 const leaderboardModal = document.getElementById("leaderboardModal");
 document.getElementById("leaderboardClose").addEventListener("click", () => leaderboardModal.style.display = "none");
 
+// Achievements modal
+const achievementsModal = document.getElementById("achievementsModal");
+document.getElementById("achievementsBtn").addEventListener("click", () => achievementsModal.style.display = "block");
+document.getElementById("achievementsClose").addEventListener("click", () => achievementsModal.style.display = "none");
+
 window.addEventListener("click", (event) => {
   if (event.target === settingsModal)    settingsModal.style.display   = "none";
   if (event.target === leaderboardModal) leaderboardModal.style.display = "none";
   if (event.target === customizationModal) customizationModal.style.display = "none";
+  if (event.target === achievementsModal) achievementsModal.style.display = "none";
 });
