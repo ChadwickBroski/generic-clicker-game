@@ -10,7 +10,7 @@ Here are some of the features:
 - Added 21 new name styles
 - Added 7 new upgrades
 - New version numbering system (huge update.smaller update.bug fix)
-- Prestige cost is now 100m because of the new upgrades
+- Prestige cost is now 100m because of the new upgrades and gets multiplied by 100 every time you prestige.
 - Practically removed the limit to the score
 - Extended the max level to 1000
 - New footer
