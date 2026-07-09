@@ -36,11 +36,13 @@ const TAGS = {
   // 🔴 MANUAL — set this yourself in Firestore console
   7: { label: "Ideator",    color: "white", bg: "green",     tooltip: "Contributed by giving an idea to the owner that is currently in the game" },
   // 🔴 MANUAL — set this yourself in Firestore console
-  8: {label: "Winner",      color: "white", bg: "white",     tooltip: "Won a contest hosted by the owner" }
+  8: {label: "Winner",      color: "white", bg: "white",     tooltip: "Won a contest hosted by the owner" },
+  // 🔴 MANUAL — set this yourself in Firestore console
+  9: {label:"Unemployed",   color:"white",  bg:"black",      tooltip:"Needs to get a job" }
 };
 
 // Tags that are set manually and must never be overwritten by automatic logic
-const MANUAL_TAGS = new Set([3, 5, 6, 7]);
+const MANUAL_TAGS = new Set([3, 5, 6, 7, 8, 9]);
 
 // ── Name style definitions ──
 // Stored in Firestore as an integer in the "nameStyles" field
