@@ -642,7 +642,7 @@ const CLICK_GOD_CPS_GAIN = 3000000;
 const CLICK_GOD_MAX_LEVEL = 1000;
 
 // Prestige
-const PRESTIGE_BASE_COST = 100000000000;
+const PRESTIGE_BASE_COST = 10000000000;
 const PRESTIGE_CPS_BOOST_MULTIPLIER = 10; // 10x CPS multiplier per prestige
 
 const normalizeUpgradeLevel = (level, maxLevel) => {
